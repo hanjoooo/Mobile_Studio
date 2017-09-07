@@ -9,7 +9,10 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.ToggleButton
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -17,16 +20,34 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_google_map_test.*
+import java.util.*
 
 class GoogleMapTestActivity : AppCompatActivity(), OnMapReadyCallback {
+
+    private var mAuth: FirebaseAuth? = null
+    private var mAuthListener: FirebaseAuth.AuthStateListener? = null
+    private var mGoogleApiClient: GoogleApiClient? = null
+
+    internal var mRootRef = FirebaseDatabase.getInstance().reference
+    internal var mConditionRef = mRootRef.child("test")
+    internal var mchild1Ref: DatabaseReference?=null
+    internal var mchild2Ref: DatabaseReference?=null
+
+    internal var timer: Timer? = null
+
 
     private var mMap: GoogleMap? = null
     var longitude:Double = 0.0
     var latitude:Double = 0.0
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_google_map_test)
+
 
         // Location 제공자에서 정보를 얻어오기(GPS)
         // 1. Location을 사용하기 위한 권한을 얻어와야한다 AndroidManifest.xml
@@ -48,6 +69,7 @@ class GoogleMapTestActivity : AppCompatActivity(), OnMapReadyCallback {
         val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
 
+
         toggle1.setOnClickListener{
             try {
                 if (toggle1.isChecked()) {
@@ -63,10 +85,14 @@ class GoogleMapTestActivity : AppCompatActivity(), OnMapReadyCallback {
                     lm.removeUpdates(mLocationListener)  //  미수신할때는 반드시 자원해체를 해주어야 한다.
                 }
             } catch (ex: SecurityException) {
+                ;
             }
         }
 
+        toggle1.performClick()
+
     } // end of onCreate
+
 
     private val mLocationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
@@ -84,6 +110,7 @@ class GoogleMapTestActivity : AppCompatActivity(), OnMapReadyCallback {
             //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.
             textView2.setText("위치정보 : " + provider + "\n위도 : " + longitude + "\n경도 : " + latitude+ "\n고도 : " + altitude + "\n정확도 : " + accuracy)
         }
+
 
         override fun onProviderDisabled(provider: String) {
             // Disabled시
@@ -104,8 +131,46 @@ class GoogleMapTestActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(latitude, longitude)
-        mMap!!.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap!!.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val currentlocation = LatLng(latitude, longitude)
+        mMap!!.addMarker(MarkerOptions().position(currentlocation).title("현재 위치"))
+        mMap!!.moveCamera(CameraUpdateFactory.newLatLng(currentlocation))
+
+
+        mchild1Ref = mConditionRef.child("위도")
+        mchild2Ref = mConditionRef.child("경도")
+
+        mchild1Ref?.setValue(latitude)
+        mchild2Ref?.setValue(longitude)
+
+
     }
+
+    internal var timertask: TimerTask = object : TimerTask() {
+        override fun run() {
+            toggle1.performClick()
+        }
+    }
+    // 1초 후에 최초 실행하고, 이후 1초 간격으로 계속 반복해서 실행
+    override fun onStart() {
+        super.onStart()
+
+        mConditionRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+
+            }
+        })
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (mAuthListener != null) {
+            mAuth!!.removeAuthStateListener(mAuthListener!!)
+        }
+    }
+
+
 }

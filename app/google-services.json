@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "670670416163",
+    "firebase_url": "https://trust-cd479.firebaseio.com",
+    "project_id": "trust-cd479",
+    "storage_bucket": "trust-cd479.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:670670416163:android:fa64c831980ad385",
+        "android_client_info": {
+          "package_name": "com.example.khanj.trust"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "670670416163-aprh9aceih21heii9cgj1qm73kje2s41.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfXFaiWx2_I6Y3-1ofGwqh7Dx-1BhnoXY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
