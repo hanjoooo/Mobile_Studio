@@ -36,19 +36,23 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+
+        </intent-filter>
+        </activity>
         <activity
             android:name=".GoogleMapTestActivity"
             android:label="@string/title_activity_google_map_test">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".PresentLocation"
-            android:label="@string/title_activity_present_location"></activity>
+            android:label="@string/title_activity_present_location">
+        </activity>
+        <activity android:name=".ChattingActivity">
+        </activity>
     </application>
 
 </manifest>

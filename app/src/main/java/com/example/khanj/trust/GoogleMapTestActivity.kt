@@ -6,6 +6,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.support.v4.app.FragmentActivity
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.TextView
@@ -68,28 +69,24 @@ class GoogleMapTestActivity : AppCompatActivity(), OnMapReadyCallback {
         // LocationManager 객체를 얻어온다
         val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
+        try {
+                textView2.setText("수신중..")
+                // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1.toFloat(), mLocationListener)
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1.toFloat(), mLocationListener)
+                val mapFragment = supportFragmentManager
+                        .findFragmentById(R.id.map) as SupportMapFragment
+                mapFragment.getMapAsync(this)
 
-
-        toggle1.setOnClickListener{
-            try {
-                if (toggle1.isChecked()) {
-                    textView2.setText("수신중..")
-                    // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
-                    lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1.toFloat(), mLocationListener)
-                    lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1.toFloat(), mLocationListener)
-                    val mapFragment = supportFragmentManager
-                            .findFragmentById(R.id.map) as SupportMapFragment
-                    mapFragment.getMapAsync(this)
-                } else {
-                    textView2.setText("위치정보 미수신중")
-                    lm.removeUpdates(mLocationListener)  //  미수신할때는 반드시 자원해체를 해주어야 한다.
-                }
-            } catch (ex: SecurityException) {
-                ;
-            }
+        } catch (ex: SecurityException) {
+            ;
         }
 
-        toggle1.performClick()
+
+
+
+
+
 
     } // end of onCreate
 
@@ -102,6 +99,15 @@ class GoogleMapTestActivity : AppCompatActivity(), OnMapReadyCallback {
             Log.d("test", "onLocationChanged, location:" + location)
             longitude = location.getLongitude() //경도
             latitude = location.getLatitude()   //위도
+            Handler().postDelayed({
+                val currentlocation = LatLng(latitude, longitude)
+                mMap!!.addMarker(MarkerOptions().position(currentlocation).title("현재 위치"))
+                mMap!!.moveCamera(CameraUpdateFactory.newLatLng(currentlocation))
+                mchild1Ref = mConditionRef.child("경도")
+                mchild2Ref = mConditionRef.child("위도")
+                mchild1Ref?.setValue(latitude)
+                mchild2Ref?.setValue(longitude)
+            }, 1500)
             val altitude = location.getAltitude()   //고도
             val accuracy = location.getAccuracy()    //정확도
             val provider = location.getProvider()   //위치제공자
@@ -129,18 +135,12 @@ class GoogleMapTestActivity : AppCompatActivity(), OnMapReadyCallback {
     }
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
         // Add a marker in Sydney and move the camera
-        val currentlocation = LatLng(latitude, longitude)
-        mMap!!.addMarker(MarkerOptions().position(currentlocation).title("현재 위치"))
-        mMap!!.moveCamera(CameraUpdateFactory.newLatLng(currentlocation))
+        val currentlocation = LatLng(37.1, 127.1)
+        mMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(currentlocation,15.toFloat()))
 
 
-        mchild1Ref = mConditionRef.child("위도")
-        mchild2Ref = mConditionRef.child("경도")
 
-        mchild1Ref?.setValue(latitude)
-        mchild2Ref?.setValue(longitude)
 
 
     }
@@ -151,6 +151,8 @@ class GoogleMapTestActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
     // 1초 후에 최초 실행하고, 이후 1초 간격으로 계속 반복해서 실행
+
+
     override fun onStart() {
         super.onStart()
 
