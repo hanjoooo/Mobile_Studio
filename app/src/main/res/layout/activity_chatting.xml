@@ -15,19 +15,23 @@
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="match_parent"
-        android:layout_height="67dp"
+        android:layout_width="300dp"
+        android:layout_height="58dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Name"
         tools:layout_editor_absoluteY="447dp"
-        app:layout_constraintEnd_toStartOf="@+id/sendbutton" />
+        app:layout_constraintEnd_toStartOf="@+id/sendbutton"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="8dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginEnd="8dp" />
 
     <Button
         android:id="@+id/sendbutton"
-        android:layout_width="92dp"
-        android:layout_height="68dp"
+        android:layout_width="wrap_content"
+        android:layout_height="58dp"
         android:text="Button"
-        tools:layout_editor_absoluteX="296dp"
-        tools:layout_editor_absoluteY="444dp" />
+        tools:layout_editor_absoluteX="319dp"
+        tools:layout_editor_absoluteY="447dp" />
 </android.support.constraint.ConstraintLayout>

@@ -6,36 +6,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context="com.example.khanj.trust.MainActivity">
     <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="55dp">
+    android:layout_height="55dp"
+        android:layout_marginTop="20dp">
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/plus"
-            android:id="@+id/bt_plus" />
+            android:id="@+id/bt_plus"
+            android:background="#00ff0000"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/setting"
             android:id="@+id/bt_setting"
-            android:layout_marginLeft="300dp"/>
+            android:layout_marginLeft="300dp"
+            android:background="#00ff0000"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="540dp"
         android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_marginTop="7dp">
         <TextView
-            android:layout_width="192dp"
-            android:layout_height="65dp"
+            android:layout_width="200dp"
+            android:layout_height="72dp"
             android:text="TRUST"
-            android:textSize="55dp"
+            android:textSize="65dp"
+            android:typeface="sans"
             android:textColor="@color/colorPrimaryDark"
             android:textAlignment="center"
             tools:ignore="MissingConstraints"
+
             />
         <LinearLayout
             android:layout_marginTop="30dp"
@@ -47,13 +54,15 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/location"
                 android:id="@+id/bt_location"
+                android:background="#00ff0000"
                 />
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/route"
                 android:id="@+id/bt_route"
-                android:layout_marginLeft="50dp"/>
+                android:background="#00ff0000"
+                android:layout_marginLeft="70dp"/>
         </LinearLayout>
         <LinearLayout
             android:layout_marginTop="30dp"
@@ -65,13 +74,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/alarm"
+                android:background="#00ff0000"
                 />
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/bt_status"
                 android:src="@drawable/status"
-                android:layout_marginLeft="50dp"/>
+                android:layout_marginLeft="70dp"
+                android:background="#00ff0000" />
         </LinearLayout>
         <ImageView
             android:layout_marginTop="30dp"
@@ -79,6 +90,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/bt_chatting"
             android:src="@drawable/chatting"
+            android:background="#00ff0000"
             />
 
     </LinearLayout>

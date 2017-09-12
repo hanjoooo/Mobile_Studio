@@ -28,7 +28,6 @@ class ChattingActivity : AppCompatActivity() {
             override fun onChildAdded(dataSnapshot: DataSnapshot,string: String) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 var chaData:ChatData =dataSnapshot.getValue<ChatData>(ChatData::class.java)
-
             }
 
             override fun onChildChanged(p0: DataSnapshot?, p1: String?) {
