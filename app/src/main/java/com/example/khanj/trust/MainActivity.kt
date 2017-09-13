@@ -8,6 +8,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Handler
+import android.support.annotation.IntegerRes
 import android.util.Log
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -18,6 +19,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_google_map_test.*
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,11 +29,15 @@ class MainActivity : AppCompatActivity() {
 
     internal var mRootRef = FirebaseDatabase.getInstance().reference
     internal var mConditionRef = mRootRef.child("test")
+    internal var mConditionRef1 = mConditionRef.child("time")
+    internal var mtimeRef: DatabaseReference?=null
     internal var mchild1Ref: DatabaseReference?=null
     internal var mchild2Ref: DatabaseReference?=null
 
     var longitude:Double = 0.0
     var latitude:Double = 0.0
+
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,9 +53,9 @@ class MainActivity : AppCompatActivity() {
         } catch (ex: SecurityException) {
             ;
         }
-        }, 60000)
+        }, 10000)
         bt_route.setOnClickListener{
-            val intent = Intent(this,GoogleMapTestActivity::class.java)
+            val intent = Intent(this,LocationTrakingActivity::class.java)
             startActivity(intent)
         }
         bt_location.setOnClickListener{
@@ -72,9 +79,15 @@ class MainActivity : AppCompatActivity() {
             mchild2Ref = mConditionRef.child("위도")
             mchild1Ref?.setValue(latitude)
             mchild2Ref?.setValue(longitude)
-
-
-
+            val now:Long = System.currentTimeMillis()
+            val date:Date=Date(now)
+            val sdfNow:SimpleDateFormat= SimpleDateFormat("dd일HH분", Locale.KOREA)
+            val sdfNow2:SimpleDateFormat= SimpleDateFormat("ddHHmm", Locale.KOREA)
+            val strNow:String = sdfNow.format(date)
+            val strNow2:String=sdfNow2.format(date)
+            val loc:location= location(strNow,latitude,longitude)
+            mtimeRef=mConditionRef1.child(strNow2)
+            mtimeRef?.setValue(loc)
         }
 
 

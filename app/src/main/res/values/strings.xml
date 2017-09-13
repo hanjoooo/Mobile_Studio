@@ -3,4 +3,5 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_google_map_test">Map</string>
     <string name="title_activity_present_location">Map</string>
+    <string name="title_activity_location_traking">Map</string>
 </resources>

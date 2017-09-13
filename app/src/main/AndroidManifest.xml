@@ -37,22 +37,22 @@
         <activity
             android:name=".MainActivity"
             android:label="Trust">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".GoogleMapTestActivity"
-            android:label="@string/title_activity_google_map_test">
-        </activity>
+            android:label="@string/title_activity_google_map_test"></activity>
         <activity
             android:name=".PresentLocation"
-            android:label="@string/title_activity_present_location">
-        </activity>
-        <activity android:name=".ChattingActivity">
-        </activity>
+            android:label="@string/title_activity_present_location"></activity>
+        <activity android:name=".ChattingActivity"></activity>
+        <activity
+            android:name=".LocationTrakingActivity"
+            android:label="@string/title_activity_location_traking"></activity>
     </application>
 
 </manifest>
