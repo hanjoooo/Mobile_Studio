@@ -11,8 +11,11 @@ import java.util.*
 
 class ChattingActivity : AppCompatActivity() {
     private val FIREBASE_URL : String = "https://trust-cd479.firebaseio.com/ "
-
     private var mUsername:String?=null
+
+    private var mConnectedListener:ValueEventListener?=null
+
+
     private val firebaseDatabase = FirebaseDatabase.getInstance()
     private val databaseReference = firebaseDatabase.reference
     var userName = "user" + "123";

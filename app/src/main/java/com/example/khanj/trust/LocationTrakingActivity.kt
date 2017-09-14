@@ -74,13 +74,13 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     if (x.size<20 && x.size>0) {
                         mMap.addMarker(MarkerOptions().position(x[0]).title(dotime[0]))
-                        mMap . addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]))
+                        mMap.addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]))
                         for (i in 0..x.size - 2)
                             mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(15.toFloat()).color(Color.RED))
                     }
                     else if(x.size>=20) {
                         mMap.addMarker(MarkerOptions().position(x[x.size-20]).title(dotime[x.size-20]))
-                        mMap . addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]))
+                        mMap.addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]))
                         for (i in x.size - 20..x.size - 2)
                             mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(15.toFloat()).color(Color.RED))
                     }
