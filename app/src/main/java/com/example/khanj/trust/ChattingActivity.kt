@@ -10,20 +10,22 @@ import java.util.*
 
 
 class ChattingActivity : AppCompatActivity() {
+    private val FIREBASE_URL : String = "https://trust-cd479.firebaseio.com/ "
 
+    private var mUsername:String?=null
     private val firebaseDatabase = FirebaseDatabase.getInstance()
     private val databaseReference = firebaseDatabase.reference
     var userName = "user" + "123";
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chatting)
-
+        /*
         sendbutton.setOnClickListener(){
             var chatData:ChatData= ChatData(userName,editText.getText().toString())
             databaseReference.child("message").push().setValue(chatData)
             editText.setText(" ")
         }
-
+        */
         databaseReference.child("message").addChildEventListener(object : ChildEventListener{
             override fun onChildAdded(dataSnapshot: DataSnapshot,string: String) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

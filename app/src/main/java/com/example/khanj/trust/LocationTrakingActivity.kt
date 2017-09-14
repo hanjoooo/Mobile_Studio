@@ -1,9 +1,11 @@
 package com.example.khanj.trust
 
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.util.Range
 import android.widget.Toast
 import com.google.android.gms.common.api.GoogleApiClient
 
@@ -13,8 +15,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -25,8 +30,7 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     internal var mRootRef = FirebaseDatabase.getInstance().reference
     internal var mConditionRef = mRootRef.child("test")
-    internal var mConditionRef1 = mConditionRef.child("time")
-    internal var mtimeRef=mConditionRef1.child("131840")
+    internal var mConditionRef1 = FirebaseDatabase.getInstance().getReference("test").child("time")
 
 
     var longitude:Double = 0.0
@@ -53,13 +57,38 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onStart() {
         super.onStart()
 
-        mtimeRef.addValueEventListener(object : ValueEventListener {
+        mConditionRef1.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                /*
-                var loc:location =dataSnapshot.getValue<location>(location::class.java)
-                var x:String=loc.toString()
-                Log.d("dasafafaasfg",x)
-                */
+                var x = ArrayList<LatLng>()
+                var dotime=ArrayList<String>()
+                for ( snapshot in dataSnapshot.getChildren()) {
+                    var loc = snapshot.getValue(location::class.java)
+                    var latitude = loc.latitude
+                    var longitude = loc.longitude
+                    val y =LatLng(latitude,longitude)
+                    x.add(y)
+                    dotime.add(loc.times)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(y,16.toFloat()))
+                }
+                Handler().postDelayed({
+
+                    if (x.size<20 && x.size>0) {
+                        mMap.addMarker(MarkerOptions().position(x[0]).title(dotime[0]))
+                        mMap . addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]))
+                        for (i in 0..x.size - 2)
+                            mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(15.toFloat()).color(Color.RED))
+                    }
+                    else if(x.size>=20) {
+                        mMap.addMarker(MarkerOptions().position(x[x.size-20]).title(dotime[x.size-20]))
+                        mMap . addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]))
+                        for (i in x.size - 20..x.size - 2)
+                            mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(15.toFloat()).color(Color.RED))
+                    }
+                }, 1500)
+
+
+
+
             }
             override fun onCancelled(databaseError: DatabaseError) {
             }
@@ -70,13 +99,7 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         val x=LatLng(37.6007195267265,126.86528900355972)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(x,14.toFloat()))
-        Handler().postDelayed({
-            val sydney = LatLng(latitude, longitude)
-            mMap.addMarker(MarkerOptions().position(sydney).title("현재 위치"))
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15.toFloat()))
-        }, 1500)
         // Add a marker in Sydney and move the camera
-
     }
     override fun onStop() {
         super.onStop()

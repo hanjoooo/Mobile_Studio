@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
+import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_google_map_test.*
@@ -30,12 +32,14 @@ class MainActivity : AppCompatActivity() {
     internal var mRootRef = FirebaseDatabase.getInstance().reference
     internal var mConditionRef = mRootRef.child("test")
     internal var mConditionRef1 = mConditionRef.child("time")
+    internal var mcallTime=mConditionRef.child("time")
     internal var mtimeRef: DatabaseReference?=null
     internal var mchild1Ref: DatabaseReference?=null
     internal var mchild2Ref: DatabaseReference?=null
 
     var longitude:Double = 0.0
     var latitude:Double = 0.0
+
 
 
 
@@ -81,8 +85,8 @@ class MainActivity : AppCompatActivity() {
             mchild2Ref?.setValue(longitude)
             val now:Long = System.currentTimeMillis()
             val date:Date=Date(now)
-            val sdfNow:SimpleDateFormat= SimpleDateFormat("dd일HH분", Locale.KOREA)
-            val sdfNow2:SimpleDateFormat= SimpleDateFormat("ddHHmm", Locale.KOREA)
+            val sdfNow:SimpleDateFormat= SimpleDateFormat("dd일HH시mm분", Locale.KOREA)
+            val sdfNow2:SimpleDateFormat= SimpleDateFormat("MMddHHmm", Locale.KOREA)
             val strNow:String = sdfNow.format(date)
             val strNow2:String=sdfNow2.format(date)
             val loc:location= location(strNow,latitude,longitude)
@@ -110,11 +114,9 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        mConditionRef.addValueEventListener(object : ValueEventListener {
+        mcallTime.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
 
             }
