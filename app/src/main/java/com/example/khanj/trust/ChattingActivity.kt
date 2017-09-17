@@ -66,6 +66,7 @@ class ChattingActivity :AppCompatActivity(){
             adpater = com.example.khanj.trust.ChatListAdapter(datas,this@ChattingActivity)
             chatlist.setAdapter(adpater)
 
+
         }
 
         override fun onCancelled(p0: DatabaseError?) {

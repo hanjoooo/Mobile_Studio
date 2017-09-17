@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@color/ivory"
     tools:context="com.example.khanj.trust.MainActivity">
     <LinearLayout
     android:layout_width="match_parent"
@@ -32,17 +32,12 @@
         android:layout_height="540dp"
         android:orientation="vertical"
         android:gravity="center">
-        <TextView
+        <ImageView
             android:layout_width="200dp"
-            android:layout_height="72dp"
-            android:text="TRUST"
-            android:textSize="65dp"
-            android:typeface="sans"
-            android:textColor="@color/colorPrimaryDark"
-            android:textAlignment="center"
-            tools:ignore="MissingConstraints"
-
-            />
+            android:layout_height="75dp"
+            android:src="@drawable/turst1"
+            android:background="#00ff0000"
+            android:textAlignment="center" />
         <LinearLayout
             android:layout_marginTop="30dp"
             android:layout_width="match_parent"
@@ -54,6 +49,7 @@
                 android:src="@drawable/location"
                 android:id="@+id/bt_location"
                 android:background="#00ff0000"
+                android:clickable="true"
                 />
             <ImageView
                 android:layout_width="100dp"

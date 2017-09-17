@@ -1,16 +1,23 @@
 package com.example.khanj.trust
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Handler
 import android.support.annotation.IntegerRes
+import android.support.v7.app.AlertDialog
 import android.util.Log
+import android.view.MotionEvent
+import android.view.View
+import android.widget.ImageView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -32,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     internal var mRootRef = FirebaseDatabase.getInstance().reference
     internal var mConditionRef = mRootRef.child("test")
     internal var mConditionRef1 = mConditionRef.child("time")
-    internal var mcallTime=mConditionRef.child("time")
+    internal var mcallTime=mRootRef.child("state")
     internal var mtimeRef: DatabaseReference?=null
     internal var mchild1Ref: DatabaseReference?=null
     internal var mchild2Ref: DatabaseReference?=null
@@ -40,10 +47,9 @@ class MainActivity : AppCompatActivity() {
     var longitude:Double = 0.0
     var latitude:Double = 0.0
 
+    var state:String=" "
 
-
-
-
+    @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -58,6 +64,7 @@ class MainActivity : AppCompatActivity() {
             ;
         }
         }, 10000)
+
         bt_route.setOnClickListener{
             val intent = Intent(this,LocationTrakingActivity::class.java)
             startActivity(intent)
@@ -70,6 +77,43 @@ class MainActivity : AppCompatActivity() {
         bt_chatting.setOnClickListener{
             val intent = Intent(this,ChattingActivity::class.java)
             startActivity(intent)
+        }
+
+        bt_status.setOnClickListener{
+            var alertDialogBuilder=AlertDialog.Builder(this)
+            alertDialogBuilder.setMessage(state)
+            alertDialogBuilder.setPositiveButton("확인",null)
+            var alert:AlertDialog=alertDialogBuilder.create()
+            alert.setTitle("상태")
+            alert.window.setBackgroundDrawable(ColorDrawable(Color.YELLOW))
+            alert.window.setBackgroundDrawable(ColorDrawable(R.color.pure))
+            alert.show()
+        }
+
+
+    }
+
+    private val mTouchEvent = object : View.OnTouchListener {
+
+        override fun onTouch(v: View, event: MotionEvent): Boolean {
+
+            val image = v as ImageView
+
+            when (v.getId()) {
+
+                R.id.bt_location ->
+
+                    if (event.getAction() === MotionEvent.ACTION_DOWN) {
+
+                        image.setColorFilter(Color.RED.toInt(), PorterDuff.Mode.SRC_OVER)
+
+                    } else if (event.getAction() === MotionEvent.ACTION_UP) {
+
+                        image.setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_OVER)
+
+                    }
+            }
+            return true
         }
     }
 
@@ -116,6 +160,7 @@ class MainActivity : AppCompatActivity() {
 
         mcallTime.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                state=dataSnapshot.getValue().toString()
             }
             override fun onCancelled(databaseError: DatabaseError) {
 
@@ -129,4 +174,5 @@ class MainActivity : AppCompatActivity() {
             mAuth!!.removeAuthStateListener(mAuthListener!!)
         }
     }
+
 }

@@ -33,18 +33,18 @@ class ChatListAdapter(var datas:ArrayList<Chat>, var context:Context) :BaseAdapt
 
     override fun getView(p0: Int, p1: View?, p2: ViewGroup?): View {
         if(p1==null){
-            var convert = inflater.inflate(R.layout.chat_message,null)
-            var convert2= inflater.inflate(R.layout.chat_message1,null)
-            var mTextViewDate : View = convert.findViewById(R.id.textTime)
-            var mTextViewDate2 : View = convert2.findViewById(R.id.textTIme2)
-            var mTextViewMessage : View = convert.findViewById(R.id.message)
-            var mTextViewMessage2 : View = convert2.findViewById(R.id.message2)
+            val convert = inflater.inflate(R.layout.chat_message,null)
+            val convert2= inflater.inflate(R.layout.chat_message1,null)
+            val mTextViewDate : View = convert.findViewById(R.id.textTime)
+            val mTextViewDate2 : View = convert2.findViewById(R.id.textTIme2)
+            val mTextViewMessage : View = convert.findViewById(R.id.message)
+            val mTextViewMessage2 : View = convert2.findViewById(R.id.message2)
 
-            var mAuthorView :View = convert.findViewById(R.id.author)
-            var mAuthorView2 :View = convert2.findViewById(R.id.author2)
+            val mAuthorView :View = convert.findViewById(R.id.author)
+            val mAuthorView2 :View = convert2.findViewById(R.id.author2)
 
 
-            var chat : Chat= datas.get(p0)
+            val chat : Chat= datas.get(p0)
 
             if(chat.getAuthor().equals("min")){
                 mTextViewDate2.textTIme2.setText(chat.getTimes())
@@ -65,10 +65,6 @@ class ChatListAdapter(var datas:ArrayList<Chat>, var context:Context) :BaseAdapt
         }
     }
 
-
-
-
-    private var mUsername:String=" "
 /*
     override fun populateView(v: View, model: Chat) {
         val author:String=model.getAuthor()
