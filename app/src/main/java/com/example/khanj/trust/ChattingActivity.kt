@@ -50,9 +50,9 @@ class ChattingActivity :AppCompatActivity(){
             mChatRef.setValue(chatMessage)
             messageInput.setText("")
         }
-
-        adpater = com.example.khanj.trust.ChatListAdapter(datas,this)
+        adpater = com.example.khanj.trust.ChatListAdapter(datas,this@ChattingActivity)
         chatlist.setAdapter(adpater)
+        mConditionRef.addValueEventListener(postListener)
     }
     private val postListener = object : ValueEventListener {
         override fun onDataChange(datasnapshot: DataSnapshot) {
@@ -75,7 +75,7 @@ class ChattingActivity :AppCompatActivity(){
     }
     override fun onStart() {
         super.onStart()
-        mConditionRef.addValueEventListener(postListener)
+
 
 
     }
@@ -84,6 +84,4 @@ class ChattingActivity :AppCompatActivity(){
         super.onStop()
 
     }
-
-
 }

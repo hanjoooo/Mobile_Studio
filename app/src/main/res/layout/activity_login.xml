@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.khanj.trust.LoginActivity"
+    android:background="@color/colorPrimary">
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="75dp"
+        android:src="@drawable/trust"
+        android:id="@+id/Title"
+        android:background="#00ff0000"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:hint="Email"
+        android:ems="10"
+        android:id="@+id/ID"
+        android:textSize="25sp"
+        android:layout_marginBottom="58dp"
+        android:layout_above="@+id/Regist"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/Password"
+        android:hint="Password"
+        android:textSize="25sp"
+        android:layout_marginTop="162dp"
+        android:layout_below="@+id/Title"
+        android:layout_alignStart="@+id/ID"
+        android:layout_alignEnd="@+id/ID" />
+
+
+    <Button
+        android:text="회원가입"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:textSize="20sp"
+        android:id="@+id/Regist"
+        android:textStyle="bold|italic"
+        android:textColor="@color/colorAccent"
+        android:layout_marginStart="9dp"
+        android:layout_below="@+id/Password"
+        android:layout_toEndOf="@+id/Login"
+        android:layout_marginTop="42dp" />
+
+    <Button
+        android:text=" L o g i n "
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:id="@+id/Login"
+        android:textSize="26sp"
+        android:textStyle="bold|italic"
+        android:textColor="#0288D1"
+        android:layout_alignTop="@+id/Regist"
+        android:layout_alignStart="@+id/Password" />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="44dp"
+        android:layout_below="@+id/Regist"
+        android:layout_alignStart="@+id/Login" />
+
+</RelativeLayout>
