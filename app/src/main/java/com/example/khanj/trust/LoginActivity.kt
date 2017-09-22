@@ -23,10 +23,9 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListener {
-    private var mlayout: RelativeLayout? = null
     private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    private var mAuthListener: FirebaseAuth.AuthStateListener=FirebaseAuth.AuthStateListener {  }
-    private var mGoogleApiClient: GoogleApiClient? = null
+    private var mAuthListener: FirebaseAuth.AuthStateListener?=null
+    private lateinit var mGoogleApiClient: GoogleApiClient
     private var backPressCloseHandler: BackPressCloseHandler? = null
     internal var mRootRef = FirebaseDatabase.getInstance().reference
     internal var mConditionRef = mRootRef.child("users")
@@ -39,8 +38,8 @@ class LoginActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListener
         setContentView(R.layout.activity_login)
 
         sign_in_button.setOnClickListener {
-            SignIn()
-        }
+            SignIn()}
+
         // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -65,7 +64,7 @@ class LoginActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListener
                         if (txt == null) {
                             Toast.makeText(this@LoginActivity, "처음이시군요~~.", Toast.LENGTH_SHORT).show()
                             finish()
-                            val intent = Intent(applicationContext, MainActivity::class.java)
+                            val intent = Intent(applicationContext, GoogleRegistActivity::class.java)
                             startActivity(intent)
                         } else {
                             finish()
@@ -103,7 +102,7 @@ class LoginActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListener
             if (result.isSuccess) {
                 // Google Sign In was successful, authenticate with Firebase
                 val account = result.signInAccount
-                firebaseAuthWithGoogle(account)
+                firebaseAuthWithGoogle(account as GoogleSignInAccount)
 
             } else {
                 // Google Sign In failed, update UI appropriately
@@ -153,8 +152,8 @@ class LoginActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListener
         }
     }
 
-    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount?) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct!!.id!!)
+    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.id)
         // [START_EXCLUDE silent]
         showProgressDialog()
         // [END_EXCLUDE]

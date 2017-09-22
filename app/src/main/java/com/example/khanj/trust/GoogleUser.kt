@@ -1,31 +1,21 @@
 package com.example.khanj.trust
 
 /**
- * Created by khanj on 2017-09-21.
+ * Created by khanj on 2017-09-22.
  */
-class User(){
-    private var Email: String=" "
-    private var Password: String=" "
+class GoogleUser(){
     private var Nickname:String=" "
     private var Name:String=" "
     private var PhoneNumber:String=" "
     private var MyUid :String=""
     private var OtherUid :String=" "
-    constructor(Email: String, Password: String,Nickname:String,Name:String,PhoneNumber:String,MyUid:String) : this(){
-        this.Email=Email
-        this.Password=Password
+    constructor(Nickname:String,Name:String,PhoneNumber:String,MyUid:String) : this(){
         this.Nickname=Nickname
         this.Name=Name
         this.PhoneNumber=PhoneNumber
         this.MyUid=MyUid
     }
 
-    public fun getEmail():String{
-        return Email
-    }
-    public fun getPassword():String{
-        return Password
-    }
     public fun getNickname():String {
         return Nickname
     }
@@ -42,9 +32,7 @@ class User(){
         return OtherUid
     }
 
-    public fun setPassword(p:String){
-        this.Password=p
-    }
+
     public fun setNickname(p:String){
         this.Nickname=p
     }

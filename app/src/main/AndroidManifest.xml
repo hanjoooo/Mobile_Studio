@@ -10,8 +10,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-     
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -32,7 +30,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="AIzaSyB202osKbZqZR95SqSGt9S16DSREb4eNLY" />
 
         <activity
             android:name=".MainActivity"
@@ -57,6 +55,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegistActivity"></activity>
+        <activity android:name=".GoogleRegistActivity"></activity>
     </application>
 
 </manifest>

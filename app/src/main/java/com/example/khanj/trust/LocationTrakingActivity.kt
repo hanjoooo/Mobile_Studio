@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,12 +26,12 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
-    private var mAuth: FirebaseAuth? = null
+    private var mAuth: FirebaseAuth= FirebaseAuth.getInstance()
     private var mAuthListener: FirebaseAuth.AuthStateListener? = null
-
     internal var mRootRef = FirebaseDatabase.getInstance().reference
-    internal var mConditionRef = mRootRef.child("test")
-    internal var mConditionRef1 = FirebaseDatabase.getInstance().getReference("test").child("time")
+    internal var mConditionRef = mRootRef.child("location")
+    internal var mchildRef: DatabaseReference?=null
+    internal var mchildsRef: DatabaseReference?=null
 
 
     var longitude:Double = 0.0
@@ -43,6 +44,21 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        mAuthListener = FirebaseAuth.AuthStateListener {
+            firebaseAuth ->
+            val user = firebaseAuth.currentUser
+            if (user != null) {
+                // User is signed in
+                Log.d(LocationTrakingActivity.TAG, "onAuthStateChanged:signed_in:" + user.uid)
+            } else {
+                // User is signed out
+                Log.d(LocationTrakingActivity.TAG, "onAuthStateChanged:signed_out")
+            }
+            // [START_EXCLUDE]
+            updateUI(user)
+            // [END_EXCLUDE]
+        }
     }
 
     /**
@@ -56,18 +72,19 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onStart() {
         super.onStart()
-
-        mConditionRef1.addListenerForSingleValueEvent(object : ValueEventListener {
+        mAuth.addAuthStateListener(mAuthListener!!)
+        Handler().postDelayed({
+        mchildsRef!!.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 var x = ArrayList<LatLng>()
                 var dotime=ArrayList<String>()
                 for ( snapshot in dataSnapshot.getChildren()) {
                     var loc = snapshot.getValue(location::class.java)
-                    var latitude = loc.latitude
-                    var longitude = loc.longitude
+                    var latitude = loc!!.latitude
+                    var longitude = loc!!.longitude
                     val y =LatLng(latitude,longitude)
                     x.add(y)
-                    dotime.add(loc.times)
+                    dotime.add(loc!!.times)
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(y,16.toFloat()))
                 }
                 Handler().postDelayed({
@@ -85,14 +102,12 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
                             mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(15.toFloat()).color(Color.RED))
                     }
                 }, 1500)
-
-
-
-
             }
             override fun onCancelled(databaseError: DatabaseError) {
             }
         })
+        }, 1000)
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -104,8 +119,21 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onStop() {
         super.onStop()
         if (mAuthListener != null) {
-            mAuth!!.removeAuthStateListener(mAuthListener!!)
+            mAuth.removeAuthStateListener(mAuthListener!!)
         }
+    }
+    private fun updateUI(user: FirebaseUser?) {
+        if (user != null) {
+            mchildRef = mConditionRef.child(user.uid)
+            mchildsRef=mchildRef!!.child("time")
+
+        } else {
+
+        }
+    }
+
+    companion object {
+        private val TAG = "EmailPassword"
     }
 
 }

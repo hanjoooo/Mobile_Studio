@@ -31,7 +31,7 @@ class RegistActivity :  BaseActivity() {
     internal var mchild1Ref: DatabaseReference?=null
 
     var Users:User ?=null
-
+    private var userUid:String=" "
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_regist)
@@ -131,7 +131,7 @@ class RegistActivity :  BaseActivity() {
             result.putExtra("name", edname!!.text.toString())
 
             Users= User(etEmail.text.toString(),etPassword!!.text.toString(),
-                    nickname!!.text.toString(),edname!!.text.toString(),edphone.text.toString())
+                    nickname!!.text.toString(),edname!!.text.toString(),edphone.text.toString(),userUid)
             createAccount(etEmail!!.text.toString(), etPassword!!.text.toString())
         })
     }
@@ -208,7 +208,7 @@ class RegistActivity :  BaseActivity() {
         hideProgressDialog()
         if (user != null) {
             mchildRef = mConditionRef.child(user.uid)
-
+            userUid=user.uid
         } else {
 
         }

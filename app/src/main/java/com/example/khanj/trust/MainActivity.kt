@@ -2,6 +2,7 @@ package com.example.khanj.trust
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
@@ -15,9 +16,13 @@ import android.os.Handler
 import android.support.annotation.IntegerRes
 import android.support.v7.app.AlertDialog
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -25,29 +30,35 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_google_map_test.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.custom_dialog.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var mAuth: FirebaseAuth? = null
+    private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private var mAuthListener: FirebaseAuth.AuthStateListener? = null
 
     internal var mRootRef = FirebaseDatabase.getInstance().reference
-    internal var mConditionRef = mRootRef.child("test")
-    internal var mConditionRef1 = mConditionRef.child("time")
+    internal var mConditionRef = mRootRef.child("location")
+    internal var mCoupleRef=mRootRef.child("couples")
     internal var mcallTime=mRootRef.child("state")
+    internal var mchildRef: DatabaseReference?=null
+    internal var mchildsRef: DatabaseReference?=null
     internal var mtimeRef: DatabaseReference?=null
     internal var mchild1Ref: DatabaseReference?=null
     internal var mchild2Ref: DatabaseReference?=null
+
 
     var longitude:Double = 0.0
     var latitude:Double = 0.0
 
     var state:String=" "
+    var ConnectUser:String=""
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +89,31 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,ChattingActivity::class.java)
             startActivity(intent)
         }
+        bt_setting.setOnClickListener{
+            signOut()
+            finish()
+            val intent = Intent(this,LoginActivity::class.java)
+            startActivity(intent)
+        }
+        bt_plus.setOnClickListener{
+            val mContext=applicationContext
+            val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            val layout:View = inflater.inflate(R.layout.custom_dialog, findViewById(R.id.layout_root));
+            val aDialog:AlertDialog.Builder=AlertDialog.Builder(this)
+             aDialog.setTitle("연결하실 상대방 전화번호를 입력하세요.");
+             aDialog.setView(layout);
+
+            aDialog.setPositiveButton("연결") { dialog, which ->
+                var x:EditText=layout.findViewById(R.id.EdConnectUser)
+                ConnectUser=x.text.toString()
+            }
+            aDialog.setNegativeButton("취소") { dialog, which -> }
+
+            val ad = aDialog.create()
+            ad.show()
+            mCoupleRef.setValue(ConnectUser)
+
+        }
 
         bt_status.setOnClickListener{
             var alertDialogBuilder=AlertDialog.Builder(this)
@@ -88,6 +124,21 @@ class MainActivity : AppCompatActivity() {
             alert.window.setBackgroundDrawable(ColorDrawable(Color.YELLOW))
             alert.window.setBackgroundDrawable(ColorDrawable(R.color.pure))
             alert.show()
+        }
+
+        mAuthListener = FirebaseAuth.AuthStateListener {
+            firebaseAuth ->
+            val user = firebaseAuth.currentUser
+            if (user != null) {
+                // User is signed in
+                Log.d(MainActivity.TAG, "onAuthStateChanged:signed_in:" + user.uid)
+            } else {
+                // User is signed out
+                Log.d(MainActivity.TAG, "onAuthStateChanged:signed_out")
+            }
+            // [START_EXCLUDE]
+            updateUI(user)
+            // [END_EXCLUDE]
         }
 
 
@@ -123,8 +174,8 @@ class MainActivity : AppCompatActivity() {
             //값은 Location 형태로 리턴되며 좌표 출력 방법은 다음과 같다.
             longitude = location.getLongitude() //경도
             latitude = location.getLatitude()   //위도
-            mchild1Ref = mConditionRef.child("경도")
-            mchild2Ref = mConditionRef.child("위도")
+            mchild1Ref = mchildRef!!.child("경도")
+            mchild2Ref = mchildRef!!.child("위도")
             mchild1Ref?.setValue(latitude)
             mchild2Ref?.setValue(longitude)
             val now:Long = System.currentTimeMillis()
@@ -134,7 +185,7 @@ class MainActivity : AppCompatActivity() {
             val strNow:String = sdfNow.format(date)
             val strNow2:String=sdfNow2.format(date)
             val loc:location= location(strNow,latitude,longitude)
-            mtimeRef=mConditionRef1.child(strNow2)
+            mtimeRef=mchildsRef!!.child(strNow2)
             mtimeRef?.setValue(loc)
         }
 
@@ -157,6 +208,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        mAuth.addAuthStateListener(mAuthListener!!)
 
         mcallTime.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -173,6 +225,22 @@ class MainActivity : AppCompatActivity() {
         if (mAuthListener != null) {
             mAuth!!.removeAuthStateListener(mAuthListener!!)
         }
+    }
+    private fun updateUI(user: FirebaseUser?) {
+        if (user != null) {
+            mchildRef = mConditionRef.child(user.uid)
+            mchildsRef=mchildRef!!.child("time")
+
+        } else {
+
+        }
+    }
+    private fun signOut() {
+        mAuth.signOut()
+    }
+
+    companion object {
+        private val TAG = "EmailPassword"
     }
 
 }

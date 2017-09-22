@@ -4,7 +4,6 @@ package com.example.khanj.trust
  * Created by khanj on 2017-09-15.
  */
 class Chat() {
-
     private var message: String=" "
     private var author: String=" "
     private var times:String=" "
@@ -23,6 +22,7 @@ class Chat() {
     public fun getTimes():String{
         return times
     }
+
 
 
 }

@@ -3,6 +3,7 @@ package com.example.khanj.trust
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import com.google.android.gms.common.api.GoogleApiClient
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -12,20 +13,23 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import java.util.*
 
 class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
 
-    private var mAuth: FirebaseAuth? = null
+    private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private var mAuthListener: FirebaseAuth.AuthStateListener? = null
     private var mGoogleApiClient: GoogleApiClient? = null
 
     internal var mRootRef = FirebaseDatabase.getInstance().reference
-    internal var mConditionRef = mRootRef.child("test")
-    internal var mchild1Ref: DatabaseReference=mConditionRef.child("경도")
-    internal var mchild2Ref: DatabaseReference=mConditionRef.child("위도")
+    internal var mConditionRef = mRootRef.child("location")
+    internal var mchildRef: DatabaseReference?=null
+
+    internal var mchild1Ref: DatabaseReference?=null
+    internal var mchild2Ref: DatabaseReference?=null
 
 
     var longitude:Double = 0.0
@@ -42,6 +46,21 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        mAuthListener = FirebaseAuth.AuthStateListener {
+            firebaseAuth ->
+            val user = firebaseAuth.currentUser
+            if (user != null) {
+                // User is signed in
+                Log.d(PresentLocation.TAG, "onAuthStateChanged:signed_in:" + user.uid)
+            } else {
+                // User is signed out
+                Log.d(PresentLocation.TAG, "onAuthStateChanged:signed_out")
+            }
+            // [START_EXCLUDE]
+            updateUI(user)
+            // [END_EXCLUDE]
+        }
     }
 
     /**
@@ -57,24 +76,27 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onStart() {
         super.onStart()
-
-        mchild1Ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var datas = dataSnapshot.getValue().toString()
-                latitude= datas.toDouble()
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-            }
-        })
-        mchild2Ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var datas = dataSnapshot.getValue().toString()
-                longitude= datas.toDouble()
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-            }
-        })
-
+        mAuth.addAuthStateListener(mAuthListener!!)
+        Handler().postDelayed({
+            mchild1Ref=mchildRef!!.child("경도")
+            mchild2Ref=mchildRef!!.child("위도")
+            mchild1Ref!!.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    var datas = dataSnapshot.getValue().toString()
+                    latitude= datas.toDouble()
+                }
+                override fun onCancelled(databaseError: DatabaseError) {
+                }
+            })
+            mchild2Ref!!.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    var datas = dataSnapshot.getValue().toString()
+                    longitude= datas.toDouble()
+                }
+                override fun onCancelled(databaseError: DatabaseError) {
+                }
+            })
+        }, 1000)
     }
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -91,9 +113,20 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
     override fun onStop() {
         super.onStop()
         if (mAuthListener != null) {
-            mAuth!!.removeAuthStateListener(mAuthListener!!)
+            mAuth.removeAuthStateListener(mAuthListener!!)
+        }
+    }
+    private fun updateUI(user: FirebaseUser?) {
+        if (user != null) {
+            mchildRef = mConditionRef.child(user.uid)
+
+        } else {
+
         }
     }
 
+    companion object {
+        private val TAG = "EmailPassword"
+    }
 
 }
