@@ -7,11 +7,13 @@ class Chat() {
     private var message: String=" "
     private var author: String=" "
     private var times:String=" "
+    private var authorUid:String=" "
 
-    constructor(message: String, author: String,times:String) : this(){
+    constructor(message: String, author: String,times:String,authorUid:String) : this(){
         this.message=message
         this.author=author
         this.times=times
+        this.authorUid=authorUid
     }
     public fun getMessage():String{
         return message
@@ -21,6 +23,9 @@ class Chat() {
     }
     public fun getTimes():String{
         return times
+    }
+    public fun getAuthorUid():String{
+        return authorUid
     }
 
 

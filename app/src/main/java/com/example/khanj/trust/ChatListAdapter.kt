@@ -3,11 +3,14 @@ package com.example.khanj.trust
     import android.app.Activity
     import android.content.Context
     import android.graphics.Color
+    import android.os.Bundle
     import android.view.LayoutInflater
     import android.view.View
     import android.view.ViewGroup
     import android.widget.BaseAdapter
     import android.widget.TextView
+    import com.google.firebase.auth.FirebaseAuth
+    import com.google.firebase.database.FirebaseDatabase
     import com.google.firebase.database.Query
     import kotlinx.android.synthetic.main.chat_message.view.*
     import kotlinx.android.synthetic.main.chat_message1.view.*
@@ -16,7 +19,8 @@ package com.example.khanj.trust
  * Created by khanj on 2017-09-14.
  */
 
-    class ChatListAdapter(var datas:ArrayList<Chat>, var context:Context) :BaseAdapter(){
+    class ChatListAdapter(var datas:ArrayList<Chat>,var currentUser:String, var context:Context) :BaseAdapter(){
+
         var inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         override fun getCount(): Int {
@@ -46,7 +50,7 @@ package com.example.khanj.trust
 
                 val chat : Chat= datas.get(p0)
 
-                if(chat.getAuthor().equals("min")){
+                if(chat.getAuthorUid().equals(currentUser)){
                     mTextViewDate2.textTIme2.setText(chat.getTimes())
                     mTextViewMessage2.message2.setText(chat.getMessage())
                     mAuthorView2.author2.setText(chat.getAuthor() + " : ")
@@ -64,6 +68,7 @@ package com.example.khanj.trust
                 return p1
             }
         }
+
 
 /*
     override fun populateView(v: View, model: Chat) {
