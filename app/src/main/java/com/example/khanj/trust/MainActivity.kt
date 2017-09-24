@@ -1,6 +1,8 @@
 package com.example.khanj.trust
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.DialogInterface
 import android.support.v7.app.AppCompatActivity
@@ -12,6 +14,7 @@ import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
 import android.os.Handler
 import android.support.annotation.IntegerRes
 import android.support.v7.app.AlertDialog
@@ -32,6 +35,8 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_google_map_test.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_dialog.*
@@ -64,6 +69,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create channel to show notifications.
+            val channelId = getString(R.string.default_notification_channel_id)
+            val channelName = getString(R.string.default_notification_channel_name)
+            val notificationManager = getSystemService<NotificationManager>(NotificationManager::class.java!!)
+            notificationManager!!.createNotificationChannel(NotificationChannel(channelId,
+                    channelName, NotificationManager.IMPORTANCE_LOW))
+        }
+        if (getIntent().getExtras() != null) {
+            for (key in getIntent().getExtras()!!.keySet()) {
+                val value = getIntent().getExtras()!!.get(key)
+                Log.d(TAG, "Key: $key Value: $value")
+            }
+        }
         Handler().postDelayed({
         val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         try {
@@ -95,6 +116,23 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,LoginActivity::class.java)
             startActivity(intent)
         }
+        bt_alarm.setOnClickListener{
+            // [START subscribe_topics]
+            FirebaseMessaging.getInstance().subscribeToTopic("news")
+            // [END subscribe_topics]
+
+            // Log and toast
+            val msg = getString(R.string.msg_subscribed)
+            Log.d(TAG, msg)
+            Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
+        }
+
+        val token = FirebaseInstanceId.getInstance().getToken()
+
+        // Log and toast
+        val msg = getString(R.string.msg_token_fmt, token)
+        Log.d(TAG, msg)
+        Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
         bt_plus.setOnClickListener{
             val mContext=applicationContext
             val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -223,7 +261,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         if (mAuthListener != null) {
-            mAuth!!.removeAuthStateListener(mAuthListener!!)
+            mAuth.removeAuthStateListener(mAuthListener!!)
         }
     }
     private fun updateUI(user: FirebaseUser?) {

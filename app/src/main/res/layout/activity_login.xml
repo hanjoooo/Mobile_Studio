@@ -9,11 +9,11 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.khanj.trust.LoginActivity"
-    android:background="@color/colorPrimary">
+    android:background="@color/white">
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="75dp"
+        android:layout_width="350dp"
+        android:layout_height="200dp"
         android:src="@drawable/trust"
         android:id="@+id/Title"
         android:background="#00ff0000"
@@ -25,6 +25,8 @@
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:hint="Email"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
         android:ems="10"
         android:id="@+id/ID"
         android:textSize="25sp"
@@ -39,6 +41,8 @@
         android:ems="10"
         android:id="@+id/Password"
         android:hint="Password"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
         android:textSize="25sp"
         android:layout_marginTop="162dp"
         android:layout_below="@+id/Title"
@@ -54,6 +58,7 @@
         android:id="@+id/Regist"
         android:textStyle="bold|italic"
         android:textColor="@color/colorAccent"
+        android:background="@color/white"
         android:layout_marginStart="9dp"
         android:layout_below="@+id/Password"
         android:layout_toEndOf="@+id/Login"
@@ -67,6 +72,7 @@
         android:textSize="26sp"
         android:textStyle="bold|italic"
         android:textColor="#0288D1"
+        android:background="@color/white"
         android:layout_alignTop="@+id/Regist"
         android:layout_alignStart="@+id/Password" />
 

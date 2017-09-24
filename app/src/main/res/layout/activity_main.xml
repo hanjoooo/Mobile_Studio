@@ -17,14 +17,14 @@
             android:layout_height="90dp"
             android:src="@drawable/plus"
             android:id="@+id/bt_plus"
-            android:background="#00ff0000"/>
+            android:background="@drawable/selector_bt"/>
         <ImageView
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:src="@drawable/setting"
             android:id="@+id/bt_setting"
             android:layout_marginLeft="230dp"
-            android:background="#00ff0000"/>
+            android:background="@drawable/selector_bt"/>
     </LinearLayout>
 
     <LinearLayout
@@ -36,7 +36,7 @@
             android:layout_width="200dp"
             android:layout_height="75dp"
             android:src="@drawable/turst1"
-            android:background="#00ff0000"
+            android:background="@drawable/selector_bt"
             android:textAlignment="center" />
         <LinearLayout
             android:layout_marginTop="30dp"
@@ -48,7 +48,7 @@
                 android:layout_height="110dp"
                 android:src="@drawable/location"
                 android:id="@+id/bt_location"
-                android:background="#00ff0000"
+                android:background="@drawable/selector_bt"
                 android:clickable="true"
                 />
             <ImageView
@@ -56,7 +56,7 @@
                 android:layout_height="100dp"
                 android:src="@drawable/route"
                 android:id="@+id/bt_route"
-                android:background="#00ff0000"
+                android:background="@drawable/selector_bt"
                 android:layout_marginLeft="80dp"/>
         </LinearLayout>
         <LinearLayout
@@ -69,7 +69,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/alarm"
-                android:background="#00ff0000"
+                android:background="@drawable/selector_bt"
                 />
             <ImageView
                 android:layout_width="100dp"
@@ -77,7 +77,7 @@
                 android:id="@+id/bt_status"
                 android:src="@drawable/status"
                 android:layout_marginLeft="80dp"
-                android:background="#00ff0000" />
+                android:background="@drawable/selector_bt" />
         </LinearLayout>
         <ImageView
             android:layout_marginTop="30dp"
@@ -85,8 +85,7 @@
             android:layout_height="100dp"
             android:id="@+id/bt_chatting"
             android:src="@drawable/chatting"
-            android:background="#00ff0000"
-            />
+            android:background="@drawable/selector_bt" />
 
     </LinearLayout>
 

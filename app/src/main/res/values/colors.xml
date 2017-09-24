@@ -7,4 +7,6 @@
     <color name="skyblue">#87CEEB</color>
     <color name="ivory">#FFFFF0</color>
     <color name="pure">#00ff0000</color>
+    <color name="darkIvory">#FFFFC9</color>
+    <color name="black">#123321</color>
 </resources>
