@@ -1,15 +1,19 @@
 package com.example.khanj.trust
 
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.location.Location
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.Circle
+import com.google.android.gms.maps.model.CircleOptions
 
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -35,7 +39,7 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
     var longitude:Double = 0.0
     var latitude:Double = 0.0
 
-
+    var point=LatLng(37.6007195267265,126.86528900355972)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,18 +102,45 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
             })
         }, 1000)
     }
+    //위도 1당 110km 0.001
+    //경도 1당 88km
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val x=LatLng(37.6007195267265,126.86528900355972)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(x,14.toFloat()))
+        val lat=LatLng(37.6007195267265,126.86528900355972)
+        val x = 37.6007195267265
+        val y = 126.86528900355972
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lat,14.toFloat()))
         Handler().postDelayed({
             val sydney = LatLng(latitude, longitude)
+            val circleOptions=CircleOptions()
+                    .center(point)
+                    .radius(1000.0)
+                    .strokeColor(Color.RED)
+            mMap.addCircle(circleOptions)
             mMap.addMarker(MarkerOptions().position(sydney).title("현재 위치"))
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15.toFloat()))
+            var laa=Location("a")
+            laa.setLatitude(x)
+            laa.setLongitude(y)
+            var lab = Location("b")
+            lab.setLatitude(latitude)
+            lab.setLongitude(longitude)
+            var dist = laa.distanceTo(lab)
+            if(Math.pow(dist.toDouble()/1000.0,2.0)<1.0){
+                val msg = "위치 안에 있습니다"
+                Log.d(PresentLocation.TAG, msg)
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            }
+            else {
+                val msg = "위치를 벗어났습니다"
+                Log.d(PresentLocation.TAG, msg)
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            }
         }, 1500)
         // Add a marker in Sydney and move the camera
 
     }
+
     override fun onStop() {
         super.onStop()
         if (mAuthListener != null) {
