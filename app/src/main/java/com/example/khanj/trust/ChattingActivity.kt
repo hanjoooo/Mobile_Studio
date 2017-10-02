@@ -11,6 +11,8 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.*
+import com.example.khanj.trust.Data.Chat
+import com.example.khanj.trust.Data.User
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -54,7 +56,7 @@ class ChattingActivity :AppCompatActivity(){
             val strNow2:String=sdfNow2.format(date)
             val mChatRef=mConditionRef.child(strNow2)
             val message = messageInput.getText().toString()
-            val chatMessage=Chat(message,mUsername,strNow,mUserUid)
+            val chatMessage= Chat(message,mUsername,strNow,mUserUid)
             mChatRef.setValue(chatMessage)
             messageInput.setText("")
         }

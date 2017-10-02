@@ -26,6 +26,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import com.example.khanj.trust.Data.location
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -126,6 +127,10 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, msg)
             Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
         }
+        bt_facechatting.setOnClickListener{
+            val intent = Intent(this,RTCFaceActivity::class.java)
+            startActivity(intent)
+        }
 
         val token = FirebaseInstanceId.getInstance().getToken()
 
@@ -222,7 +227,7 @@ class MainActivity : AppCompatActivity() {
             val sdfNow2:SimpleDateFormat= SimpleDateFormat("MMddHHmm", Locale.KOREA)
             val strNow:String = sdfNow.format(date)
             val strNow2:String=sdfNow2.format(date)
-            val loc:location= location(strNow,latitude,longitude)
+            val loc: location = location(strNow,latitude,longitude)
             mtimeRef=mchildsRef!!.child(strNow2)
             mtimeRef?.setValue(loc)
         }

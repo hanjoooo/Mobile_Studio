@@ -7,6 +7,7 @@ import android.os.Handler
 import android.util.Log
 import android.util.Range
 import android.widget.Toast
+import com.example.khanj.trust.Data.location
 import com.google.android.gms.common.api.GoogleApiClient
 
 import com.google.android.gms.maps.CameraUpdateFactory

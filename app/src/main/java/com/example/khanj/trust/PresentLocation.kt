@@ -127,12 +127,12 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
             lab.setLongitude(longitude)
             var dist = laa.distanceTo(lab)
             if(Math.pow(dist.toDouble()/1000.0,2.0)<1.0){
-                val msg = "위치 안에 있습니다"
+                val msg = "설정한 위치범위 안에 있습니다"
                 Log.d(PresentLocation.TAG, msg)
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
             else {
-                val msg = "위치를 벗어났습니다"
+                val msg = "설정한 위치범위를 벗어났습니다"
                 Log.d(PresentLocation.TAG, msg)
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }

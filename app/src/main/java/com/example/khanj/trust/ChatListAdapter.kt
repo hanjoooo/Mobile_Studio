@@ -9,6 +9,7 @@ package com.example.khanj.trust
     import android.view.ViewGroup
     import android.widget.BaseAdapter
     import android.widget.TextView
+    import com.example.khanj.trust.Data.Chat
     import com.google.firebase.auth.FirebaseAuth
     import com.google.firebase.database.FirebaseDatabase
     import com.google.firebase.database.Query
@@ -19,7 +20,7 @@ package com.example.khanj.trust
  * Created by khanj on 2017-09-14.
  */
 
-    class ChatListAdapter(var datas:ArrayList<Chat>,var currentUser:String, var context:Context) :BaseAdapter(){
+    class ChatListAdapter(var datas:ArrayList<Chat>, var currentUser:String, var context:Context) :BaseAdapter(){
 
         var inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 

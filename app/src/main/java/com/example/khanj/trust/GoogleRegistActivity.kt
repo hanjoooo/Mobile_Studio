@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.example.khanj.trust.Data.GoogleUser
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -20,7 +21,7 @@ class GoogleRegistActivity : BaseActivity() {
     internal var mchildRef: DatabaseReference?=null
     internal var mchild1Ref: DatabaseReference?=null
 
-    var Users:GoogleUser?=null
+    var Users: GoogleUser?=null
     private var userUid:String=" "
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

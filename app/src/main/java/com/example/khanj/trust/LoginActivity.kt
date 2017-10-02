@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.Toast
+import com.example.khanj.trust.handler.BackPressCloseHandler
 import com.google.android.gms.auth.api.Auth
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount

@@ -79,14 +79,24 @@
                 android:layout_marginLeft="80dp"
                 android:background="@drawable/selector_bt" />
         </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:gravity="center">
         <ImageView
-            android:layout_marginTop="30dp"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:id="@+id/bt_chatting"
             android:src="@drawable/chatting"
             android:background="@drawable/selector_bt" />
-
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bt_facechatting"
+            android:layout_marginLeft="80dp"
+            />
+    </LinearLayout>
     </LinearLayout>
 
 
