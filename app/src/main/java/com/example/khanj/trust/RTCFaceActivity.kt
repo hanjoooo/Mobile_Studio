@@ -45,8 +45,19 @@ import android.os.Process
 import android.support.annotation.RequiresApi
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class RTCFaceActivity : AppCompatActivity() {
+    private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    private var mAuthListener: FirebaseAuth.AuthStateListener? = null
+
+    internal var mRootRef = FirebaseDatabase.getInstance().reference
+    internal var mConditionRef = mRootRef.child("FaceChat")
     // Please change this key for your own project.
     private val T_DEVELOPERS_PROJECT_KEY = "60ba608a-e228-4530-8711-fa38004719c1"
 
@@ -65,6 +76,8 @@ class RTCFaceActivity : AppCompatActivity() {
     private var channelId: String? = null
 
     private val videoViewGroup: RelativeLayout? = null
+
+    private var UserUid:String?=null
 
 
     override protected fun onCreate(savedInstanceState: Bundle?) {
@@ -87,6 +100,21 @@ class RTCFaceActivity : AppCompatActivity() {
        setFragmentNavigationDrawer()
 
        setOnClickEventListenerToButton()
+
+        mAuthListener = FirebaseAuth.AuthStateListener {
+            firebaseAuth ->
+            val user = firebaseAuth.currentUser
+            if (user != null) {
+                // User is signed in
+                Log.d(RTCFaceActivity.TAG, "onAuthStateChanged:signed_in:" + user.uid)
+            } else {
+                // User is signed out
+                Log.d(RTCFaceActivity.TAG, "onAuthStateChanged:signed_out")
+            }
+            // [START_EXCLUDE]
+            updateUI(user)
+            // [END_EXCLUDE]
+        }
 
    }
 
@@ -154,7 +182,7 @@ class RTCFaceActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (isCloseActivity) {
-            super.onBackPressed()
+            finish()
         } else {
             createCloseAlertDialog()
             closeAlertDialog!!.show()
@@ -170,6 +198,7 @@ class RTCFaceActivity : AppCompatActivity() {
                 // Fill the channelId to the channel_id TextView.
                 val channelIdTextView = findViewById<View>(R.id.channel_id) as TextView
                 channelIdTextView.text = channelId
+                mConditionRef.setValue(channelId)
             }
 
             override fun onAddLocalStream(obj: PlayRTC?, playRTCMedia: PlayRTCMedia?) {
@@ -409,8 +438,6 @@ class RTCFaceActivity : AppCompatActivity() {
         val connectButton = findViewById<View>(R.id.connect_button) as Button
         connectButton.setOnClickListener {
             try {
-                val ChannelIdInput = findViewById<View>(R.id.connect_channel_id) as TextView
-                channelId = ChannelIdInput.text.toString()
                 playrtc!!.connectChannel(channelId, JSONObject())
             } catch (e: RequiredConfigMissingException) {
                 e.printStackTrace()
@@ -443,7 +470,6 @@ class RTCFaceActivity : AppCompatActivity() {
             dialogInterface.dismiss()
             if (isChannelConnected == true) {
                 isCloseActivity = false
-
                 // null means my user id.
                 playrtc!!.disconnectChannel(null)
             } else {
@@ -459,10 +485,38 @@ class RTCFaceActivity : AppCompatActivity() {
         // Create the Alert.
         closeAlertDialog = alertDialogBuilder.create()
     }
+    override fun onStart() {
+        super.onStart()
+        mAuth.addAuthStateListener(mAuthListener!!)
+        mConditionRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val datas = dataSnapshot.getValue().toString()
+                channelId=datas
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        })
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener!!)
+
+        }
+    }
+    private fun updateUI(user: FirebaseUser?) {
+        if (user != null) {
+            UserUid=user.uid
+
+        } else {
+
+        }
+    }
 
     companion object {
         private val LOG_TAG = "RTCFaceActivity"
-
+        private val TAG = "EmailPassword"
 
         val MANDATORY_PERMISSIONS = arrayOf("android.permission.INTERNET", "android.permission.CAMERA", "android.permission.RECORD_AUDIO", "android.permission.MODIFY_AUDIO_SETTINGS", "android.permission.ACCESS_NETWORK_STATE", "android.permission.CHANGE_WIFI_STATE", "android.permission.ACCESS_WIFI_STATE", "android.permission.READ_PHONE_STATE", "android.permission.BLUETOOTH", "android.permission.BLUETOOTH_ADMIN", "android.permission.WRITE_EXTERNAL_STORAGE")
     }

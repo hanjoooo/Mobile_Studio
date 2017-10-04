@@ -4,7 +4,7 @@ import android.app.ProgressDialog
 import android.support.annotation.VisibleForTesting
 import android.support.v7.app.AppCompatActivity
 
-/**
+/*
  * Created by khanj on 2017-09-21.
  */
 open class BaseActivity : AppCompatActivity() {

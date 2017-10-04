@@ -48,8 +48,8 @@
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 
-    <string name="create_and_connect">Create and Connect</string>
-    <string name="connect">Connect</string>
+    <string name="create_and_connect">상대방에게 화상전화 걸기</string>
+    <string name="connect">화상전화 받기</string>
     <string name="exit">Exit</string>
     <string name="connect_channel_id_hint">Enter the Channel ID</string>
     <string name="channel_id_hint">Channel ID</string>

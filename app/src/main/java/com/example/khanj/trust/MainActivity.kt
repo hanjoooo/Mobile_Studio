@@ -38,6 +38,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
 import kotlinx.android.synthetic.main.activity_google_map_test.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.custom_dialog.*
@@ -119,25 +120,25 @@ class MainActivity : AppCompatActivity() {
         }
         bt_alarm.setOnClickListener{
             // [START subscribe_topics]
-            FirebaseMessaging.getInstance().subscribeToTopic("news")
             // [END subscribe_topics]
 
             // Log and toast
-            val msg = getString(R.string.msg_subscribed)
+            val msg = "상대방과 연결하시겠습니까?"
             Log.d(TAG, msg)
             Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
+
         }
         bt_facechatting.setOnClickListener{
             val intent = Intent(this,RTCFaceActivity::class.java)
             startActivity(intent)
         }
-
+        /*
         val token = FirebaseInstanceId.getInstance().getToken()
-
         // Log and toast
         val msg = getString(R.string.msg_token_fmt, token)
         Log.d(TAG, msg)
         Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
+        */
         bt_plus.setOnClickListener{
             val mContext=applicationContext
             val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -149,12 +150,12 @@ class MainActivity : AppCompatActivity() {
             aDialog.setPositiveButton("연결") { dialog, which ->
                 var x:EditText=layout.findViewById(R.id.EdConnectUser)
                 ConnectUser=x.text.toString()
+                mCoupleRef.setValue(ConnectUser)
             }
             aDialog.setNegativeButton("취소") { dialog, which -> }
 
             val ad = aDialog.create()
             ad.show()
-            mCoupleRef.setValue(ConnectUser)
 
         }
 

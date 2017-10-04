@@ -90,10 +90,11 @@
             android:id="@+id/bt_chatting"
             android:src="@drawable/chatting"
             android:background="@drawable/selector_bt" />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:id="@+id/bt_facechatting"
+            android:src="@drawable/facetalk"
             android:layout_marginLeft="80dp"
             />
     </LinearLayout>
