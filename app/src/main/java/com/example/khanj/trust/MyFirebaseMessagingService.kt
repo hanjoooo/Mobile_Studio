@@ -11,12 +11,24 @@ import android.util.Log
 import com.firebase.jobdispatcher.FirebaseJobDispatcher
 import com.firebase.jobdispatcher.GooglePlayDriver
 import com.firebase.jobdispatcher.JobService
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
 
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+    private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    private var mAuthListener: FirebaseAuth.AuthStateListener? = null
+    private var mGoogleApiClient: GoogleApiClient? = null
+    internal var mchildRef: DatabaseReference?=null
 
+    internal var mRootRef = FirebaseDatabase.getInstance().reference
+    internal var mConditionRef = mRootRef.child("users")
+
+    private var UserUid=""
     /**
      * Called when message is received.
      *
@@ -107,6 +119,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
     }
+
+
+
 
     companion object {
 

@@ -1,8 +1,7 @@
 package com.example.khanj.trust
 
 import android.annotation.SuppressLint
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.*
 import android.content.Context
 import android.content.DialogInterface
 import android.support.v7.app.AppCompatActivity
@@ -14,9 +13,13 @@ import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.media.RingtoneManager
+import android.media.session.MediaSession
+import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.support.annotation.IntegerRes
+import android.support.v4.app.NotificationCompat
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.LayoutInflater
@@ -54,11 +57,14 @@ class MainActivity : AppCompatActivity() {
     internal var mConditionRef = mRootRef.child("location")
     internal var mCoupleRef=mRootRef.child("couples")
     internal var mcallTime=mRootRef.child("state")
+    internal var muserRef=mRootRef.child("users")
     internal var mchildRef: DatabaseReference?=null
     internal var mchildsRef: DatabaseReference?=null
     internal var mtimeRef: DatabaseReference?=null
     internal var mchild1Ref: DatabaseReference?=null
     internal var mchild2Ref: DatabaseReference?=null
+    internal var muserChildRef: DatabaseReference?=null
+    internal var mconnectRef: DatabaseReference?=null
 
 
     var longitude:Double = 0.0
@@ -66,7 +72,8 @@ class MainActivity : AppCompatActivity() {
 
     var state:String=" "
     var ConnectUser:String=""
-
+    var Token:MediaSession.Token?=null
+    internal var mBuilder: Notification?=null
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -119,14 +126,21 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         bt_alarm.setOnClickListener{
-            // [START subscribe_topics]
-            // [END subscribe_topics]
+            /*
+            val uri:Uri=Uri.parse("smsto:01053445913")
+            val i=Intent(Intent.ACTION_SENDTO,uri)
+            i.putExtra("sms_body","연결하실거임?")
+            startActivity(i)
+            */
 
-            // Log and toast
-            val msg = "상대방과 연결하시겠습니까?"
-            Log.d(TAG, msg)
-            Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
 
+            mconnectRef!!.setValue("01071595913")
+
+
+            /*
+            val intent=Intent(this,MyService::class.java)
+            startActivity(intent)
+            */
         }
         bt_facechatting.setOnClickListener{
             val intent = Intent(this,RTCFaceActivity::class.java)
@@ -262,6 +276,49 @@ class MainActivity : AppCompatActivity() {
 
             }
         })
+        Handler().postDelayed({
+        mconnectRef!!.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val datas = dataSnapshot.getValue().toString()
+                if(datas.equals(null))
+                    ;
+                else {
+                    Handler().postDelayed({
+                        val mBuilder = Notification.Builder(this@MainActivity)
+                                .setSmallIcon(R.drawable.background2)
+                                .setContentTitle("메시지가 왔습니다")
+                                .setContentText("내용 : "+datas+"로부터 연결신청이 왔습니다")
+                                .setTicker("알림!!!")
+                                .setAutoCancel(true)
+
+                        // Creates an explicit intent for an Activity in your app
+                        val resultIntent = Intent(this@MainActivity, MainActivity::class.java)
+
+                        // The stack builder object will contain an artificial back stack for the
+                        // started Activity.
+                        // This ensures that navigating backward from the Activity leads out of
+                        // your application to the Home screen.
+                        val stackBuilder = TaskStackBuilder.create(this@MainActivity)
+                        // Adds the back stack for the Intent (but not the Intent itself)
+                        stackBuilder.addParentStack(MainActivity::class.java)
+                        // Adds the Intent that starts the Activity to the top of the stack
+                        stackBuilder.addNextIntent(resultIntent)
+                        val resultPendingIntent = stackBuilder.getPendingIntent(
+                                0,
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        )
+                        mBuilder.setContentIntent(resultPendingIntent)
+                        val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        // mId allows you to update the notification later on.
+                        mNotificationManager.notify(1, mBuilder.build())
+                        Toast.makeText(this@MainActivity, "Trust : 알림", Toast.LENGTH_LONG).show()
+                    }, 10000)
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        })
+        }, 500)
     }
 
     override fun onStop() {
@@ -273,7 +330,9 @@ class MainActivity : AppCompatActivity() {
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
             mchildRef = mConditionRef.child(user.uid)
+            muserChildRef=muserRef.child(user.uid)
             mchildsRef=mchildRef!!.child("time")
+            mconnectRef=muserChildRef!!.child("otherUid")
 
         } else {
 

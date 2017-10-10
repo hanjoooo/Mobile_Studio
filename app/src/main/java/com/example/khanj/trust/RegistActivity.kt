@@ -18,8 +18,6 @@ import com.google.firebase.database.*
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-
-
 import kotlinx.android.synthetic.main.activity_regist.*
 
 class RegistActivity :  BaseActivity() {
@@ -36,7 +34,6 @@ class RegistActivity :  BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_regist)
-
         //비밀번호 일치 검사
         etPassword.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -142,11 +139,8 @@ class RegistActivity :  BaseActivity() {
 
         mConditionRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
-
             }
         })
     }

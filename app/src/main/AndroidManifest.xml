@@ -8,6 +8,8 @@
         android:glEsVersion="0x00020000"
         android:required="true" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
@@ -115,14 +117,17 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".PlayRTCActivity" />
-        <activity android:name=".RTCActivity" />
         <activity android:name=".NavigationDrawerFragment" />
         <activity android:name=".RTCFaceActivity" />
-        <activity
-            android:name=".Main2Activity"
-            android:label="@string/title_activity_main2"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+
+        <service
+            android:name=".MessegeService"
+            android:enabled="true"
+            android:exported="true"></service>
+        <service
+            android:name=".MyService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
