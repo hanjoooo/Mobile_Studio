@@ -72,7 +72,7 @@ class GoogleRegistActivity : BaseActivity() {
 
             val now:Long = System.currentTimeMillis()
             val date: Date = Date(now)
-            val sdfNow: SimpleDateFormat = SimpleDateFormat("dd일HH시mm분", Locale.KOREA)
+            val sdfNow: SimpleDateFormat = SimpleDateFormat("dd일HH시mm분ss초", Locale.KOREA)
             val strNow:String = sdfNow.format(date)
             val messege= Messege(" "," "," "," ",strNow)
 

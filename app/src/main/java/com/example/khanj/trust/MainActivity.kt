@@ -63,12 +63,22 @@ class MainActivity : AppCompatActivity() {
     internal var mchild2Ref: DatabaseReference?=null
     internal var muserChildRef: DatabaseReference?=null
 
+    internal var mMesLastime: DatabaseReference?=null
+    internal var mMesCurtime: DatabaseReference?=null
+    internal var mMesUid: DatabaseReference?=null
+    internal var mMesNick: DatabaseReference?=null
+
     var longitude:Double = 0.0
     var latitude:Double = 0.0
 
     var state:String=" "
     var ConnectUser:String=""
     var userInfo:User?=null
+
+    var mesLastime=" "
+    var mesCurtime=" "
+    var mesUid=" "
+    var mesNick=" "
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,7 +154,7 @@ class MainActivity : AppCompatActivity() {
                 var x:EditText=layout.findViewById(R.id.EdConnectUser)
                 val now:Long = System.currentTimeMillis()
                 val date:Date=Date(now)
-                val sdfNow:SimpleDateFormat= SimpleDateFormat("dd일HH시mm분", Locale.KOREA)
+                val sdfNow:SimpleDateFormat= SimpleDateFormat("dd일HH시mm분ss초", Locale.KOREA)
                 val strNow:String = sdfNow.format(date)
                 val messege=Messege(userInfo!!.getNickname(),userInfo!!.getName(),userInfo!!.getMyUid(),strNow," ")
                 ConnectUser=x.text.toString()
@@ -265,11 +275,65 @@ class MainActivity : AppCompatActivity() {
             muserChildRef!!.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     userInfo=dataSnapshot.getValue(User::class.java)
+                    mnotifiyChildRef=mnotifiyRef.child(userInfo!!.getNickname())
+                    mMesLastime=mnotifiyChildRef!!.child("lastime")
+                    mMesCurtime=mnotifiyChildRef!!.child("times")
+                    mMesUid=mnotifiyChildRef!!.child("uid")
+                    mMesNick=mnotifiyChildRef!!.child("nickname")
+
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
 
                 }
             })
+            Handler().postDelayed({
+                mMesLastime!!.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        mesLastime=dataSnapshot.getValue().toString()
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                    }
+                })
+                mMesUid!!.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        mesUid=dataSnapshot.getValue().toString()
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                    }
+                })
+                mMesNick!!.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        mesNick=dataSnapshot.getValue().toString()
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                    }
+                })
+                Handler().postDelayed({
+                    mMesCurtime!!.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            mesCurtime=dataSnapshot.getValue().toString()
+                            if(mesCurtime==mesLastime || mesUid == " " )
+                                ;
+                            else{
+                                val aDialog:AlertDialog.Builder=AlertDialog.Builder(this@MainActivity)
+                                aDialog.setTitle(mesNick+"님과 연결하시겠습니까?");
+
+                                aDialog.setPositiveButton("연결") { dialog, which ->
+                                    muserChildRef!!.child("otherUid").setValue(mesUid)
+                                    mMesLastime!!.setValue(mesCurtime)
+                                }
+                                aDialog.setNegativeButton("취소") { dialog, which -> }
+
+                                val ad = aDialog.create()
+                                ad.show()
+
+                            }
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                        }
+                    })
+                }, 1000)
+            }, 2000)
         }, 1000)
 
     }

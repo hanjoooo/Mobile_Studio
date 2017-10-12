@@ -105,36 +105,33 @@ class MyService : Service() {
                 mchild3Ref!!.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         curtime=dataSnapshot.getValue().toString()
+                        Handler().postDelayed({
+                            if(lastime==curtime || usernick ==" ")
+                                ;
+                            else {
+                                val intent = Intent(this@MyService, MainActivity::class.java)
+                                val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                                Notifi = Notification.Builder(applicationContext)
+                                        .setContentTitle(curtime)
+                                        .setContentText(usernick+"("+username+")님과의 연결 요청")
+                                        .setSmallIcon(R.drawable.background2)
+                                        .setTicker("알림!!!")
+                                        .setContentIntent(pendingIntent)
+                                        .build()
+                                //소리추가
+                                Notifi!!.defaults = Notification.DEFAULT_SOUND
+                                //알림 소리를 한번만 내도록
+                                Notifi!!.flags = Notification.FLAG_ONLY_ALERT_ONCE
+                                //확인하면 자동으로 알림이 제거 되도록
+                                Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
+                                Notifi_M!!.notify(777, Notifi)
+                            }
+                        }, 1000)
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
                 })
-                Handler().postDelayed({
-                if(lastime==curtime || usernick ==" ")
-                    ;
-                else {
-                    val intent = Intent(this@MyService, MainActivity::class.java)
-                    val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                    Notifi = Notification.Builder(applicationContext)
-                            .setContentTitle(curtime)
-                            .setContentText(usernick+"("+username+")님과의 연결 요청")
-                            .setSmallIcon(R.drawable.background2)
-                            .setTicker("알림!!!")
-                            .setContentIntent(pendingIntent)
-                            .build()
-                    //소리추가
-                    Notifi!!.defaults = Notification.DEFAULT_SOUND
-                    //알림 소리를 한번만 내도록
-                    Notifi!!.flags = Notification.FLAG_ONLY_ALERT_ONCE
-                    //확인하면 자동으로 알림이 제거 되도록
-                    Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
-                    Notifi_M!!.notify(777, Notifi)
-                    //토스트 띄우기
-                    Toast.makeText(this@MyService, "알림!!", Toast.LENGTH_LONG).show()
-                    mchild2Ref!!.setValue(curtime)
-                }
-                }, 3000)
-            }, 3000)
+            }, 2000)
         }, 1000)
 
         return Service.START_STICKY
