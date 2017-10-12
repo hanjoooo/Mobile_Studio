@@ -27,7 +27,4 @@ class Chat() {
     public fun getAuthorUid():String{
         return authorUid
     }
-
-
-
 }

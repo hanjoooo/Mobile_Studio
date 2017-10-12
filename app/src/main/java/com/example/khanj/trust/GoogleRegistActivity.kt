@@ -7,10 +7,13 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.example.khanj.trust.Data.GoogleUser
+import com.example.khanj.trust.Data.Messege
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_regist.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class GoogleRegistActivity : BaseActivity() {
     private var mAuth : FirebaseAuth = FirebaseAuth.getInstance()
@@ -19,8 +22,8 @@ class GoogleRegistActivity : BaseActivity() {
     internal var mRootRef = FirebaseDatabase.getInstance().reference
     internal var mConditionRef = mRootRef.child("users")
     internal var mchildRef: DatabaseReference?=null
-    internal var mchild1Ref: DatabaseReference?=null
-
+    internal var mnotifiyRef=mRootRef.child("partner")
+    internal var mnotifiyChildRef:DatabaseReference?=null
     var Users: GoogleUser?=null
     private var userUid:String=" "
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +69,15 @@ class GoogleRegistActivity : BaseActivity() {
             Users= GoogleUser(nickname!!.text.toString(),edname!!.text.toString(),edphone.text.toString(),userUid)
 
             mchildRef!!.setValue(Users)
+
+            val now:Long = System.currentTimeMillis()
+            val date: Date = Date(now)
+            val sdfNow: SimpleDateFormat = SimpleDateFormat("dd일HH시mm분", Locale.KOREA)
+            val strNow:String = sdfNow.format(date)
+            val messege= Messege(" "," "," "," ",strNow)
+
+            mnotifiyChildRef=mnotifiyRef.child(nickname!!.text.toString())
+            mnotifiyChildRef!!.setValue(messege)
             finish()
             val intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent)

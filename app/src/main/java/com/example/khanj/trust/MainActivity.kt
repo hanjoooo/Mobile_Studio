@@ -29,13 +29,10 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import com.example.khanj.trust.Data.Messege
+import com.example.khanj.trust.Data.User
 import com.example.khanj.trust.Data.location
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -55,25 +52,23 @@ class MainActivity : AppCompatActivity() {
 
     internal var mRootRef = FirebaseDatabase.getInstance().reference
     internal var mConditionRef = mRootRef.child("location")
-    internal var mCoupleRef=mRootRef.child("couples")
     internal var mcallTime=mRootRef.child("state")
     internal var muserRef=mRootRef.child("users")
+    internal var mnotifiyRef=mRootRef.child("partner")
+    internal var mnotifiyChildRef:DatabaseReference?=null
     internal var mchildRef: DatabaseReference?=null
     internal var mchildsRef: DatabaseReference?=null
     internal var mtimeRef: DatabaseReference?=null
     internal var mchild1Ref: DatabaseReference?=null
     internal var mchild2Ref: DatabaseReference?=null
     internal var muserChildRef: DatabaseReference?=null
-    internal var mconnectRef: DatabaseReference?=null
-
 
     var longitude:Double = 0.0
     var latitude:Double = 0.0
 
     var state:String=" "
     var ConnectUser:String=""
-    var Token:MediaSession.Token?=null
-    internal var mBuilder: Notification?=null
+    var userInfo:User?=null
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,45 +127,34 @@ class MainActivity : AppCompatActivity() {
             i.putExtra("sms_body","연결하실거임?")
             startActivity(i)
             */
-
-
-            mconnectRef!!.setValue("01071595913")
-
-
-            /*
-            val intent=Intent(this,MyService::class.java)
-            startActivity(intent)
-            */
         }
         bt_facechatting.setOnClickListener{
             val intent = Intent(this,RTCFaceActivity::class.java)
             startActivity(intent)
         }
-        /*
-        val token = FirebaseInstanceId.getInstance().getToken()
-        // Log and toast
-        val msg = getString(R.string.msg_token_fmt, token)
-        Log.d(TAG, msg)
-        Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
-        */
         bt_plus.setOnClickListener{
             val mContext=applicationContext
             val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val layout:View = inflater.inflate(R.layout.custom_dialog, findViewById(R.id.layout_root));
             val aDialog:AlertDialog.Builder=AlertDialog.Builder(this)
-             aDialog.setTitle("연결하실 상대방 전화번호를 입력하세요.");
+             aDialog.setTitle("연결하실 상대방 닉네임을 입력하세요.");
              aDialog.setView(layout);
 
             aDialog.setPositiveButton("연결") { dialog, which ->
                 var x:EditText=layout.findViewById(R.id.EdConnectUser)
+                val now:Long = System.currentTimeMillis()
+                val date:Date=Date(now)
+                val sdfNow:SimpleDateFormat= SimpleDateFormat("dd일HH시mm분", Locale.KOREA)
+                val strNow:String = sdfNow.format(date)
+                val messege=Messege(userInfo!!.getNickname(),userInfo!!.getName(),userInfo!!.getMyUid(),strNow," ")
                 ConnectUser=x.text.toString()
-                mCoupleRef.setValue(ConnectUser)
+                mnotifiyChildRef=mnotifiyRef.child(ConnectUser)
+                mnotifiyChildRef!!.setValue(messege)
             }
             aDialog.setNegativeButton("취소") { dialog, which -> }
 
             val ad = aDialog.create()
             ad.show()
-
         }
 
         bt_status.setOnClickListener{
@@ -199,7 +183,8 @@ class MainActivity : AppCompatActivity() {
             // [END_EXCLUDE]
         }
 
-
+        val intent=Intent(this,MyService::class.java)
+        startService(intent)
     }
 
     private val mTouchEvent = object : View.OnTouchListener {
@@ -277,48 +262,16 @@ class MainActivity : AppCompatActivity() {
             }
         })
         Handler().postDelayed({
-        mconnectRef!!.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val datas = dataSnapshot.getValue().toString()
-                if(datas.equals(null))
-                    ;
-                else {
-                    Handler().postDelayed({
-                        val mBuilder = Notification.Builder(this@MainActivity)
-                                .setSmallIcon(R.drawable.background2)
-                                .setContentTitle("메시지가 왔습니다")
-                                .setContentText("내용 : "+datas+"로부터 연결신청이 왔습니다")
-                                .setTicker("알림!!!")
-                                .setAutoCancel(true)
-
-                        // Creates an explicit intent for an Activity in your app
-                        val resultIntent = Intent(this@MainActivity, MainActivity::class.java)
-
-                        // The stack builder object will contain an artificial back stack for the
-                        // started Activity.
-                        // This ensures that navigating backward from the Activity leads out of
-                        // your application to the Home screen.
-                        val stackBuilder = TaskStackBuilder.create(this@MainActivity)
-                        // Adds the back stack for the Intent (but not the Intent itself)
-                        stackBuilder.addParentStack(MainActivity::class.java)
-                        // Adds the Intent that starts the Activity to the top of the stack
-                        stackBuilder.addNextIntent(resultIntent)
-                        val resultPendingIntent = stackBuilder.getPendingIntent(
-                                0,
-                                PendingIntent.FLAG_UPDATE_CURRENT
-                        )
-                        mBuilder.setContentIntent(resultPendingIntent)
-                        val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                        // mId allows you to update the notification later on.
-                        mNotificationManager.notify(1, mBuilder.build())
-                        Toast.makeText(this@MainActivity, "Trust : 알림", Toast.LENGTH_LONG).show()
-                    }, 10000)
+            muserChildRef!!.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    userInfo=dataSnapshot.getValue(User::class.java)
                 }
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-            }
-        })
-        }, 500)
+                override fun onCancelled(databaseError: DatabaseError) {
+
+                }
+            })
+        }, 1000)
+
     }
 
     override fun onStop() {
@@ -332,8 +285,6 @@ class MainActivity : AppCompatActivity() {
             mchildRef = mConditionRef.child(user.uid)
             muserChildRef=muserRef.child(user.uid)
             mchildsRef=mchildRef!!.child("time")
-            mconnectRef=muserChildRef!!.child("otherUid")
-
         } else {
 
         }
