@@ -9,11 +9,16 @@ class GoogleUser(){
     private var PhoneNumber:String=" "
     private var MyUid :String=""
     private var OtherUid :String=" "
-    constructor(Nickname:String,Name:String,PhoneNumber:String,MyUid:String) : this(){
+    private var ChatChannel:String=" "
+    private var FaceChatChannel:String=" "
+
+    constructor(Nickname:String,Name:String,PhoneNumber:String,MyUid:String,chat:String,facechat:String) : this(){
         this.Nickname=Nickname
         this.Name=Name
         this.PhoneNumber=PhoneNumber
         this.MyUid=MyUid
+        this.ChatChannel=chat
+        this.FaceChatChannel=facechat
     }
 
     public fun getNickname():String {
@@ -31,7 +36,12 @@ class GoogleUser(){
     public fun getOtherUid():String{
         return OtherUid
     }
-
+    public fun getChatChannel():String{
+        return ChatChannel
+    }
+    public fun getFaceChatChannel():String{
+        return FaceChatChannel
+    }
 
     public fun setNickname(p:String){
         this.Nickname=p

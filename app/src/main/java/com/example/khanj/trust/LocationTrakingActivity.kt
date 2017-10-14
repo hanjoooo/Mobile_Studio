@@ -7,6 +7,7 @@ import android.os.Handler
 import android.util.Log
 import android.util.Range
 import android.widget.Toast
+import com.example.khanj.trust.Data.User
 import com.example.khanj.trust.Data.location
 import com.google.android.gms.common.api.GoogleApiClient
 
@@ -31,12 +32,16 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
     private var mAuthListener: FirebaseAuth.AuthStateListener? = null
     internal var mRootRef = FirebaseDatabase.getInstance().reference
     internal var mConditionRef = mRootRef.child("location")
-    internal var mchildRef: DatabaseReference?=null
-    internal var mchildsRef: DatabaseReference?=null
+    internal var muserRef=mRootRef.child("users")
+    internal var muserChildRef:DatabaseReference?=null
+    internal var mlocRef: DatabaseReference?=null
+    internal var mlocChildRef: DatabaseReference?=null
 
 
     var longitude:Double = 0.0
     var latitude:Double = 0.0
+
+    private var userinfo: User?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,38 +80,50 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onStart()
         mAuth.addAuthStateListener(mAuthListener!!)
         Handler().postDelayed({
-        mchildsRef!!.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var x = ArrayList<LatLng>()
-                var dotime=ArrayList<String>()
-                for ( snapshot in dataSnapshot.getChildren()) {
-                    var loc = snapshot.getValue(location::class.java)
-                    var latitude = loc!!.latitude
-                    var longitude = loc!!.longitude
-                    val y =LatLng(latitude,longitude)
-                    x.add(y)
-                    dotime.add(loc!!.times)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(y,16.toFloat()))
+            muserChildRef!!.addListenerForSingleValueEvent(object :ValueEventListener{
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    userinfo=dataSnapshot.getValue(User::class.java)
+                    mlocRef=mConditionRef.child(userinfo!!.getOtherUid())
+                    mlocChildRef=mlocRef!!.child("time")
                 }
-                Handler().postDelayed({
 
-                    if (x.size<20 && x.size>0) {
-                        mMap.addMarker(MarkerOptions().position(x[0]).title(dotime[0]))
-                        mMap.addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]))
-                        for (i in 0..x.size - 2)
-                            mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(15.toFloat()).color(Color.RED))
+                override fun onCancelled(p0: DatabaseError?) {
+
+                }
+            })
+            Handler().postDelayed({
+                mlocChildRef!!.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        var x = ArrayList<LatLng>()
+                        var dotime=ArrayList<String>()
+                        for ( snapshot in dataSnapshot.getChildren()) {
+                            val loc = snapshot.getValue(location::class.java)
+                            val latitude = loc.latitude
+                            val longitude = loc.longitude
+                            val y =LatLng(latitude,longitude)
+                            x.add(y)
+                            dotime.add(loc!!.times)
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(y,16.toFloat()))
+                        }
+                        Handler().postDelayed({
+                            if (x.size<20 && x.size>0) {
+                                mMap.addMarker(MarkerOptions().position(x[0]).title(dotime[0]))
+                                mMap.addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]))
+                                for (i in 0..x.size - 2)
+                                    mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(15.toFloat()).color(Color.RED))
+                            }
+                            else if(x.size>=20) {
+                                mMap.addMarker(MarkerOptions().position(x[x.size-20]).title(dotime[x.size-20]))
+                                mMap.addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]))
+                                for (i in x.size - 20..x.size - 2)
+                                    mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(15.toFloat()).color(Color.RED))
+                            }
+                        }, 1500)
                     }
-                    else if(x.size>=20) {
-                        mMap.addMarker(MarkerOptions().position(x[x.size-20]).title(dotime[x.size-20]))
-                        mMap.addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]))
-                        for (i in x.size - 20..x.size - 2)
-                            mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(15.toFloat()).color(Color.RED))
+                    override fun onCancelled(databaseError: DatabaseError) {
                     }
-                }, 1500)
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-            }
-        })
+                })
+            }, 1000)
         }, 1000)
 
     }
@@ -125,8 +142,7 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
     }
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
-            mchildRef = mConditionRef.child(user.uid)
-            mchildsRef=mchildRef!!.child("time")
+            muserChildRef=muserRef.child(user.uid)
 
         } else {
 

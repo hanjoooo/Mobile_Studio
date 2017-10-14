@@ -66,7 +66,7 @@ class GoogleRegistActivity : BaseActivity() {
                 return@OnClickListener
             }
 
-            Users= GoogleUser(nickname!!.text.toString(),edname!!.text.toString(),edphone.text.toString(),userUid)
+            Users= GoogleUser(nickname!!.text.toString(),edname!!.text.toString(),edphone.text.toString(),userUid," "," ")
 
             mchildRef!!.setValue(Users)
 

@@ -11,13 +11,18 @@ class User(){
     private var PhoneNumber:String=" "
     private var MyUid :String=""
     private var OtherUid :String=" "
-    constructor(Email: String, Password: String,Nickname:String,Name:String,PhoneNumber:String,MyUid:String) : this(){
+    private var ChatChannel:String=" "
+    private var FaceChatChannel:String=" "
+
+    constructor(Email: String, Password: String,Nickname:String,Name:String,PhoneNumber:String,MyUid:String,chat:String,facechat:String) : this(){
         this.Email=Email
         this.Password=Password
         this.Nickname=Nickname
         this.Name=Name
         this.PhoneNumber=PhoneNumber
         this.MyUid=MyUid
+        this.ChatChannel=chat
+        this.FaceChatChannel=facechat
     }
 
     public fun getEmail():String{
@@ -40,6 +45,12 @@ class User(){
     }
     public fun getOtherUid():String{
         return OtherUid
+    }
+    public fun getChatChannel():String{
+        return ChatChannel
+    }
+    public fun getFaceChatChannel():String{
+        return FaceChatChannel
     }
 
     public fun setPassword(p:String){

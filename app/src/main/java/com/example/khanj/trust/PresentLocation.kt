@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.widget.Toast
+import com.example.khanj.trust.Data.User
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.Circle
@@ -30,6 +31,8 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
 
     internal var mRootRef = FirebaseDatabase.getInstance().reference
     internal var mConditionRef = mRootRef.child("location")
+    internal var muserRef=mRootRef.child("users")
+    internal var muserChildRef:DatabaseReference?=null
     internal var mchildRef: DatabaseReference?=null
 
     internal var mchild1Ref: DatabaseReference?=null
@@ -38,6 +41,8 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
 
     var longitude:Double = 0.0
     var latitude:Double = 0.0
+
+    private var userInfo: User?=null
 
     var point=LatLng(37.6007195267265,126.86528900355972)
 
@@ -82,24 +87,34 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
         super.onStart()
         mAuth.addAuthStateListener(mAuthListener!!)
         Handler().postDelayed({
-            mchild1Ref=mchildRef!!.child("경도")
-            mchild2Ref=mchildRef!!.child("위도")
-            mchild1Ref!!.addValueEventListener(object : ValueEventListener {
+            muserChildRef!!.addListenerForSingleValueEvent(object:ValueEventListener{
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    var datas = dataSnapshot.getValue().toString()
-                    latitude= datas.toDouble()
+                    userInfo = dataSnapshot.getValue(User::class.java)
+                    mchildRef=mConditionRef.child(userInfo!!.getOtherUid())
+                    mchild1Ref=mchildRef!!.child("현재위치").child("경도")
+                    mchild2Ref=mchildRef!!.child("현재위치").child("위도")
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
                 }
             })
-            mchild2Ref!!.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    var datas = dataSnapshot.getValue().toString()
-                    longitude= datas.toDouble()
-                }
-                override fun onCancelled(databaseError: DatabaseError) {
-                }
-            })
+            Handler().postDelayed({
+                mchild1Ref!!.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val datas = dataSnapshot.getValue().toString()
+                        latitude= datas.toDouble()
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                    }
+                })
+                mchild2Ref!!.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val datas = dataSnapshot.getValue().toString()
+                        longitude= datas.toDouble()
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                    }
+                })
+            }, 1000)
         }, 1000)
     }
     //위도 1당 110km 0.001
@@ -127,16 +142,16 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
             lab.setLongitude(longitude)
             var dist = laa.distanceTo(lab)
             if(Math.pow(dist.toDouble()/1000.0,2.0)<1.0){
-                val msg = "설정한 위치범위 안에 있습니다"
+                val msg = "상대방이 설정한 위치범위 안에 있습니다"
                 Log.d(PresentLocation.TAG, msg)
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
             else {
-                val msg = "설정한 위치범위를 벗어났습니다"
+                val msg = "상대방이 설정한 위치범위를 벗어났습니다"
                 Log.d(PresentLocation.TAG, msg)
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
-        }, 1500)
+        }, 2500)
         // Add a marker in Sydney and move the camera
 
     }
@@ -149,7 +164,7 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
     }
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
-            mchildRef = mConditionRef.child(user.uid)
+            muserChildRef = muserRef.child(user.uid)
 
         } else {
 

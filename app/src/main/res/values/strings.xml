@@ -37,13 +37,6 @@
     <string name="playrtc_sample">SKT PlayRTC Sample For v2.2.11</string>
     <string name="btn_sample_playrtc">PlayRTC 실행</string>
 
-    <string name="sample_playrtc1">영상 + 음성 + data를 실행합니다.</string>
-
-    <string name="sample_playrtc2">영상 + 음성을 실행합니다.</string>
-
-    <string name="sample_playrtc3">음성을 실행합니다.</string>
-
-    <string name="sample_playrtc4">데이터를 실행합니다.</string>
 
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
@@ -55,9 +48,9 @@
     <string name="channel_id_hint">Channel ID</string>
 
     <string name="alert_title">@string/app_name</string>
-    <string name="alert_message">Would like to exit?</string>
-    <string name="alert_positive">OK</string>
-    <string name="alert_negative">Cancle</string>
+    <string name="alert_message">화상통화를 종료하시겠습니까?</string>
+    <string name="alert_positive">네</string>
+    <string name="alert_negative">아니요</string>
 
     <string name="other_disconnect_channel">Other peer is disconnected.</string>
     <string name="powered_by_playrtc">Powerd by PlayRTC.\nSK Telecom. CO, LTD.</string>

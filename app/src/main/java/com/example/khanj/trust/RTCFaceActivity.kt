@@ -4,8 +4,6 @@ package com.example.khanj.trust
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.graphics.Point
-import android.os.Bundle
-import android.os.Environment
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
@@ -40,24 +38,26 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.os.Build
-import android.os.Process
+import android.os.*
 import android.support.annotation.RequiresApi
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
+import com.example.khanj.trust.Data.User
+import com.example.khanj.trust.handler.BackPressCloseHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 
 class RTCFaceActivity : AppCompatActivity() {
     private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private var mAuthListener: FirebaseAuth.AuthStateListener? = null
 
     internal var mRootRef = FirebaseDatabase.getInstance().reference
-    internal var mConditionRef = mRootRef.child("FaceChat")
+    internal var mConditionRef = mRootRef.child("users")
+
+    internal var mMyFaceChatRef:DatabaseReference?=null
+    internal var mOhterFaceChatRef:DatabaseReference?=null
     // Please change this key for your own project.
     private val T_DEVELOPERS_PROJECT_KEY = "60ba608a-e228-4530-8711-fa38004719c1"
 
@@ -67,7 +67,7 @@ class RTCFaceActivity : AppCompatActivity() {
     private var playrtc: PlayRTC? = null
     private var playrtcObserver: PlayRTCObserver? = null
 
-    private var isCloseActivity = false
+    private var isCloseActivity = true
     private var isChannelConnected = false
     private var localView: PlayRTCVideoView? = null
     private var remoteView: PlayRTCVideoView? = null
@@ -78,9 +78,13 @@ class RTCFaceActivity : AppCompatActivity() {
     private val videoViewGroup: RelativeLayout? = null
 
     private var UserUid:String?=null
+    private var UserInfo:User?=null
+
+    private var backPressCloseHandler: BackPressCloseHandler? = null
 
 
-    override protected fun onCreate(savedInstanceState: Bundle?) {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
        super.onCreate(savedInstanceState)
        setContentView(R.layout.activity_rtcface)
 
@@ -115,8 +119,8 @@ class RTCFaceActivity : AppCompatActivity() {
             updateUI(user)
             // [END_EXCLUDE]
         }
-
-   }
+        backPressCloseHandler = BackPressCloseHandler(this)
+    }
 
     // Application permission 23
     private val MY_PERMISSION_REQUEST_STORAGE = 100
@@ -165,7 +169,6 @@ class RTCFaceActivity : AppCompatActivity() {
             playrtc!!.close()
             playrtc = null
         }
-
         // new v2.2.6
         if (localView != null) {
             localView!!.release()
@@ -174,9 +177,8 @@ class RTCFaceActivity : AppCompatActivity() {
         if (remoteView != null) {
             remoteView!!.release()
         }
-
         playrtcObserver = null
-        Process.killProcess(Process.myPid())
+        //Process.killProcess(Process.myPid())
         super.onDestroy()
     }
 
@@ -189,6 +191,7 @@ class RTCFaceActivity : AppCompatActivity() {
         }
     }
 
+
     private fun createPlayRTCObserverInstance() {
         playrtcObserver = object : PlayRTCObserver() {
             override fun onConnectChannel(obj: PlayRTC?, channelId: String?, channelCreateReason: String?, channelType: String?) {
@@ -198,7 +201,14 @@ class RTCFaceActivity : AppCompatActivity() {
                 // Fill the channelId to the channel_id TextView.
                 val channelIdTextView = findViewById<View>(R.id.channel_id) as TextView
                 channelIdTextView.text = channelId
-                mConditionRef.setValue(channelId)
+                if(UserInfo!!.getOtherUid()==" "){
+                    val msg = "연결된 상대방이 없습니다."
+                    Toast.makeText(this@RTCFaceActivity, msg, Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    mOhterFaceChatRef!!.child("faceChatChannel").setValue(channelId)
+                }
+
             }
 
             override fun onAddLocalStream(obj: PlayRTC?, playRTCMedia: PlayRTCMedia?) {
@@ -222,7 +232,10 @@ class RTCFaceActivity : AppCompatActivity() {
             override fun onDisconnectChannel(obj: PlayRTC?, disconnectReason: String?) {
                 Log.i(LOG_TAG, "onDisconnectChannel")
                 isChannelConnected = false
-
+                if(UserInfo!!.getOtherUid()==" ");
+                else {
+                    mOhterFaceChatRef!!.child("faceChatChannel").setValue(" ")
+                }
                 // v2.2.5
                 localView!!.bgClearColor()
                 remoteView!!.bgClearColor()
@@ -282,7 +295,6 @@ class RTCFaceActivity : AppCompatActivity() {
          */
         config.video.setCameraType(CameraType.Front)
 
-
         /*
          * enum VideoCodec
          * - VP8
@@ -291,12 +303,9 @@ class RTCFaceActivity : AppCompatActivity() {
          */
         config.video.setPreferCodec(VideoCodec.VP8)
 
-
         // default resolution 640x480
         config.video.setMaxFrameSize(640, 480)
         config.video.setMinFrameSize(640, 480)
-
-
 
 
         config.audio.isEnable = true   /* send audio stream */
@@ -377,6 +386,8 @@ class RTCFaceActivity : AppCompatActivity() {
             // new v2.2.6
             localView!!.initRenderer()
 
+            localView!!.setMirror(true)
+
             // Add the view to the parentVideoViewGrop.
             parentVideoViewGroup.addView(localView)
 
@@ -425,28 +436,40 @@ class RTCFaceActivity : AppCompatActivity() {
                 //
                 //                    playrtc.createChannel(obj);
                 playrtc!!.createChannel(JSONObject())
+                isCloseActivity = false
             } catch (e: RequiredConfigMissingException) {
                 e.printStackTrace()
             }
-
             //                catch (JSONException e){
             //                    e.printStackTrace();;
             //                }
+
+
         }
 
         // Add a connect channel event listener.
         val connectButton = findViewById<View>(R.id.connect_button) as Button
         connectButton.setOnClickListener {
+            /*
             try {
                 playrtc!!.connectChannel(channelId, JSONObject())
+                isCloseActivity = false
             } catch (e: RequiredConfigMissingException) {
                 e.printStackTrace()
             }
+            */
         }
 
         // Add a exit channel event listener.
         val exitButton = findViewById<View>(R.id.exit_button) as Button
-        exitButton.setOnClickListener { playrtc!!.deleteChannel() }
+        exitButton.setOnClickListener {
+            playrtc!!.deleteChannel()
+            if(UserInfo!!.getOtherUid()==" ");
+            else {
+                mOhterFaceChatRef!!.child("faceChatChannel").setValue(" ")
+                mMyFaceChatRef!!.child("faceChatChannel").setValue(" ")
+            }
+        }
     }
 
     private fun setToolbar() {
@@ -469,7 +492,7 @@ class RTCFaceActivity : AppCompatActivity() {
         alertDialogBuilder.setPositiveButton(R.string.alert_positive) { dialogInterface, id ->
             dialogInterface.dismiss()
             if (isChannelConnected == true) {
-                isCloseActivity = false
+                isCloseActivity = true
                 // null means my user id.
                 playrtc!!.disconnectChannel(null)
             } else {
@@ -488,14 +511,53 @@ class RTCFaceActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         mAuth.addAuthStateListener(mAuthListener!!)
-        mConditionRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val datas = dataSnapshot.getValue().toString()
-                channelId=datas
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-            }
-        })
+        Handler().postDelayed({
+            mMyFaceChatRef!!.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    UserInfo=dataSnapshot.getValue(User::class.java)
+                    channelId=UserInfo!!.getFaceChatChannel()
+                    if(UserInfo!!.getOtherUid() == " "){
+                    }
+                    else{
+                        mOhterFaceChatRef=mConditionRef.child(UserInfo!!.getOtherUid())
+                        if(channelId==" "){
+                            if (isChannelConnected == true) {
+                                isCloseActivity = true
+                                // null means my user id.
+                                playrtc!!.disconnectChannel(null)
+                            } else {
+                            }
+                        }
+                        else{
+                            val alertDialogBuilder = AlertDialog.Builder(this@RTCFaceActivity)
+
+                            // Set a Alert.
+                            alertDialogBuilder.setTitle(R.string.alert_title)
+                            alertDialogBuilder.setMessage("화상통화를 받으시겠습니까?")
+                            alertDialogBuilder.setPositiveButton(R.string.alert_positive) { dialogInterface, id ->
+                                dialogInterface.dismiss()
+                                try {
+                                    playrtc!!.connectChannel(channelId, JSONObject())
+                                    isCloseActivity = false
+                                } catch (e: RequiredConfigMissingException) {
+                                    e.printStackTrace()
+                                }
+                                mMyFaceChatRef!!.child("faceChatChannel").setValue(" ")
+                            }
+                            alertDialogBuilder.setNegativeButton(R.string.alert_negative) { dialogInterface, id ->
+                                dialogInterface.dismiss()
+                                mMyFaceChatRef!!.child("faceChatChannel").setValue(" ")
+                            }
+                            // Create the Alert.
+                            closeAlertDialog = alertDialogBuilder.create()
+                        }
+                    }
+                }
+                override fun onCancelled(databaseError: DatabaseError) {
+                }
+            })
+        }, 1000)
+
     }
 
     override fun onStop() {
@@ -508,6 +570,7 @@ class RTCFaceActivity : AppCompatActivity() {
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
             UserUid=user.uid
+            mMyFaceChatRef=mConditionRef.child(UserUid)
 
         } else {
 

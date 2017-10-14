@@ -21,7 +21,20 @@ class BackPressCloseHandler(private val activity: Activity) {
 
             activity.moveTaskToBack(true)
             activity.finish()
-            android.os.Process.killProcess(android.os.Process.myPid())
+            //android.os.Process.killProcess(android.os.Process.myPid())
+        }
+    }
+    fun onBackPressed(x:Int) {
+        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+            backKeyPressedTime = System.currentTimeMillis()
+            showGuide()
+            return
+        }
+        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+            toast!!.cancel()
+
+            activity.moveTaskToBack(true)
+            activity.finish()
         }
     }
 

@@ -32,6 +32,7 @@ import android.widget.Toast
 import com.example.khanj.trust.Data.Messege
 import com.example.khanj.trust.Data.User
 import com.example.khanj.trust.Data.location
+import com.example.khanj.trust.handler.BackPressCloseHandler
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -68,6 +69,8 @@ class MainActivity : AppCompatActivity() {
     internal var mMesUid: DatabaseReference?=null
     internal var mMesNick: DatabaseReference?=null
 
+    private var backPressCloseHandler: BackPressCloseHandler? = null
+
     var longitude:Double = 0.0
     var latitude:Double = 0.0
 
@@ -77,8 +80,11 @@ class MainActivity : AppCompatActivity() {
 
     var mesLastime=" "
     var mesCurtime=" "
-    var mesUid=" "
-    var mesNick=" "
+    private var mesUid=" "
+    private var mesNick=" "
+    private var myUid =  " "
+
+    var dialogOn=false
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,16 +106,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
         Handler().postDelayed({
-        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        try {
-            // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1.toFloat(), mLocationListener)
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1.toFloat(), mLocationListener)
+            val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            try {
+                // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1.toFloat(), mLocationListener)
+                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1.toFloat(), mLocationListener)
 
-        } catch (ex: SecurityException) {
-            ;
-        }
-        }, 10000)
+            } catch (ex: SecurityException) {
+                ;
+            }
+        }, 60000)
 
         bt_route.setOnClickListener{
             val intent = Intent(this,LocationTrakingActivity::class.java)
@@ -161,7 +167,9 @@ class MainActivity : AppCompatActivity() {
                 mnotifiyChildRef=mnotifiyRef.child(ConnectUser)
                 mnotifiyChildRef!!.setValue(messege)
             }
-            aDialog.setNegativeButton("취소") { dialog, which -> }
+            aDialog.setNegativeButton("취소") { dialog, which ->
+
+            }
 
             val ad = aDialog.create()
             ad.show()
@@ -192,6 +200,7 @@ class MainActivity : AppCompatActivity() {
             updateUI(user)
             // [END_EXCLUDE]
         }
+        backPressCloseHandler = BackPressCloseHandler(this)
 
         val intent=Intent(this,MyService::class.java)
         startService(intent)
@@ -227,8 +236,8 @@ class MainActivity : AppCompatActivity() {
             //값은 Location 형태로 리턴되며 좌표 출력 방법은 다음과 같다.
             longitude = location.getLongitude() //경도
             latitude = location.getLatitude()   //위도
-            mchild1Ref = mchildRef!!.child("경도")
-            mchild2Ref = mchildRef!!.child("위도")
+            mchild1Ref = mchildRef!!.child("현재위치").child("경도")
+            mchild2Ref = mchildRef!!.child("현재위치").child("위도")
             mchild1Ref?.setValue(latitude)
             mchild2Ref?.setValue(longitude)
             val now:Long = System.currentTimeMillis()
@@ -315,18 +324,27 @@ class MainActivity : AppCompatActivity() {
                             if(mesCurtime==mesLastime || mesUid == " " )
                                 ;
                             else{
-                                val aDialog:AlertDialog.Builder=AlertDialog.Builder(this@MainActivity)
-                                aDialog.setTitle(mesNick+"님과 연결하시겠습니까?");
+                                if(dialogOn){
 
-                                aDialog.setPositiveButton("연결") { dialog, which ->
-                                    muserChildRef!!.child("otherUid").setValue(mesUid)
-                                    mMesLastime!!.setValue(mesCurtime)
                                 }
-                                aDialog.setNegativeButton("취소") { dialog, which -> }
+                                else{
+                                    dialogOn=true
+                                    val aDialog:AlertDialog.Builder=AlertDialog.Builder(this@MainActivity)
+                                    aDialog.setTitle(mesNick+"님과 연결하시겠습니까?");
 
-                                val ad = aDialog.create()
-                                ad.show()
-
+                                    aDialog.setPositiveButton("연결") { dialog, which ->
+                                        mMesLastime!!.setValue(mesCurtime)
+                                        muserChildRef!!.child("otherUid").setValue(mesUid)
+                                        muserRef.child(mesUid).child("otherUid").setValue(myUid)
+                                        dialogOn=false
+                                    }
+                                    aDialog.setNegativeButton("취소") { dialog, which ->
+                                        mMesLastime!!.setValue(mesCurtime)
+                                        dialogOn=false
+                                    }
+                                    val ad = aDialog.create()
+                                    ad.show()
+                                }
                             }
                         }
                         override fun onCancelled(databaseError: DatabaseError) {
@@ -349,6 +367,7 @@ class MainActivity : AppCompatActivity() {
             mchildRef = mConditionRef.child(user.uid)
             muserChildRef=muserRef.child(user.uid)
             mchildsRef=mchildRef!!.child("time")
+            myUid=user.uid
         } else {
 
         }
@@ -357,6 +376,9 @@ class MainActivity : AppCompatActivity() {
         mAuth.signOut()
     }
 
+    override fun onBackPressed() {
+        backPressCloseHandler!!.onBackPressed()
+    }
     companion object {
         private val TAG = "EmailPassword"
     }

@@ -40,7 +40,7 @@ class MyService : Service() {
     internal var mchild1Ref: DatabaseReference?=null
     internal var mchild2Ref: DatabaseReference?=null
     internal var mchild3Ref: DatabaseReference?=null
-
+    internal var mFaceChatRef:DatabaseReference?=null
     internal var Notifi_M: NotificationManager?=null
 
     internal var thread: ServiceThread? = null
@@ -66,6 +66,7 @@ class MyService : Service() {
             updateUI(user)
         }
         mAuth.addAuthStateListener(mAuthListener!!)
+
         Handler().postDelayed({
             mchildUserRef!!.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -74,16 +75,32 @@ class MyService : Service() {
                     mchild1Ref=mConditionRef.child(users!!.getNickname()).child("name")
                     mchild2Ref=mConditionRef.child(users!!.getNickname()).child("lastime")
                     mchild3Ref=mConditionRef.child(users!!.getNickname()).child("times")
-
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
                 }
-
             })
             Handler().postDelayed({
                 mchildRef!!.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         usernick=dataSnapshot.getValue().toString()
+                        if(users!!.getFaceChatChannel() == " "){
+                        }
+                        else{
+                            val intent = Intent(this@MyService, RTCFaceActivity::class.java)
+                            val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                            Notifi = Notification.Builder(applicationContext)
+                                    .setContentTitle("화상통화")
+                                    .setContentText(usernick+"님과의 연결 요청")
+                                    .setSmallIcon(R.drawable.facetalk)
+                                    .setTicker("전화요청!!")
+                                    .setContentIntent(pendingIntent)
+                                    .build()
+                            //소리추가
+                            Notifi!!.defaults = Notification.DEFAULT_SOUND
+                            //확인하면 자동으로 알림이 제거 되도록
+                            Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
+                            Notifi_M!!.notify(777, Notifi)
+                        }
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
@@ -102,6 +119,7 @@ class MyService : Service() {
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
                 })
+
                 mchild3Ref!!.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         curtime=dataSnapshot.getValue().toString()
@@ -114,7 +132,7 @@ class MyService : Service() {
                                 Notifi = Notification.Builder(applicationContext)
                                         .setContentTitle(curtime)
                                         .setContentText(usernick+"("+username+")님과의 연결 요청")
-                                        .setSmallIcon(R.drawable.background2)
+                                        .setSmallIcon(R.drawable.alarm)
                                         .setTicker("알림!!!")
                                         .setContentIntent(pendingIntent)
                                         .build()

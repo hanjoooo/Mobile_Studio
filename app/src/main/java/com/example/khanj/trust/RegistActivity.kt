@@ -134,7 +134,7 @@ class RegistActivity :  BaseActivity() {
             result.putExtra("name", edname!!.text.toString())
 
             Users= User(etEmail.text.toString(),etPassword!!.text.toString(),
-                    nickname!!.text.toString(),edname!!.text.toString(),edphone.text.toString(),userUid)
+                    nickname!!.text.toString(),edname!!.text.toString(),edphone.text.toString(),userUid," "," ")
             createAccount(etEmail!!.text.toString(), etPassword!!.text.toString())
 
             val now:Long = System.currentTimeMillis()

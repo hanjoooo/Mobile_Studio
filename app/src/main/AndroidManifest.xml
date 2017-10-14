@@ -89,11 +89,7 @@
         <activity
             android:name=".LoginActivity"
             android:label="Trust">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".RegistActivity" />
         <activity android:name=".GoogleRegistActivity" />
@@ -109,13 +105,7 @@
             </intent-filter>
         </service>
         <!-- [END firebase_iid_service] -->
-        <service
-            android:name=".MyJobService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
-            </intent-filter>
-        </service>
+
 
         <activity android:name=".NavigationDrawerFragment" />
         <activity android:name=".RTCFaceActivity" />
@@ -123,11 +113,19 @@
         <service
             android:name=".MessegeService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
         <service
             android:name=".MyService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
