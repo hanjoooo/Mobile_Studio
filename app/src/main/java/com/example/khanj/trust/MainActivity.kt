@@ -196,7 +196,7 @@ class MainActivity : AppCompatActivity() {
             // 이벤트 처리
             p.setOnMenuItemClickListener { item ->
                 Toast.makeText(applicationContext,
-                        "팝업메뉴 이벤트 처리 - " + item.title,
+                         item.title,
                         Toast.LENGTH_SHORT).show()
                 false
             }
