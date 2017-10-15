@@ -113,19 +113,21 @@ class MainActivity : AppCompatActivity() {
             }
         }, 60000)
 
-        bt_route.setOnClickListener{
-            val intent = Intent(this,LocationTrakingActivity::class.java)
+
+        bt_route.setOnClickListener {
+            val intent = Intent(this, LocationTrakingActivity::class.java)
             startActivity(intent)
         }
-        bt_location.setOnClickListener{
-            val intent = Intent(this,PresentLocation::class.java)
+        bt_location.setOnClickListener {
+            val intent = Intent(this, PresentLocation::class.java)
             startActivity(intent)
         }
 
-        bt_chatting.setOnClickListener{
-            val intent = Intent(this,ChattingActivity::class.java)
+        bt_chatting.setOnClickListener {
+            val intent = Intent(this, ChattingActivity::class.java)
             startActivity(intent)
         }
+<<<<<<< HEAD
         bt_setting.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View) {
                 /*
@@ -159,6 +161,15 @@ class MainActivity : AppCompatActivity() {
             }
         })
         bt_alarm.setOnClickListener{
+=======
+        bt_setting.setOnClickListener {
+            signOut()
+            finish()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+        bt_alarm.setOnClickListener {
+>>>>>>> dd6dcfd85952344b54023f740d96251f506f7af7
             /*
             val uri:Uri=Uri.parse("smsto:01053445913")
             val i=Intent(Intent.ACTION_SENDTO,uri)
@@ -166,27 +177,27 @@ class MainActivity : AppCompatActivity() {
             startActivity(i)
             */
         }
-        bt_facechatting.setOnClickListener{
-            val intent = Intent(this,RTCFaceActivity::class.java)
+        bt_facechatting.setOnClickListener {
+            val intent = Intent(this, RTCFaceActivity::class.java)
             startActivity(intent)
         }
-        bt_plus.setOnClickListener{
-            val mContext=applicationContext
+        bt_plus.setOnClickListener {
+            val mContext = applicationContext
             val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val layout:View = inflater.inflate(R.layout.custom_dialog, findViewById(R.id.layout_root));
-            val aDialog:AlertDialog.Builder=AlertDialog.Builder(this)
-             aDialog.setTitle("연결하실 상대방 닉네임을 입력하세요.");
-             aDialog.setView(layout);
+            val layout: View = inflater.inflate(R.layout.custom_dialog, findViewById(R.id.layout_root));
+            val aDialog: AlertDialog.Builder = AlertDialog.Builder(this)
+            aDialog.setTitle("연결하실 상대방 닉네임을 입력하세요.");
+            aDialog.setView(layout);
 
             aDialog.setPositiveButton("연결") { dialog, which ->
-                var x:EditText=layout.findViewById(R.id.EdConnectUser)
-                val now:Long = System.currentTimeMillis()
-                val date:Date=Date(now)
-                val sdfNow:SimpleDateFormat= SimpleDateFormat("dd일HH시mm분ss초", Locale.KOREA)
-                val strNow:String = sdfNow.format(date)
-                val messege=Messege(userInfo!!.getNickname(),userInfo!!.getName(),userInfo!!.getMyUid(),strNow," ")
-                ConnectUser=x.text.toString()
-                mnotifiyChildRef=mnotifiyRef.child(ConnectUser)
+                var x: EditText = layout.findViewById(R.id.EdConnectUser)
+                val now: Long = System.currentTimeMillis()
+                val date: Date = Date(now)
+                val sdfNow: SimpleDateFormat = SimpleDateFormat("dd일HH시mm분ss초", Locale.KOREA)
+                val strNow: String = sdfNow.format(date)
+                val messege = Messege(userInfo!!.getNickname(), userInfo!!.getName(), userInfo!!.getMyUid(), strNow, " ")
+                ConnectUser = x.text.toString()
+                mnotifiyChildRef = mnotifiyRef.child(ConnectUser)
                 mnotifiyChildRef!!.setValue(messege)
             }
             aDialog.setNegativeButton("취소") { dialog, which ->
@@ -197,17 +208,43 @@ class MainActivity : AppCompatActivity() {
             ad.show()
         }
 
+<<<<<<< HEAD
         bt_status.setOnClickListener{
 
             var alertDialogBuilder=AlertDialog.Builder(this)
             alertDialogBuilder.setMessage(State)
             alertDialogBuilder.setPositiveButton("확인",null)
             var alert:AlertDialog=alertDialogBuilder.create()
+=======
+        bt_status.setOnClickListener {
+            var alertDialogBuilder = AlertDialog.Builder(this)
+            alertDialogBuilder.setMessage(state)
+            alertDialogBuilder.setPositiveButton("확인", null)
+            var alert: AlertDialog = alertDialogBuilder.create()
+>>>>>>> dd6dcfd85952344b54023f740d96251f506f7af7
             alert.setTitle("상태")
             alert.window.setBackgroundDrawable(ColorDrawable(Color.YELLOW))
             alert.window.setBackgroundDrawable(ColorDrawable(R.color.pure))
             alert.show()
         }
+        bt_setting.setOnClickListener {
+
+            val v = null
+            val p = PopupMenu(
+                    applicationContext, v)
+            menuInflater.inflate(R.menu.menu2_main, p.menu)
+            // 이벤트 처리
+            p.setOnMenuItemClickListener { item ->
+                Toast.makeText(applicationContext,
+                         item.title,
+                        Toast.LENGTH_SHORT).show()
+                false
+            }
+            p.show() // 메뉴를 띄우기
+        }
+    
+
+        
 
         mAuthListener = FirebaseAuth.AuthStateListener {
             firebaseAuth ->
@@ -227,7 +264,9 @@ class MainActivity : AppCompatActivity() {
 
         val intent=Intent(this,MyService::class.java)
         startService(intent)
+
     }
+
 
     private val mTouchEvent = object : View.OnTouchListener {
 
