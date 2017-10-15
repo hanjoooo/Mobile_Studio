@@ -91,8 +91,8 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     userInfo = dataSnapshot.getValue(User::class.java)
                     mchildRef=mConditionRef.child(userInfo!!.getOtherUid())
-                    mchild1Ref=mchildRef!!.child("현재위치").child("경도")
-                    mchild2Ref=mchildRef!!.child("현재위치").child("위도")
+                    mchild1Ref=mchildRef!!.child("현재위치").child("위도")
+                    mchild2Ref=mchildRef!!.child("현재위치").child("경도")
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
                 }

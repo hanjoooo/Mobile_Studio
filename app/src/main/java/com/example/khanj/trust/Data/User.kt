@@ -13,8 +13,10 @@ class User(){
     private var OtherUid :String=" "
     private var ChatChannel:String=" "
     private var FaceChatChannel:String=" "
+    private var State:String=" "
 
-    constructor(Email: String, Password: String,Nickname:String,Name:String,PhoneNumber:String,MyUid:String,chat:String,facechat:String) : this(){
+
+    constructor(Email: String, Password: String,Nickname:String,Name:String,PhoneNumber:String,MyUid:String,chat:String,facechat:String,state:String) : this(){
         this.Email=Email
         this.Password=Password
         this.Nickname=Nickname
@@ -23,6 +25,7 @@ class User(){
         this.MyUid=MyUid
         this.ChatChannel=chat
         this.FaceChatChannel=facechat
+        this.State=state
     }
 
     public fun getEmail():String{
@@ -52,7 +55,9 @@ class User(){
     public fun getFaceChatChannel():String{
         return FaceChatChannel
     }
-
+    public fun getState():String{
+        return State
+    }
     public fun setPassword(p:String){
         this.Password=p
     }
@@ -71,5 +76,4 @@ class User(){
     public fun setOtherUid(p:String){
         this.OtherUid=p
     }
-
 }

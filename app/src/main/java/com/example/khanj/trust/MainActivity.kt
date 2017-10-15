@@ -22,12 +22,10 @@ import android.support.annotation.IntegerRes
 import android.support.v4.app.NotificationCompat
 import android.support.v7.app.AlertDialog
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.Toast
 import com.example.khanj.trust.Data.Messege
 import com.example.khanj.trust.Data.User
@@ -36,6 +34,7 @@ import com.example.khanj.trust.handler.BackPressCloseHandler
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserInfo
 import com.google.firebase.database.*
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
@@ -53,7 +52,6 @@ class MainActivity : AppCompatActivity() {
 
     internal var mRootRef = FirebaseDatabase.getInstance().reference
     internal var mConditionRef = mRootRef.child("location")
-    internal var mcallTime=mRootRef.child("state")
     internal var muserRef=mRootRef.child("users")
     internal var mnotifiyRef=mRootRef.child("partner")
     internal var mnotifiyChildRef:DatabaseReference?=null
@@ -68,18 +66,17 @@ class MainActivity : AppCompatActivity() {
     internal var mMesCurtime: DatabaseReference?=null
     internal var mMesUid: DatabaseReference?=null
     internal var mMesNick: DatabaseReference?=null
-
+    internal var mState:DatabaseReference?=null
     private var backPressCloseHandler: BackPressCloseHandler? = null
 
     var longitude:Double = 0.0
     var latitude:Double = 0.0
-
-    var state:String=" "
     var ConnectUser:String=""
     var userInfo:User?=null
 
     var mesLastime=" "
     var mesCurtime=" "
+    private var State=" "
     private var mesUid=" "
     private var mesNick=" "
     private var myUid =  " "
@@ -111,7 +108,6 @@ class MainActivity : AppCompatActivity() {
                 // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
                 lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1.toFloat(), mLocationListener)
                 lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1.toFloat(), mLocationListener)
-
             } catch (ex: SecurityException) {
                 ;
             }
@@ -130,12 +126,38 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,ChattingActivity::class.java)
             startActivity(intent)
         }
-        bt_setting.setOnClickListener{
+        bt_setting.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(v: View) {
+                /*
             signOut()
             finish()
             val intent = Intent(this,LoginActivity::class.java)
-            startActivity(intent)
-        }
+            startActivity(intent)*/
+                val p = PopupMenu(
+                        applicationContext, v)
+                menuInflater.inflate(R.menu.menu2_main, p.menu)
+
+                p.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
+
+                    override fun onMenuItemClick(item: MenuItem): Boolean {
+                        val intent = Intent(this@MainActivity,GoogleMapTestActivity::class.java)
+                        when (item.getItemId()) {
+                            R.id.subMenu -> "Sg"
+                            R.id.subMenu2 -> setState()
+                            R.id.logout -> LogOut()
+                            R.id.subRegist->
+                                Toast.makeText(applicationContext, "등록", Toast.LENGTH_SHORT).show()
+                            R.id.subChange -> startActivity(intent)
+                            R.id.subDelete ->
+                                Toast.makeText(applicationContext, "삭제", Toast.LENGTH_SHORT).show()
+
+                        }
+                        return false
+                    }
+                })
+                p.show()
+            }
+        })
         bt_alarm.setOnClickListener{
             /*
             val uri:Uri=Uri.parse("smsto:01053445913")
@@ -176,8 +198,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         bt_status.setOnClickListener{
+
             var alertDialogBuilder=AlertDialog.Builder(this)
-            alertDialogBuilder.setMessage(state)
+            alertDialogBuilder.setMessage(State)
             alertDialogBuilder.setPositiveButton("확인",null)
             var alert:AlertDialog=alertDialogBuilder.create()
             alert.setTitle("상태")
@@ -236,8 +259,8 @@ class MainActivity : AppCompatActivity() {
             //값은 Location 형태로 리턴되며 좌표 출력 방법은 다음과 같다.
             longitude = location.getLongitude() //경도
             latitude = location.getLatitude()   //위도
-            mchild1Ref = mchildRef!!.child("현재위치").child("경도")
-            mchild2Ref = mchildRef!!.child("현재위치").child("위도")
+            mchild1Ref = mchildRef!!.child("현재위치").child("위도")
+            mchild2Ref = mchildRef!!.child("현재위치").child("경도")
             mchild1Ref?.setValue(latitude)
             mchild2Ref?.setValue(longitude)
             val now:Long = System.currentTimeMillis()
@@ -272,16 +295,8 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         mAuth.addAuthStateListener(mAuthListener!!)
 
-        mcallTime.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                state=dataSnapshot.getValue().toString()
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-
-            }
-        })
         Handler().postDelayed({
-            muserChildRef!!.addListenerForSingleValueEvent(object : ValueEventListener {
+            muserChildRef!!.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     userInfo=dataSnapshot.getValue(User::class.java)
                     mnotifiyChildRef=mnotifiyRef.child(userInfo!!.getNickname())
@@ -289,6 +304,7 @@ class MainActivity : AppCompatActivity() {
                     mMesCurtime=mnotifiyChildRef!!.child("times")
                     mMesUid=mnotifiyChildRef!!.child("uid")
                     mMesNick=mnotifiyChildRef!!.child("nickname")
+                    mState=muserRef.child(userInfo!!.getOtherUid()).child("state")
 
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -316,6 +332,18 @@ class MainActivity : AppCompatActivity() {
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
+                })
+                mState!!.addValueEventListener(object :ValueEventListener{
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val data=dataSnapshot.getValue().toString()
+                        if(data==" ")
+                            State="현재 여유로운 상태입니다"
+                        else
+                            State=data
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                    }
+
                 })
                 Handler().postDelayed({
                     mMesCurtime!!.addValueEventListener(object : ValueEventListener {
@@ -371,6 +399,32 @@ class MainActivity : AppCompatActivity() {
         } else {
 
         }
+    }
+    public fun setState(){
+        val mContext=applicationContext
+        val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val layout:View = inflater.inflate(R.layout.custom_dialog, findViewById(R.id.layout_root));
+        val aDialog:AlertDialog.Builder=AlertDialog.Builder(this)
+        aDialog.setTitle("지금 현재 상태를 입력해주세요.");
+        aDialog.setView(layout);
+
+        aDialog.setPositiveButton("확인") { dialog, which ->
+            var x:EditText=layout.findViewById(R.id.EdConnectUser)
+            muserChildRef!!.child("state").setValue(x.text.toString())
+        }
+        aDialog.setNegativeButton("취소") { dialog, which ->
+
+        }
+
+        val ad = aDialog.create()
+        ad.show()
+    }
+
+    private fun LogOut(){
+        signOut()
+        finish()
+        val intent = Intent(this,LoginActivity::class.java)
+        startActivity(intent)
     }
     private fun signOut() {
         mAuth.signOut()
