@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Mobile_Studio.iml" filepath="$PROJECT_DIR$/Mobile_Studio.iml" />
+      <module fileurl="file://C:\Users\khanj\AndroidStudioProjects\Trust\Mobile_Studio.iml" filepath="C:\Users\khanj\AndroidStudioProjects\Trust\Mobile_Studio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Trust.iml" filepath="$PROJECT_DIR$/Trust.iml" />
       <module fileurl="file://C:\Users\CCH\Documents\GitHub\Mobile_Studio\Trust.iml" filepath="C:\Users\CCH\Documents\GitHub\Mobile_Studio\Trust.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://C:\Users\CCH\Documents\GitHub\Mobile_Studio\app\app.iml" filepath="C:\Users\CCH\Documents\GitHub\Mobile_Studio\app\app.iml" />

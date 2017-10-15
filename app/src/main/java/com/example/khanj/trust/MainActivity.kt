@@ -127,7 +127,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ChattingActivity::class.java)
             startActivity(intent)
         }
-<<<<<<< HEAD
         bt_setting.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View) {
                 /*
@@ -160,16 +159,8 @@ class MainActivity : AppCompatActivity() {
                 p.show()
             }
         })
-        bt_alarm.setOnClickListener{
-=======
-        bt_setting.setOnClickListener {
-            signOut()
-            finish()
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-        }
+
         bt_alarm.setOnClickListener {
->>>>>>> dd6dcfd85952344b54023f740d96251f506f7af7
             /*
             val uri:Uri=Uri.parse("smsto:01053445913")
             val i=Intent(Intent.ACTION_SENDTO,uri)
@@ -208,43 +199,17 @@ class MainActivity : AppCompatActivity() {
             ad.show()
         }
 
-<<<<<<< HEAD
-        bt_status.setOnClickListener{
 
-            var alertDialogBuilder=AlertDialog.Builder(this)
-            alertDialogBuilder.setMessage(State)
-            alertDialogBuilder.setPositiveButton("확인",null)
-            var alert:AlertDialog=alertDialogBuilder.create()
-=======
         bt_status.setOnClickListener {
             var alertDialogBuilder = AlertDialog.Builder(this)
-            alertDialogBuilder.setMessage(state)
+            alertDialogBuilder.setMessage(State)
             alertDialogBuilder.setPositiveButton("확인", null)
             var alert: AlertDialog = alertDialogBuilder.create()
->>>>>>> dd6dcfd85952344b54023f740d96251f506f7af7
             alert.setTitle("상태")
             alert.window.setBackgroundDrawable(ColorDrawable(Color.YELLOW))
             alert.window.setBackgroundDrawable(ColorDrawable(R.color.pure))
             alert.show()
         }
-        bt_setting.setOnClickListener {
-
-            val v = null
-            val p = PopupMenu(
-                    applicationContext, v)
-            menuInflater.inflate(R.menu.menu2_main, p.menu)
-            // 이벤트 처리
-            p.setOnMenuItemClickListener { item ->
-                Toast.makeText(applicationContext,
-                         item.title,
-                        Toast.LENGTH_SHORT).show()
-                false
-            }
-            p.show() // 메뉴를 띄우기
-        }
-    
-
-        
 
         mAuthListener = FirebaseAuth.AuthStateListener {
             firebaseAuth ->
