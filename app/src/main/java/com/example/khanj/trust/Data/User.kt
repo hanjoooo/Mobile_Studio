@@ -16,13 +16,14 @@ class User(){
     private var State:String=" "
 
 
-    constructor(Email: String, Password: String,Nickname:String,Name:String,PhoneNumber:String,MyUid:String,chat:String,facechat:String,state:String) : this(){
+    constructor(Email: String, Password: String,Nickname:String,Name:String,PhoneNumber:String,MyUid:String,otheruid:String,chat:String,facechat:String,state:String) : this(){
         this.Email=Email
         this.Password=Password
         this.Nickname=Nickname
         this.Name=Name
         this.PhoneNumber=PhoneNumber
         this.MyUid=MyUid
+        this.OtherUid=otheruid
         this.ChatChannel=chat
         this.FaceChatChannel=facechat
         this.State=state

@@ -1,5 +1,7 @@
 package com.example.khanj.trust
 
+import android.app.NotificationManager
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -51,7 +53,8 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_present_location)
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
-
+        val notificationManager=getSystemService(Context.NOTIFICATION_SERVICE)as NotificationManager
+        notificationManager.cancel(778)
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -127,30 +130,8 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lat,14.toFloat()))
         Handler().postDelayed({
             val sydney = LatLng(latitude, longitude)
-            val circleOptions=CircleOptions()
-                    .center(point)
-                    .radius(1000.0)
-                    .strokeColor(Color.RED)
-            mMap.addCircle(circleOptions)
             mMap.addMarker(MarkerOptions().position(sydney).title("현재 위치"))
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15.toFloat()))
-            var laa=Location("a")
-            laa.setLatitude(x)
-            laa.setLongitude(y)
-            var lab = Location("b")
-            lab.setLatitude(latitude)
-            lab.setLongitude(longitude)
-            var dist = laa.distanceTo(lab)
-            if(Math.pow(dist.toDouble()/1000.0,2.0)<1.0){
-                val msg = "상대방이 설정한 위치범위 안에 있습니다"
-                Log.d(PresentLocation.TAG, msg)
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-            }
-            else {
-                val msg = "상대방이 설정한 위치범위를 벗어났습니다"
-                Log.d(PresentLocation.TAG, msg)
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-            }
         }, 2500)
         // Add a marker in Sydney and move the camera
 

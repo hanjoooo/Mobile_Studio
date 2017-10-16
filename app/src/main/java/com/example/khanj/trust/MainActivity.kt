@@ -56,10 +56,7 @@ class MainActivity : AppCompatActivity() {
     internal var mnotifiyRef=mRootRef.child("partner")
     internal var mnotifiyChildRef:DatabaseReference?=null
     internal var mchildRef: DatabaseReference?=null
-    internal var mchildsRef: DatabaseReference?=null
-    internal var mtimeRef: DatabaseReference?=null
-    internal var mchild1Ref: DatabaseReference?=null
-    internal var mchild2Ref: DatabaseReference?=null
+
     internal var muserChildRef: DatabaseReference?=null
 
     internal var mMesLastime: DatabaseReference?=null
@@ -87,12 +84,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val notificationManager=getSystemService(Context.NOTIFICATION_SERVICE)as NotificationManager
+        notificationManager.cancel(787)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
             val channelId = getString(R.string.default_notification_channel_id)
             val channelName = getString(R.string.default_notification_channel_name)
-            val notificationManager = getSystemService<NotificationManager>(NotificationManager::class.java!!)
+            val notificationManager = getSystemService<NotificationManager>(NotificationManager::class.java)
             notificationManager!!.createNotificationChannel(NotificationChannel(channelId,
                     channelName, NotificationManager.IMPORTANCE_LOW))
         }
@@ -102,16 +101,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "Key: $key Value: $value")
             }
         }
-        Handler().postDelayed({
-            val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            try {
-                // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1.toFloat(), mLocationListener)
-                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 1.toFloat(), mLocationListener)
-            } catch (ex: SecurityException) {
-                ;
-            }
-        }, 60000)
+
 
 
         bt_route.setOnClickListener {
@@ -227,73 +217,9 @@ class MainActivity : AppCompatActivity() {
         }
         backPressCloseHandler = BackPressCloseHandler(this)
 
-        val intent=Intent(this,MyService::class.java)
-        startService(intent)
-
     }
 
 
-    private val mTouchEvent = object : View.OnTouchListener {
-
-        override fun onTouch(v: View, event: MotionEvent): Boolean {
-
-            val image = v as ImageView
-
-            when (v.getId()) {
-
-                R.id.bt_location ->
-
-                    if (event.getAction() === MotionEvent.ACTION_DOWN) {
-
-                        image.setColorFilter(Color.RED.toInt(), PorterDuff.Mode.SRC_OVER)
-
-                    } else if (event.getAction() === MotionEvent.ACTION_UP) {
-
-                        image.setColorFilter(Color.BLUE, PorterDuff.Mode.SRC_OVER)
-
-                    }
-            }
-            return true
-        }
-    }
-
-    private val mLocationListener = object : LocationListener {
-        override fun onLocationChanged(location: Location) {
-            //여기서 위치값이 갱신되면 이벤트가 발생한다.
-            //값은 Location 형태로 리턴되며 좌표 출력 방법은 다음과 같다.
-            longitude = location.getLongitude() //경도
-            latitude = location.getLatitude()   //위도
-            mchild1Ref = mchildRef!!.child("현재위치").child("위도")
-            mchild2Ref = mchildRef!!.child("현재위치").child("경도")
-            mchild1Ref?.setValue(latitude)
-            mchild2Ref?.setValue(longitude)
-            val now:Long = System.currentTimeMillis()
-            val date:Date=Date(now)
-            val sdfNow:SimpleDateFormat= SimpleDateFormat("dd일HH시mm분", Locale.KOREA)
-            val sdfNow2:SimpleDateFormat= SimpleDateFormat("MMddHHmm", Locale.KOREA)
-            val strNow:String = sdfNow.format(date)
-            val strNow2:String=sdfNow2.format(date)
-            val loc: location = location(strNow,latitude,longitude)
-            mtimeRef=mchildsRef!!.child(strNow2)
-            mtimeRef?.setValue(loc)
-        }
-
-
-        override fun onProviderDisabled(provider: String) {
-            // Disabled시
-            Log.d("test", "onProviderDisabled, provider:" + provider)
-        }
-
-        override fun onProviderEnabled(provider: String) {
-            // Enabled시
-            Log.d("test", "onProviderEnabled, provider:" + provider)
-        }
-
-        override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {
-            // 변경시
-            Log.d("test", "onStatusChanged, provider:$provider, status:$status ,Bundle:$extras")
-        }
-    }
 
     override fun onStart() {
         super.onStart()
@@ -337,28 +263,29 @@ class MainActivity : AppCompatActivity() {
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
                 })
-                mState!!.addValueEventListener(object :ValueEventListener{
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val data=dataSnapshot.getValue().toString()
-                        if(data==" ")
-                            State="현재 여유로운 상태입니다"
-                        else
-                            State=data
-                    }
-                    override fun onCancelled(databaseError: DatabaseError) {
-                    }
 
-                })
+                if(userInfo!!.getOtherUid()!= " ") {
+                    mState!!.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            val data = dataSnapshot.getValue().toString()
+                            if (data == " ")
+                                State = "현재 여유로운 상태입니다"
+                            else
+                                State = data
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                        }
+
+                    })
+                }
                 Handler().postDelayed({
                     mMesCurtime!!.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             mesCurtime=dataSnapshot.getValue().toString()
-                            if(mesCurtime==mesLastime || mesUid == " " )
-                                ;
+                            if(mesCurtime==mesLastime || mesUid == " " ) ;
                             else{
-                                if(dialogOn){
-
-                                }
+                                if(dialogOn);
                                 else{
                                     dialogOn=true
                                     val aDialog:AlertDialog.Builder=AlertDialog.Builder(this@MainActivity)
@@ -398,7 +325,6 @@ class MainActivity : AppCompatActivity() {
         if (user != null) {
             mchildRef = mConditionRef.child(user.uid)
             muserChildRef=muserRef.child(user.uid)
-            mchildsRef=mchildRef!!.child("time")
             myUid=user.uid
         } else {
 

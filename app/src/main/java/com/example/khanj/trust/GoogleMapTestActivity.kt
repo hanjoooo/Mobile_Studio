@@ -56,7 +56,7 @@ class GoogleMapTestActivity : AppCompatActivity(), OnMapReadyCallback {
     var edRange:EditText?=null
 
     var nowAddress="위치를 확인할 수 없습니다"
-    var currentlocation = LatLng(37.1, 127.1)
+    var currentlocation =LatLng(37.6007195267265,126.86528900355972)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_google_map_test)
