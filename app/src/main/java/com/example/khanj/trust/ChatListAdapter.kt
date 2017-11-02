@@ -46,7 +46,6 @@ package com.example.khanj.trust
                 val mTextViewMessage2 : View = convert2.findViewById(R.id.message2)
 
                 val mAuthorView :View = convert.findViewById(R.id.author)
-                val mAuthorView2 :View = convert2.findViewById(R.id.author2)
 
 
                 val chat : Chat= datas.get(p0)
@@ -54,13 +53,12 @@ package com.example.khanj.trust
                 if(chat.getAuthorUid().equals(currentUser)){
                     mTextViewDate2.textTIme2.setText(chat.getTimes())
                     mTextViewMessage2.message2.setText(chat.getMessage())
-                    mAuthorView2.author2.setText(chat.getAuthor() + " : ")
                     return convert2
                 }
                 else {
                     mTextViewDate.textTime.setText(chat.getTimes())
                     mTextViewMessage.message.setText(chat.getMessage())
-                    mAuthorView.author.setText(chat.getAuthor() + " : ")
+                    mAuthorView.author.setText(chat.getAuthor())
                     return convert
                 }
             }

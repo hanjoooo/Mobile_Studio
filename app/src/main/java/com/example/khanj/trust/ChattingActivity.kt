@@ -36,12 +36,10 @@ class ChattingActivity :AppCompatActivity(){
     internal var mConditionRef = mRootRef.child("chat")
     internal var mConditionRef1 = mRootRef.child("users")
     internal var mchildRef: DatabaseReference?=null
-    internal var mchild1Ref: DatabaseReference?=null
-
 
 
     private  var datas =  ArrayList<Chat>()
-    lateinit var adpater:com.example.khanj.trust.ChatListAdapter
+    var adpater:ChatListAdapter?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,11 +59,9 @@ class ChattingActivity :AppCompatActivity(){
             messageInput.setText("")
         }
         Handler().postDelayed({
-        mConditionRef.addValueEventListener(postListener)
-
-        adpater = com.example.khanj.trust.ChatListAdapter(datas,mUserUid,this@ChattingActivity)
-        chatlist.setAdapter(adpater)
-        }, 800)
+            adpater = com.example.khanj.trust.ChatListAdapter(datas,mUserUid,this@ChattingActivity)
+            chatlist.adapter=adpater
+        }, 500)
 
         mAuthListener = FirebaseAuth.AuthStateListener {
             firebaseAuth ->
@@ -82,32 +78,61 @@ class ChattingActivity :AppCompatActivity(){
             // [END_EXCLUDE]
         }
     }
-    private val postListener = object : ValueEventListener {
-        override fun onDataChange(datasnapshot: DataSnapshot) {
-            datas.clear()
-            for(snapshot in datasnapshot.getChildren()) {
-                val chat = snapshot.getValue(Chat::class.java)
-                datas.add(chat!!)
-            }
-            adpater.notifyDataSetChanged()
-            adpater = com.example.khanj.trust.ChatListAdapter(datas,mUserUid,this@ChattingActivity)
-            chatlist.setAdapter(adpater)
-        }
-        override fun onCancelled(p0: DatabaseError?) {
-        }
-    }
     override fun onStart() {
         super.onStart()
         mAuth.addAuthStateListener(mAuthListener!!)
         Handler().postDelayed({
-        mchildRef!!.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val datas = dataSnapshot.getValue(User::class.java)
-                mUsername=datas.getName()
-            }
-            override fun onCancelled(databaseError: DatabaseError) {
-            }
-        })
+            mchildRef!!.child("name").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val data = dataSnapshot.getValue().toString()
+                    mUsername=data
+                }
+                override fun onCancelled(databaseError: DatabaseError) {
+                }
+            })
+
+            Handler().postDelayed({
+                mRootRef.child("chat").addValueEventListener(object:ValueEventListener{
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        datas.clear()
+                        for(snapshot in dataSnapshot.children){
+                            datas.add(snapshot.getValue(Chat::class.java))
+                        }
+                        adpater = com.example.khanj.trust.ChatListAdapter(datas,mUserUid,this@ChattingActivity)
+                        chatlist.adapter=adpater
+                        adpater!!.notifyDataSetChanged()
+                    }
+                    override fun onCancelled(p0: DatabaseError?) {
+                    }
+
+                })
+                /*
+                mRootRef.child("chat").addChildEventListener(object:ChildEventListener{
+                    //child에서 일어나는 change들을 감지.
+                    // message는 child의 이벤트를 수신
+                    // RealTime DB 사용해서 채팅 얻기
+                    override fun onChildAdded(dataSnapshot: DataSnapshot?, s: String?) {
+                        // 리스트의 아이템을 검색하거나 아이템의 추가가 있을때 수신
+                        val chat = dataSnapshot!!.getValue(Chat::class.java)
+                        datas.add(chat)
+                        adpater = com.example.khanj.trust.ChatListAdapter(datas,mUserUid,this@ChattingActivity)
+                        chatlist.adapter=adpater
+                        //adpater!!.notifyDataSetChanged()
+                    }
+                    override fun onChildRemoved(p0: DataSnapshot?) {
+                    }
+                    override fun onChildChanged(dataSnapshot: DataSnapshot?, p1: String?) {
+                    }
+                    override fun onChildMoved(p0: DataSnapshot?, p1: String?) {
+
+                    }
+                    override fun onCancelled(p0: DatabaseError?) {
+
+                    }
+                })
+                */
+            }, 500)
+
         }, 500)
 
     }
