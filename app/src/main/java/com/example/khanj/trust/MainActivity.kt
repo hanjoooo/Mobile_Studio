@@ -149,6 +149,8 @@ class MainActivity : AppCompatActivity() {
                 p.show()
             }
         })
+        val intent=Intent(this,MyService::class.java)
+        startService(intent)
 
         bt_alarm.setOnClickListener {
             /*
@@ -235,7 +237,6 @@ class MainActivity : AppCompatActivity() {
                     mMesUid=mnotifiyChildRef!!.child("uid")
                     mMesNick=mnotifiyChildRef!!.child("nickname")
                     mState=muserRef.child(userInfo!!.getOtherUid()).child("state")
-
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
 
@@ -310,8 +311,8 @@ class MainActivity : AppCompatActivity() {
                         }
                     })
                 }, 1000)
-            }, 2000)
-        }, 1000)
+            }, 2500)
+        }, 800)
 
     }
 

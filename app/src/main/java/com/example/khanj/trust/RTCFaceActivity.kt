@@ -161,7 +161,7 @@ class RTCFaceActivity : AppCompatActivity() {
         }
     }
 
-    override protected fun onDestroy() {
+    override fun onDestroy() {
 
         // instance release
         if (playrtc != null) {
@@ -209,22 +209,18 @@ class RTCFaceActivity : AppCompatActivity() {
                 else{
                     mOhterFaceChatRef!!.child("faceChatChannel").setValue(channelId)
                 }
-
             }
 
             override fun onAddLocalStream(obj: PlayRTC?, playRTCMedia: PlayRTCMedia?) {
                 Log.i(LOG_TAG, "onAddLocalStream")
                 localMedia = playRTCMedia
-
                 // Link the media stream to the view.
                 playRTCMedia!!.setVideoRenderer(localView!!.videoRenderer)
             }
 
             override fun onAddRemoteStream(obj: PlayRTC?, peerId: String?, peerUserId: String?, playRTCMedia: PlayRTCMedia?) {
-
                 Log.i(LOG_TAG, "onAddRemoteStream")
                 remoteMedia = playRTCMedia
-
                 // Link the media stream to the view.
                 playRTCMedia!!.setVideoRenderer(remoteView!!.videoRenderer)
 
@@ -235,7 +231,7 @@ class RTCFaceActivity : AppCompatActivity() {
                 isChannelConnected = false
                 if(UserInfo!!.getOtherUid()==" ");
                 else {
-                    mOhterFaceChatRef!!.child("faceChatChannel").setValue(" ")
+                    //mOhterFaceChatRef!!.child("faceChatChannel").setValue(" ")
                 }
                 // v2.2.5
                 localView!!.bgClearColor()
@@ -451,14 +447,12 @@ class RTCFaceActivity : AppCompatActivity() {
         // Add a connect channel event listener.
         val connectButton = findViewById<View>(R.id.connect_button) as Button
         connectButton.setOnClickListener {
-            /*
             try {
                 playrtc!!.connectChannel(channelId, JSONObject())
                 isCloseActivity = false
             } catch (e: RequiredConfigMissingException) {
                 e.printStackTrace()
             }
-            */
         }
 
         // Add a exit channel event listener.
@@ -539,12 +533,14 @@ class RTCFaceActivity : AppCompatActivity() {
                             channelId=dataSnapshot.getValue().toString()
                             Toast.makeText(this@RTCFaceActivity, channelId, Toast.LENGTH_SHORT).show()
                             if(channelId==" "){
+                                /*
                                 if (isChannelConnected == true) {
                                     isCloseActivity = true
                                     // null means my user id.
                                     playrtc!!.disconnectChannel(null)
                                 } else {
                                 }
+                                */
                             }
                             else if(isChannelConnected == true){
                                 ;
@@ -562,7 +558,7 @@ class RTCFaceActivity : AppCompatActivity() {
                                     } catch (e: RequiredConfigMissingException) {
                                         e.printStackTrace()
                                     }
-                                    mMyFaceChatRef!!.child("faceChatChannel").setValue(" ")
+                                    //mMyFaceChatRef!!.child("faceChatChannel").setValue(" ")
                                 }
                                 alertDialogBuilder.setNegativeButton(R.string.alert_negative) { dialogInterface, id ->
                                     dialogInterface.dismiss()

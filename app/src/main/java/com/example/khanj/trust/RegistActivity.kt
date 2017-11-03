@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Spinner
 import android.widget.Toast
+import com.example.khanj.trust.Data.LimitRange
 import com.example.khanj.trust.Data.Messege
 import com.example.khanj.trust.Data.User
 import com.google.firebase.auth.FirebaseAuth
@@ -29,9 +30,12 @@ class RegistActivity :  BaseActivity() {
 
     internal var mRootRef = FirebaseDatabase.getInstance().reference
     internal var mConditionRef = mRootRef.child("users")
+    internal var mLocationRef = mRootRef.child("location")
+
     internal var mchildRef: DatabaseReference?=null
 
     internal var mnotifiyRef=mRootRef.child("partner")
+
     internal var mnotifiyChildRef:DatabaseReference?=null
 
     var Users: User?=null
@@ -218,6 +222,7 @@ class RegistActivity :  BaseActivity() {
         if (user != null) {
             mchildRef = mConditionRef.child(user.uid)
             userUid=user.uid
+            mLocationRef.child(userUid).child("LimitRange").setValue(null)
         } else {
 
         }

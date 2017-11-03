@@ -21,6 +21,8 @@ class GoogleRegistActivity : BaseActivity() {
 
     internal var mRootRef = FirebaseDatabase.getInstance().reference
     internal var mConditionRef = mRootRef.child("users")
+    internal var mLocationRef = mRootRef.child("location")
+
     internal var mchildRef: DatabaseReference?=null
     internal var mnotifiyRef=mRootRef.child("partner")
     internal var mnotifiyChildRef:DatabaseReference?=null
@@ -111,6 +113,7 @@ class GoogleRegistActivity : BaseActivity() {
         if (user != null) {
             mchildRef = mConditionRef.child(user.uid)
             userUid=user.uid
+            mLocationRef.child(userUid).child("LimitRange").setValue(" ")
         } else {
 
         }

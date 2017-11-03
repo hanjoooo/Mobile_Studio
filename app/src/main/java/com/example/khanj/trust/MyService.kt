@@ -71,7 +71,7 @@ class MyService : Service() {
     internal var thread: ServiceThread? = null
 
     internal var Notifi: Notification?=null
-    private var users:User?=null
+    private var users:User=User()
 
     private var lastime=""
     private var curtime=""
@@ -101,215 +101,225 @@ class MyService : Service() {
             updateUI(user)
         }
         mAuth.addAuthStateListener(mAuthListener!!)
-        if(isLogin==true){
-            val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            try {
-                // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300000, 1.toFloat(), mLocationListener)
-                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300000, 1.toFloat(), mLocationListener)
-            } catch (ex: SecurityException) {
-                ;
-            }
-            Handler().postDelayed({
-                mchildUserRef!!.addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        users=dataSnapshot.getValue(User::class.java)
-                        mchildRef=mConditionRef.child(users!!.getNickname()).child("nickname")
-                        mchild1Ref=mConditionRef.child(users!!.getNickname()).child("name")
-                        mchild2Ref=mConditionRef.child(users!!.getNickname()).child("lastime")
-                        mchild3Ref=mConditionRef.child(users!!.getNickname()).child("times")
-                        mchildUserFaceChatRef=mchildUserRef!!.child("faceChatChannel")
-                        motherNickRef=muserRef.child(users!!.getOtherUid()).child("nickname")
+        val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        try {
+            // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300000, 1.toFloat(), mLocationListener)
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300000, 1.toFloat(), mLocationListener)
+        } catch (ex: SecurityException) {
+            ;
+        }
+        Handler().postDelayed({
+            mchildUserRef!!.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    users=dataSnapshot.getValue(User::class.java)
+                    mchildRef=mConditionRef.child(users!!.getNickname()).child("nickname")
+                    mchild1Ref=mConditionRef.child(users!!.getNickname()).child("name")
+                    mchild2Ref=mConditionRef.child(users!!.getNickname()).child("lastime")
+                    mchild3Ref=mConditionRef.child(users!!.getNickname()).child("times")
+                    mchildUserFaceChatRef=mchildUserRef!!.child("faceChatChannel")
+                    motherNickRef=muserRef.child(users!!.getOtherUid()).child("nickname")
 
+                }
+                override fun onCancelled(databaseError: DatabaseError) {
+                }
+            })
+
+            Handler().postDelayed({
+                if(users!!.getOtherUid()!=" ") {
+                    muserlatRef = mlocRef.child(users!!.getOtherUid()).child("현재위치").child("위도")
+                    muserlongRef = mlocRef.child(users!!.getOtherUid()).child("현재위치").child("경도")
+                    mlimitlocRef = mlocRef.child(users!!.getOtherUid()).child("LimitRange")
+                    mchildOtherFaceChatRef = muserRef.child(users!!.getOtherUid()).child("faceChatChannel")
+                    mchildOtherFaceChatRef!!.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            //  otherfacechatchannel=dataSnapshot.getValue().toString()
+                        }
+
+                        override fun onCancelled(p0: DatabaseError) {
+                        }
+                    })
+                    muserlatRef!!.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(p: DataSnapshot) {
+                            val v = p.getValue().toString().toDouble()
+                            nowLat = v
+                        }
+
+                        override fun onCancelled(p: DatabaseError) {
+                        }
+                    })
+                    muserlongRef!!.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(p: DataSnapshot) {
+                            val v = p.getValue().toString().toDouble()
+                            nowLong = v
+                        }
+
+                        override fun onCancelled(p: DatabaseError) {
+                        }
+                    })
+                    motherNickRef!!.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            connectnick=dataSnapshot.getValue().toString()
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                        }
+                    })
+
+                }
+                mchildRef!!.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        usernick=dataSnapshot.getValue().toString()
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                    }
+                })
+                mchild1Ref!!.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        username=dataSnapshot.getValue().toString()
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                    }
+                })
+                mchild2Ref!!.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        lastime=dataSnapshot.getValue().toString()
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
                 })
 
-                Handler().postDelayed({
-                    if(users!!.getOtherUid()!=" "){
-                        muserlatRef=mlocRef.child(users!!.getOtherUid()).child("현재위치").child("위도")
-                        muserlongRef=mlocRef.child(users!!.getOtherUid()).child("현재위치").child("경도")
-                        mlimitlocRef=mlocRef.child(users!!.getOtherUid()).child("LimitRange")
-                        mchildOtherFaceChatRef=muserRef.child(users!!.getOtherUid()).child("faceChatChannel")
-                        mchildOtherFaceChatRef!!.addValueEventListener(object :ValueEventListener{
-                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                otherfacechatchannel=dataSnapshot.getValue().toString()
-                            }
-                            override fun onCancelled(p0: DatabaseError) {
-                            }
-                        })
-                        muserlatRef!!.addValueEventListener(object :ValueEventListener{
-                            override fun onDataChange(p: DataSnapshot) {
-                                val v = p.getValue().toString().toDouble()
-                                nowLat=v
-                            }
-                            override fun onCancelled(p: DatabaseError) {
-                            }
-                        })
-                        muserlongRef!!.addValueEventListener(object :ValueEventListener{
-                            override fun onDataChange(p: DataSnapshot) {
-                                val v = p.getValue().toString().toDouble()
-                                nowLong=v
-                            }
-                            override fun onCancelled(p: DatabaseError) {
-                            }
-                        })
-                        mchildRef!!.addValueEventListener(object : ValueEventListener {
-                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                usernick=dataSnapshot.getValue().toString()
 
+                Handler().postDelayed({
+                    if(users!!.getOtherUid()!=" ") {
+                        mlimitlocRef!!.addValueEventListener(object : ValueEventListener {
+                            override fun onDataChange(p: DataSnapshot) {
+                                val data = p.getValue().toString()
+                                if(data == " "){
+
+                                }
+                                else{
+                                    limitrange = p.getValue(LimitRange::class.java)
+                                    if (limitrange != null) {
+                                        var laa = Location("a")
+                                        laa.setLatitude(limitrange!!.latitude)
+                                        laa.setLongitude(limitrange!!.longitude)
+                                        var lab = Location("b")
+                                        lab.setLatitude(nowLat)
+                                        lab.setLongitude(nowLong)
+                                        var dist = laa.distanceTo(lab)
+                                        if (Math.pow(dist.toDouble() / 1000.0, 2.0) < limitrange!!.radius) {
+                                        } else {
+                                            val now: Long = System.currentTimeMillis()
+                                            val date: Date = Date(now)
+                                            val sdfNow: SimpleDateFormat = SimpleDateFormat("dd일HH시mm분", Locale.KOREA)
+                                            val strNow: String = sdfNow.format(date)
+                                            val intent = Intent(this@MyService, PresentLocation::class.java)
+                                            val push = Intent()
+                                            val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+                                            push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                            push.setClass(applicationContext, MyService::class.java)
+                                            Notifi = Notification.Builder(applicationContext)
+                                                    .setContentTitle("제한범위이탈 " + strNow)
+                                                    .setContentText(connectnick + "님이 제한범위를 벗어났습니다.")
+                                                    .setSmallIcon(R.drawable.location)
+                                                    .setTicker("범위벗어남!!")
+                                                    .setContentIntent(pendingIntent)
+                                                    .setPriority(Notification.PRIORITY_MAX)
+                                                    .addAction(android.R.drawable.star_on, "확인하기", pendingIntent)
+                                                    .setAutoCancel(true)
+                                                    .setFullScreenIntent(pendingIntent, true)
+                                                    .build()
+
+                                            //소리추가
+                                            Notifi!!.defaults = Notification.DEFAULT_SOUND
+                                            //확인하면 자동으로 알림이 제거 되도록
+                                            Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
+                                            Notifi_M!!.notify(778, Notifi)
+                                        }
+                                    }
+                                }
                             }
-                            override fun onCancelled(databaseError: DatabaseError) {
-                            }
-                        })
-                        mchild1Ref!!.addValueEventListener(object : ValueEventListener {
-                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                username=dataSnapshot.getValue().toString()
-                            }
-                            override fun onCancelled(databaseError: DatabaseError) {
-                            }
-                        })
-                        mchild2Ref!!.addValueEventListener(object : ValueEventListener {
-                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                lastime=dataSnapshot.getValue().toString()
-                            }
-                            override fun onCancelled(databaseError: DatabaseError) {
-                            }
-                        })
-                        motherNickRef!!.addValueEventListener(object : ValueEventListener {
-                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                connectnick=dataSnapshot.getValue().toString()
-                            }
-                            override fun onCancelled(databaseError: DatabaseError) {
+
+                            override fun onCancelled(p: DatabaseError) {
+
                             }
                         })
                     }
-
-                    Handler().postDelayed({
-                        mlimitlocRef!!.addValueEventListener(object :ValueEventListener{
-                            override fun onDataChange(p: DataSnapshot) {
-                                limitrange=p.getValue(LimitRange::class.java)
-                                if(limitrange!=null){
-                                    var laa= Location("a")
-                                    laa.setLatitude(limitrange!!.latitude)
-                                    laa.setLongitude(limitrange!!.longitude)
-                                    var lab = Location("b")
-                                    lab.setLatitude(nowLat)
-                                    lab.setLongitude(nowLong)
-                                    var dist = laa.distanceTo(lab)
-                                    if(Math.pow(dist.toDouble()/1000.0,2.0)<limitrange!!.radius){
-                                    }
-                                    else {
-                                        val now:Long = System.currentTimeMillis()
-                                        val date: Date = Date(now)
-                                        val sdfNow: SimpleDateFormat = SimpleDateFormat("dd일HH시mm분", Locale.KOREA)
-                                        val strNow:String = sdfNow.format(date)
-                                        val intent = Intent(this@MyService, PresentLocation::class.java)
-                                        val push=Intent()
-                                        val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-                                        push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                        push.setClass(applicationContext,MyService::class.java)
-                                        Notifi = Notification.Builder(applicationContext)
-                                                .setContentTitle("제한범위이탈 "+ strNow)
-                                                .setContentText(connectnick+"님이 제한범위를 벗어났습니다.")
-                                                .setSmallIcon(R.drawable.location)
-                                                .setTicker("범위벗어남!!")
-                                                .setContentIntent(pendingIntent)
-                                                .setPriority(Notification.PRIORITY_MAX)
-                                                .addAction(android.R.drawable.star_on,"확인하기",pendingIntent)
-                                                .setAutoCancel(true)
-                                                .setFullScreenIntent(pendingIntent,true)
-                                                .build()
-
-                                        //소리추가
-                                        Notifi!!.defaults = Notification.DEFAULT_SOUND
-                                        //확인하면 자동으로 알림이 제거 되도록
-                                        Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
-                                        Notifi_M!!.notify(778, Notifi)
-                                    }
-                                }
+                    mchildUserFaceChatRef!!.addValueEventListener(object :ValueEventListener{
+                        override fun onDataChange(p0: DataSnapshot?) {
+                            facechatchannel=p0!!.getValue().toString()
+                            if(facechatchannel == " "  ){
                             }
-                            override fun onCancelled(p: DatabaseError) {
+                            else if(otherfacechatchannel != " " && facechatchannel!=" " );
+                            else{
+                                val intent = Intent(this@MyService, RTCFaceActivity::class.java)
+                                val push=Intent()
+                                val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+                                push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                push.setClass(applicationContext,MyService::class.java)
+                                Notifi = Notification.Builder(applicationContext)
+                                        .setContentTitle("화상통화")
+                                        .setContentText(usernick+"님과의 연결 요청")
+                                        .setSmallIcon(R.drawable.facetalk)
+                                        .setTicker("전화요청!!")
+                                        .setContentIntent(pendingIntent)
+                                        .setPriority(Notification.PRIORITY_MAX)
+                                        .addAction(android.R.drawable.star_on,"확인하기",pendingIntent)
+                                        .setAutoCancel(true)
+                                        .setFullScreenIntent(pendingIntent,true)
+                                        .build()
 
+                                //소리추가
+                                Notifi!!.defaults = Notification.DEFAULT_SOUND
+                                //확인하면 자동으로 알림이 제거 되도록
+                                Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
+                                Notifi_M!!.notify(777, Notifi)
                             }
-                        })
-                        mchildUserFaceChatRef!!.addValueEventListener(object :ValueEventListener{
-                            override fun onDataChange(p0: DataSnapshot?) {
-                                facechatchannel=p0!!.getValue().toString()
-                                if(facechatchannel == " "  ){
-                                }
-                                else if(otherfacechatchannel != " " && facechatchannel!=" " );
-                                else{
-                                    val intent = Intent(this@MyService, RTCFaceActivity::class.java)
+                        }
+                        override fun onCancelled(p0: DatabaseError?) {
+                        }
+                    })
+
+
+                    mchild3Ref!!.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            curtime=dataSnapshot.getValue().toString()
+                            Handler().postDelayed({
+                                if(lastime==curtime || usernick ==" ")
+                                    ;
+                                else {
+                                    val intent = Intent(this@MyService, MainActivity::class.java)
                                     val push=Intent()
-                                    val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+                                    val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
                                     push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                     push.setClass(applicationContext,MyService::class.java)
                                     Notifi = Notification.Builder(applicationContext)
-                                            .setContentTitle("화상통화")
-                                            .setContentText(usernick+"님과의 연결 요청")
-                                            .setSmallIcon(R.drawable.facetalk)
-                                            .setTicker("전화요청!!")
+                                            .setContentTitle(curtime)
+                                            .setContentText(usernick+"("+username+")님과의 연결 요청")
+                                            .setSmallIcon(R.drawable.alarm)
+                                            .setTicker("알림!!!")
                                             .setContentIntent(pendingIntent)
                                             .setPriority(Notification.PRIORITY_MAX)
                                             .addAction(android.R.drawable.star_on,"확인하기",pendingIntent)
                                             .setAutoCancel(true)
                                             .setFullScreenIntent(pendingIntent,true)
                                             .build()
-
                                     //소리추가
                                     Notifi!!.defaults = Notification.DEFAULT_SOUND
+                                    //알림 소리를 한번만 내도록
+                                    Notifi!!.flags = Notification.FLAG_ONLY_ALERT_ONCE
                                     //확인하면 자동으로 알림이 제거 되도록
                                     Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
-                                    Notifi_M!!.notify(777, Notifi)
+                                    Notifi_M!!.notify(787, Notifi)
                                 }
-                            }
-                            override fun onCancelled(p0: DatabaseError?) {
-                            }
-                        })
-
-
-                        mchild3Ref!!.addValueEventListener(object : ValueEventListener {
-                            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                curtime=dataSnapshot.getValue().toString()
-                                Handler().postDelayed({
-                                    if(lastime==curtime || usernick ==" ")
-                                        ;
-                                    else {
-                                        val intent = Intent(this@MyService, MainActivity::class.java)
-                                        val push=Intent()
-                                        val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                                        push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                        push.setClass(applicationContext,MyService::class.java)
-                                        Notifi = Notification.Builder(applicationContext)
-                                                .setContentTitle(curtime)
-                                                .setContentText(usernick+"("+username+")님과의 연결 요청")
-                                                .setSmallIcon(R.drawable.alarm)
-                                                .setTicker("알림!!!")
-                                                .setContentIntent(pendingIntent)
-                                                .setPriority(Notification.PRIORITY_MAX)
-                                                .addAction(android.R.drawable.star_on,"확인하기",pendingIntent)
-                                                .setAutoCancel(true)
-                                                .setFullScreenIntent(pendingIntent,true)
-                                                .build()
-                                        //소리추가
-                                        Notifi!!.defaults = Notification.DEFAULT_SOUND
-                                        //알림 소리를 한번만 내도록
-                                        Notifi!!.flags = Notification.FLAG_ONLY_ALERT_ONCE
-                                        //확인하면 자동으로 알림이 제거 되도록
-                                        Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
-                                        Notifi_M!!.notify(787, Notifi)
-                                    }
-                                }, 1000)
-                            }
-                            override fun onCancelled(databaseError: DatabaseError) {
-                            }
-                        })
-                    }, 1500)
-                }, 2000)
-            }, 1000)
-        }
+                            }, 1000)
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                        }
+                    })
+                }, 1500)
+            }, 2200)
+        }, 800)
         return Service.START_STICKY
     }
 
@@ -365,7 +375,7 @@ class MyService : Service() {
             mchildUserRef = muserRef.child(user.uid)
             mchildlocRef=mlocRef.child((user.uid))
             nowLatLang= mchildlocRef!!.child("time")
-            isLogin==true
+            isLogin=true
         } else {
 
         }

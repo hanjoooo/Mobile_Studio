@@ -1,16 +1,18 @@
 package com.example.khanj.trust
 
+import android.app.Notification
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
-import android.graphics.Canvas
+import android.content.Intent
 import android.graphics.Color
-import android.graphics.Paint
 import android.location.Location
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.widget.Toast
+import android.widget.EditText
+import com.example.khanj.trust.Data.LimitRange
 import com.example.khanj.trust.Data.User
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.maps.*
@@ -22,6 +24,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
@@ -43,6 +46,7 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
 
     var longitude:Double = 0.0
     var latitude:Double = 0.0
+    var mapCircle: Circle?=null
 
     private var userInfo: User?=null
 
@@ -101,6 +105,38 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
                 }
             })
             Handler().postDelayed({
+                mchildRef!!.child("LimitRange").addListenerForSingleValueEvent(object:ValueEventListener{
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val data = dataSnapshot.getValue().toString()
+                        if(data== " ") ;
+                        else{
+                            val limitrange=dataSnapshot.getValue(LimitRange::class.java)
+                            if(limitrange!=null){
+                                var laa= Location("a")
+                                laa.setLatitude(limitrange!!.latitude)
+                                laa.setLongitude(limitrange!!.longitude)
+                                var lab = Location("b")
+                                var dist = laa.distanceTo(lab)
+                                var Range=limitrange.radius
+                                if(mapCircle!=null){
+                                    mapCircle!!.remove()
+                                }
+                                val circleOptions= CircleOptions()
+                                        .center(LatLng(limitrange!!.latitude,limitrange!!.longitude))
+                                        .radius(Range*1000.0)
+                                        .strokeColor(Color.GREEN)
+                                        .fillColor(Color.argb(128, 0, 255, 0))
+                                mapCircle= mMap!!.addCircle(circleOptions)
+                                if(Math.pow(dist.toDouble()/1000.0,2.0)<limitrange!!.radius){
+                                }
+                                else {
+                                }
+                            }
+                        }
+                    }
+                    override fun onCancelled(databaseError: DatabaseError) {
+                    }
+                })
                 mchild1Ref!!.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val datas = dataSnapshot.getValue().toString()

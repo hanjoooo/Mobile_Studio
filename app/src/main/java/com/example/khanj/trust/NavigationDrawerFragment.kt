@@ -48,7 +48,6 @@ class NavigationDrawerFragment : Fragment() {
         containerView = getActivity().findViewById(fragmentId)
         mDrawerLayout = drawerLayout
         mDrawerToggle = object : ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
-            @Override
             override fun onDrawerOpened(drawerView: View) {
                 super.onDrawerOpened(drawerView)
 
