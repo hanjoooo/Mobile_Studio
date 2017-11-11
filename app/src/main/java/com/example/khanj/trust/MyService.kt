@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import com.playrtc.simplechat.TestRtc
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.timerTask

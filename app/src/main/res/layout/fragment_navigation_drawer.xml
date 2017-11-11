@@ -57,7 +57,21 @@ tools:context="com.example.khanj.trust.NavigationDrawerFragment">
         android:text="@string/create_and_connect"
         android:textColor="@color/primary"
         android:theme="@style/Base.ThemeOverlay.AppCompat.Light" />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="8dp" />
 
+    <EditText
+        android:id="@+id/connect_channel_id"
+        style="@style/AppTheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/connect_channel_id_hint"
+        android:imeOptions="actionSend"
+        android:inputType="textCapCharacters"
+        android:minHeight="48dp"
+        android:textColor="@color/primary"
+        android:textColorHint="@color/primary_light" />
 
 
     <Button

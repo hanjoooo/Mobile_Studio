@@ -44,15 +44,14 @@ class RegistActivity :  BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_regist)
         //비밀번호 일치 검사
-        etPassword.addTextChangedListener(object : TextWatcher {
+        etPasswordConfirm.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val password = etPassword.text.toString()
                 val confirm = etPasswordConfirm.text.toString()
-
-                if(password==confirm){
+                if(password.equals(confirm)){
                     etPassword.setBackgroundColor(Color.GREEN)
                     etPasswordConfirm.setBackgroundColor(Color.GREEN)
                 }
@@ -140,6 +139,7 @@ class RegistActivity :  BaseActivity() {
             Users= User(etEmail.text.toString(),etPassword!!.text.toString(),
                     nickname!!.text.toString(),edname!!.text.toString(),edphone.text.toString(),userUid," "," "," "," ")
             createAccount(etEmail!!.text.toString(), etPassword!!.text.toString())
+            mLocationRef.child(userUid).child("LimitRange").setValue(null)
 
             val now:Long = System.currentTimeMillis()
             val date: Date = Date(now)
@@ -222,7 +222,6 @@ class RegistActivity :  BaseActivity() {
         if (user != null) {
             mchildRef = mConditionRef.child(user.uid)
             userUid=user.uid
-            mLocationRef.child(userUid).child("LimitRange").setValue(null)
         } else {
 
         }
