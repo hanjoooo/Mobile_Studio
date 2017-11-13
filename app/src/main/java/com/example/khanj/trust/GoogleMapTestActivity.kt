@@ -140,15 +140,17 @@ class GoogleMapTestActivity : AppCompatActivity(), OnMapReadyCallback {
             longitude = location.getLongitude() //경도
             latitude = location.getLatitude()   //위도
 
-            currentlocation = LatLng(latitude, longitude)
+            if(currentlocation==LatLng(37.6007195267265,126.86528900355972)){
+                currentlocation = LatLng(latitude, longitude)
+                val altitude = location.getAltitude()   //고도
+                val accuracy = location.getAccuracy()    //정확도
+                val provider = location.getProvider()   //위치제공자
+                //Gps 위치제공자에 의한 위치변화. 오차범위가 좁다.
+                //Network 위치제공자에 의한 위치변화
+                //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.
+                textView2.setText("위치 : " + nowAddress + "\n위도 : " + latitude + "\n경도 : " + longitude+ "\n고도 : " + altitude + "\n정확도 : " + accuracy)
+            }
 
-            val altitude = location.getAltitude()   //고도
-            val accuracy = location.getAccuracy()    //정확도
-            val provider = location.getProvider()   //위치제공자
-            //Gps 위치제공자에 의한 위치변화. 오차범위가 좁다.
-            //Network 위치제공자에 의한 위치변화
-            //Network 위치는 Gps에 비해 정확도가 많이 떨어진다.
-            textView2.setText("위치 : " + nowAddress + "\n위도 : " + latitude + "\n경도 : " + longitude+ "\n고도 : " + altitude + "\n정확도 : " + accuracy)
         }
 
 

@@ -137,8 +137,7 @@ class MainActivity : AppCompatActivity() {
                             R.id.subMenu -> "Sg"
                             R.id.subMenu2 -> setState()
                             R.id.logout -> LogOut()
-                            R.id.subRegist->
-                                Toast.makeText(applicationContext, "등록", Toast.LENGTH_SHORT).show()
+                            R.id.subRegist-> startActivity(intent)
                             R.id.subChange -> startActivity(intent)
                             R.id.subDelete ->
                                 Toast.makeText(applicationContext, "삭제", Toast.LENGTH_SHORT).show()
@@ -153,14 +152,6 @@ class MainActivity : AppCompatActivity() {
         val intent=Intent(this,MyService::class.java)
         startService(intent)
 
-        bt_alarm.setOnClickListener {
-            /*
-            val uri:Uri=Uri.parse("smsto:01053445913")
-            val i=Intent(Intent.ACTION_SENDTO,uri)
-            i.putExtra("sms_body","연결하실거임?")
-            startActivity(i)
-            */
-        }
         bt_facechatting.setOnClickListener {
             val intent = Intent(this, RTCFaceActivity::class.java)
             startActivity(intent)
@@ -199,7 +190,6 @@ class MainActivity : AppCompatActivity() {
             alertDialogBuilder.setPositiveButton("확인", null)
             var alert: AlertDialog = alertDialogBuilder.create()
             alert.setTitle("상태")
-            alert.window.setBackgroundDrawable(ColorDrawable(Color.YELLOW))
             alert.window.setBackgroundDrawable(ColorDrawable(R.color.pure))
             alert.show()
         }
