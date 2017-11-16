@@ -1,6 +1,4 @@
 package com.playrtc.simplechat
-
-
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.graphics.Point

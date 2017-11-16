@@ -139,9 +139,7 @@ class MainActivity : AppCompatActivity() {
                             R.id.logout -> LogOut()
                             R.id.subRegist-> startActivity(intent)
                             R.id.subChange -> startActivity(intent)
-                            R.id.subDelete ->
-                                Toast.makeText(applicationContext, "삭제", Toast.LENGTH_SHORT).show()
-
+                            R.id.subDelete -> deleteLimitRange()
                         }
                         return false
                     }
@@ -164,6 +162,7 @@ class MainActivity : AppCompatActivity() {
             aDialog.setTitle("연결하실 상대방 닉네임을 입력하세요.");
             aDialog.setView(layout);
 
+
             aDialog.setPositiveButton("연결") { dialog, which ->
                 var x: EditText = layout.findViewById(R.id.EdConnectUser)
                 val now: Long = System.currentTimeMillis()
@@ -180,6 +179,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             val ad = aDialog.create()
+            ad.window.setBackgroundDrawable(ColorDrawable(R.color.pure))
             ad.show()
         }
 
@@ -339,9 +339,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         val ad = aDialog.create()
+        ad.window.setTitleColor(Color.argb(255,135,206,235))
         ad.show()
     }
 
+    public fun deleteLimitRange(){
+        mConditionRef.child(userInfo!!.getOtherUid()).child("LimitRange").setValue(" ")
+        Toast.makeText(applicationContext,"삭제되었습니다.", Toast.LENGTH_SHORT).show()
+    }
     private fun LogOut(){
         signOut()
         finish()

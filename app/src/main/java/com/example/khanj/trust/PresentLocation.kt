@@ -6,6 +6,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -16,14 +18,12 @@ import com.example.khanj.trust.Data.LimitRange
 import com.example.khanj.trust.Data.User
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.Circle
-import com.google.android.gms.maps.model.CircleOptions
+import com.google.android.gms.maps.model.*
 
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -164,10 +164,26 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
         val x = 37.6007195267265
         val y = 126.86528900355972
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lat,14.toFloat()))
+        var nowAddress=""
+
         Handler().postDelayed({
+            val geocoder= Geocoder(this@PresentLocation,Locale.KOREA)
+            var address:List<Address>
+            try{
+                if(geocoder!=null)
+                {
+                    address = geocoder.getFromLocation(latitude,longitude,1)
+                    if(address !=null && address.size > 0){
+                        val currentLocationAddress=address.get(0).getAddressLine(0).toString()
+                        nowAddress = currentLocationAddress
+                    }
+                }
+            }catch (e: IOException){
+                e.printStackTrace()
+            }
             val sydney = LatLng(latitude, longitude)
-            mMap.addMarker(MarkerOptions().position(sydney).title("현재 위치"))
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15.toFloat()))
+            mMap.addMarker(MarkerOptions().position(sydney).title("현재 위치").icon(BitmapDescriptorFactory.fromResource(R.drawable.now)).snippet(nowAddress))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,16F.toFloat()))
         }, 2500)
         // Add a marker in Sydney and move the camera
 

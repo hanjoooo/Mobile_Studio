@@ -26,13 +26,14 @@
             android:inputType="textShortMessage"
             android:lines="1"
             android:singleLine="true"
-            android:textColor="@color/black"
+            android:textColor="@color/primary"
             />
 
         <ImageButton
                  android:id="@+id/sendButton"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
-                 android:src="@android:drawable/ic_menu_send" />
+                 android:src="@android:drawable/ic_menu_send"
+                 android:background="@color/skyblue"/>
     </LinearLayout>
 </RelativeLayout>

@@ -97,6 +97,7 @@ tools:context="com.example.khanj.trust.MainActivity">
         android:id="@+id/bt_facechatting"
         android:src="@drawable/facechatting"
         android:layout_marginLeft="80dp"
+        android:background="@drawable/selector_bt"
         />
 </LinearLayout>
 </android.support.constraint.ConstraintLayout>
