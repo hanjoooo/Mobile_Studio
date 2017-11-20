@@ -20,6 +20,7 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_chatting.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.Comparator
 
 
 class ChattingActivity :AppCompatActivity(){
@@ -40,6 +41,7 @@ class ChattingActivity :AppCompatActivity(){
 
     private  var datas =  ArrayList<Chat>()
     var adpater:ChatListAdapter?=null
+    var chatroom=""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,16 +54,13 @@ class ChattingActivity :AppCompatActivity(){
             val sdfNow:SimpleDateFormat= SimpleDateFormat("yy.MM.dd HH:mm", Locale.KOREA)
             val strNow:String = sdfNow.format(date)
             val strNow2:String=sdfNow2.format(date)
-            val mChatRef=mConditionRef.child(strNow2)
+            val mChatRef=mConditionRef.child(chatroom).child(strNow2)
             val message = messageInput.getText().toString()
             val chatMessage= Chat(message,mUsername,strNow,mUserUid)
             mChatRef.setValue(chatMessage)
             messageInput.setText("")
         }
-        Handler().postDelayed({
-            adpater = com.example.khanj.trust.ChatListAdapter(datas,mUserUid,this@ChattingActivity)
-            chatlist.adapter=adpater
-        }, 500)
+
 
         mAuthListener = FirebaseAuth.AuthStateListener {
             firebaseAuth ->
@@ -77,12 +76,25 @@ class ChattingActivity :AppCompatActivity(){
             updateUI(user)
             // [END_EXCLUDE]
         }
+        Handler().postDelayed({
+            adpater = com.example.khanj.trust.ChatListAdapter(datas,mUserUid,this@ChattingActivity)
+            chatlist.adapter=adpater
+        }, 200)
+
     }
     override fun onStart() {
         super.onStart()
         mAuth.addAuthStateListener(mAuthListener!!)
         Handler().postDelayed({
-            mchildRef!!.child("name").addListenerForSingleValueEvent(object : ValueEventListener {
+            mchildRef?.child("chatChannel")!!.addListenerForSingleValueEvent(object :ValueEventListener{
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val data = dataSnapshot.getValue().toString()
+                    chatroom=data
+                }
+                override fun onCancelled(databaseError: DatabaseError) {
+                }
+            })
+            mchildRef?.child("name")!!.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val data = dataSnapshot.getValue().toString()
                     mUsername=data
@@ -90,16 +102,14 @@ class ChattingActivity :AppCompatActivity(){
                 override fun onCancelled(databaseError: DatabaseError) {
                 }
             })
-
             Handler().postDelayed({
-                mRootRef.child("chat").addValueEventListener(object:ValueEventListener{
+                mRootRef.child("chat").child(chatroom).addValueEventListener(object:ValueEventListener{
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         datas.clear()
                         for(snapshot in dataSnapshot.children){
                             datas.add(snapshot.getValue(Chat::class.java))
+                            Log.d("나야나야",snapshot.getValue(Chat::class.java).getTimes())
                         }
-                        adpater = com.example.khanj.trust.ChatListAdapter(datas,mUserUid,this@ChattingActivity)
-                        chatlist.adapter=adpater
                         adpater!!.notifyDataSetChanged()
                     }
                     override fun onCancelled(p0: DatabaseError?) {
@@ -131,9 +141,9 @@ class ChattingActivity :AppCompatActivity(){
                     }
                 })
                 */
-            }, 500)
+            }, 100)
 
-        }, 500)
+        }, 100)
 
     }
     override fun onStop() {

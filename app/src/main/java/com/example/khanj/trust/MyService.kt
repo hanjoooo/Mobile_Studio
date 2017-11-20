@@ -114,12 +114,12 @@ class MyService : Service() {
             mchildUserRef!!.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     users=dataSnapshot.getValue(User::class.java)
-                    mchildRef=mConditionRef.child(users!!.getNickname()).child("nickname")
-                    mchild1Ref=mConditionRef.child(users!!.getNickname()).child("name")
-                    mchild2Ref=mConditionRef.child(users!!.getNickname()).child("lastime")
-                    mchild3Ref=mConditionRef.child(users!!.getNickname()).child("times")
+                    mchildRef=mConditionRef.child(users.getNickname()).child("nickname")
+                    mchild1Ref=mConditionRef.child(users.getNickname()).child("name")
+                    mchild2Ref=mConditionRef.child(users.getNickname()).child("lastime")
+                    mchild3Ref=mConditionRef.child(users.getNickname()).child("times")
                     mchildUserFaceChatRef=mchildUserRef!!.child("faceChatChannel")
-                    motherNickRef=muserRef.child(users!!.getOtherUid()).child("nickname")
+                    motherNickRef=muserRef.child(users.getOtherUid()).child("nickname")
 
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -127,11 +127,11 @@ class MyService : Service() {
             })
 
             Handler().postDelayed({
-                if(users!!.getOtherUid()!=" ") {
-                    muserlatRef = mlocRef.child(users!!.getOtherUid()).child("현재위치").child("위도")
-                    muserlongRef = mlocRef.child(users!!.getOtherUid()).child("현재위치").child("경도")
-                    mlimitlocRef = mlocRef.child(users!!.getOtherUid()).child("LimitRange")
-                    mchildOtherFaceChatRef = muserRef.child(users!!.getOtherUid()).child("faceChatChannel")
+                if(users.getOtherUid()!=" ") {
+                    muserlatRef = mlocRef.child(users.getOtherUid()).child("현재위치").child("위도")
+                    muserlongRef = mlocRef.child(users.getOtherUid()).child("현재위치").child("경도")
+                    mlimitlocRef = mlocRef.child(users.getOtherUid()).child("LimitRange")
+                    mchildOtherFaceChatRef = muserRef.child(users.getOtherUid()).child("faceChatChannel")
                     mchildOtherFaceChatRef!!.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             //  otherfacechatchannel=dataSnapshot.getValue().toString()
@@ -140,7 +140,7 @@ class MyService : Service() {
                         override fun onCancelled(p0: DatabaseError) {
                         }
                     })
-                    muserlatRef!!.addValueEventListener(object : ValueEventListener {
+                    muserlatRef?.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(p: DataSnapshot) {
                             val v = p.getValue().toString().toDouble()
                             nowLat = v
@@ -149,7 +149,7 @@ class MyService : Service() {
                         override fun onCancelled(p: DatabaseError) {
                         }
                     })
-                    muserlongRef!!.addValueEventListener(object : ValueEventListener {
+                    muserlongRef?.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(p: DataSnapshot) {
                             val v = p.getValue().toString().toDouble()
                             nowLong = v
@@ -158,7 +158,7 @@ class MyService : Service() {
                         override fun onCancelled(p: DatabaseError) {
                         }
                     })
-                    motherNickRef!!.addValueEventListener(object : ValueEventListener {
+                    motherNickRef?.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             connectnick=dataSnapshot.getValue().toString()
                         }
@@ -191,8 +191,8 @@ class MyService : Service() {
 
 
                 Handler().postDelayed({
-                    if(users!!.getOtherUid()!=" ") {
-                        mlimitlocRef!!.addValueEventListener(object : ValueEventListener {
+                    if(users.getOtherUid()!=" ") {
+                        mlimitlocRef?.addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(p: DataSnapshot) {
                                 val data = p.getValue().toString()
                                 if(data == " "){
@@ -201,13 +201,13 @@ class MyService : Service() {
                                 else{
                                     limitrange = p.getValue(LimitRange::class.java)
                                     if (limitrange != null) {
-                                        var laa = Location("a")
+                                        val laa = Location("a")
                                         laa.setLatitude(limitrange!!.latitude)
                                         laa.setLongitude(limitrange!!.longitude)
-                                        var lab = Location("b")
+                                        val lab = Location("b")
                                         lab.setLatitude(nowLat)
                                         lab.setLongitude(nowLong)
-                                        var dist = laa.distanceTo(lab)
+                                        val dist = laa.distanceTo(lab)
                                         if (Math.pow(dist.toDouble() / 1000.0, 2.0) < limitrange!!.radius) {
                                         } else {
                                             val now: Long = System.currentTimeMillis()
@@ -246,7 +246,7 @@ class MyService : Service() {
                             }
                         })
                     }
-                    mchildUserFaceChatRef!!.addValueEventListener(object :ValueEventListener{
+                    mchildUserFaceChatRef?.addValueEventListener(object :ValueEventListener{
                         override fun onDataChange(p0: DataSnapshot?) {
                             facechatchannel=p0!!.getValue().toString()
                             if(facechatchannel == " "  ){
@@ -282,7 +282,7 @@ class MyService : Service() {
                     })
 
 
-                    mchild3Ref!!.addValueEventListener(object : ValueEventListener {
+                    mchild3Ref?.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             curtime=dataSnapshot.getValue().toString()
                             Handler().postDelayed({
@@ -319,7 +319,7 @@ class MyService : Service() {
                         }
                     })
                 }, 1500)
-            }, 2200)
+            }, 1200)
         }, 800)
         return Service.START_STICKY
     }

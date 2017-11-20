@@ -82,7 +82,9 @@
         <activity
             android:name=".PresentLocation"
             android:label="@string/title_activity_present_location" />
-        <activity android:name=".ChattingActivity" />
+        <activity
+            android:name=".ChattingActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".LocationTrakingActivity"
             android:label="@string/title_activity_location_traking" />
@@ -126,6 +128,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

@@ -37,34 +37,28 @@ package com.example.khanj.trust
         }
 
         override fun getView(p0: Int, p1: View?, p2: ViewGroup?): View {
-            if(p1==null){
-                val convert = inflater.inflate(R.layout.chat_message,null)
-                val convert2= inflater.inflate(R.layout.chat_message1,null)
-                val mTextViewDate : View = convert.findViewById(R.id.textTime)
-                val mTextViewDate2 : View = convert2.findViewById(R.id.textTIme2)
-                val mTextViewMessage : View = convert.findViewById(R.id.message)
-                val mTextViewMessage2 : View = convert2.findViewById(R.id.message2)
+            val convert = inflater.inflate(R.layout.chat_message,null)
+            val convert2= inflater.inflate(R.layout.chat_message1,null)
+            val mTextViewDate : View = convert.findViewById(R.id.textTime)
+            val mTextViewDate2 : View = convert2.findViewById(R.id.textTIme2)
+            val mTextViewMessage : View = convert.findViewById(R.id.message)
+            val mTextViewMessage2 : View = convert2.findViewById(R.id.message2)
 
-                val mAuthorView :View = convert.findViewById(R.id.author)
+            val mAuthorView :View = convert.findViewById(R.id.author)
 
 
-                val chat : Chat= datas.get(p0)
+            val chat : Chat= datas.get(p0)
 
-                if(chat.getAuthorUid().equals(currentUser)){
-                    mTextViewDate2.textTIme2.setText(chat.getTimes())
-                    mTextViewMessage2.message2.setText(chat.getMessage())
-                    return convert2
-                }
-                else {
-                    mTextViewDate.textTime.setText(chat.getTimes())
-                    mTextViewMessage.message.setText(chat.getMessage())
-                    mAuthorView.author.setText(chat.getAuthor())
-                    return convert
-                }
+            if(chat.getAuthorUid().equals(currentUser)){
+                mTextViewDate2.textTIme2.setText(datas.get(p0).getTimes())
+                mTextViewMessage2.message2.setText(datas.get(p0).getMessage())
+                return convert2
             }
             else {
-
-                return p1
+                mTextViewDate.textTime.setText(datas.get(p0).getTimes())
+                mTextViewMessage.message.setText(datas.get(p0).getMessage())
+                mAuthorView.author.setText(datas.get(p0).getAuthor())
+                return convert
             }
         }
 

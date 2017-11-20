@@ -21,14 +21,15 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:background="@drawable/textview_border"
-            android:textColor="@color/black"/>
+            android:textColor="@color/skyblue"
+            android:textSize="15dp"/>
 
         <TextView
             android:id="@+id/textTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="10dp"
+            android:textSize="13dp"
             android:layout_gravity="bottom"/>
     </LinearLayout>
 

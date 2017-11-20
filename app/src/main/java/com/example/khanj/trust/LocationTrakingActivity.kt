@@ -93,7 +93,7 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             })
             Handler().postDelayed({
-                mlocChildRef!!.addListenerForSingleValueEvent(object : ValueEventListener {
+                mlocChildRef?.addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         var x = ArrayList<LatLng>()
                         var dotime=ArrayList<String>()

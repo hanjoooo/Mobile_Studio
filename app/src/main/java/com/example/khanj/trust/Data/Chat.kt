@@ -1,15 +1,23 @@
 package com.example.khanj.trust.Data
 
-/**
- * Created by khanj on 2017-09-15.
- */
 class Chat() {
-    private var message: String=" "
-    private var author: String=" "
-    private var times:String=" "
-    private var authorUid:String=" "
-
-    constructor(message: String, author: String,times:String,authorUid:String) : this(){
+    private var message=" "
+        set(value){
+            field=value
+        }
+    private var author=" "
+        set(value){
+            field=value
+        }
+    private var times=" "
+        set(value){
+            field=value
+        }
+    private var authorUid=" "
+        set(value){
+            field=value
+        }
+    constructor(message: String,author: String,times: String,authorUid: String):this(){
         this.message=message
         this.author=author
         this.times=times

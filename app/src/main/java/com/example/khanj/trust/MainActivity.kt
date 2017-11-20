@@ -234,21 +234,21 @@ class MainActivity : AppCompatActivity() {
                 }
             })
             Handler().postDelayed({
-                mMesLastime!!.addValueEventListener(object : ValueEventListener {
+                mMesLastime?.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         mesLastime=dataSnapshot.getValue().toString()
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
                 })
-                mMesUid!!.addValueEventListener(object : ValueEventListener {
+                mMesUid?.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         mesUid=dataSnapshot.getValue().toString()
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
                 })
-                mMesNick!!.addValueEventListener(object : ValueEventListener {
+                mMesNick?.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         mesNick=dataSnapshot.getValue().toString()
                     }
@@ -256,7 +256,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
 
-                if(userInfo!!.getOtherUid()!= " ") {
+                if(userInfo?.getOtherUid()!= " ") {
                     mState!!.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             val data = dataSnapshot.getValue().toString()
@@ -272,7 +272,7 @@ class MainActivity : AppCompatActivity() {
                     })
                 }
                 Handler().postDelayed({
-                    mMesCurtime!!.addValueEventListener(object : ValueEventListener {
+                    mMesCurtime?.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             mesCurtime=dataSnapshot.getValue().toString()
                             if(mesCurtime==mesLastime || mesUid == " " ) ;
@@ -286,7 +286,9 @@ class MainActivity : AppCompatActivity() {
                                     aDialog.setPositiveButton("연결") { dialog, which ->
                                         mMesLastime!!.setValue(mesCurtime)
                                         muserChildRef!!.child("otherUid").setValue(mesUid)
+                                        muserChildRef!!.child("chatChannel").setValue(mesUid)
                                         muserRef.child(mesUid).child("otherUid").setValue(myUid)
+                                        muserRef.child(mesUid).child("chatChannel").setValue(mesUid)
                                         dialogOn=false
                                     }
                                     aDialog.setNegativeButton("취소") { dialog, which ->
@@ -302,7 +304,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     })
                 }, 1000)
-            }, 2500)
+            }, 1000)
         }, 800)
 
     }
@@ -331,7 +333,7 @@ class MainActivity : AppCompatActivity() {
         aDialog.setView(layout);
 
         aDialog.setPositiveButton("확인") { dialog, which ->
-            var x:EditText=layout.findViewById(R.id.EdConnectUser)
+            val x:EditText=layout.findViewById(R.id.EdConnectUser)
             muserChildRef!!.child("state").setValue(x.text.toString())
         }
         aDialog.setNegativeButton("취소") { dialog, which ->
