@@ -31,16 +31,9 @@ class SplashActivity : AppCompatActivity() {
     private fun startLoading() {
         val handler = Handler()
         handler.postDelayed({
-            if(userOn==true){
-                val intent = Intent(baseContext, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
-            else {
-                val intent = Intent(baseContext, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+            val intent = Intent(baseContext, LoginActivity::class.java)
+            startActivity(intent)
+           finish()
         }, 2000)
     }
     override fun onStart() {

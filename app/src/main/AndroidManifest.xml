@@ -84,15 +84,13 @@
             android:label="@string/title_activity_present_location" />
         <activity
             android:name=".ChattingActivity"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".LocationTrakingActivity"
             android:label="@string/title_activity_location_traking" />
         <activity
             android:name=".LoginActivity"
-            android:label="Trust">
-
-        </activity>
+            android:label="Trust"></activity>
         <activity android:name=".RegistActivity" />
         <activity android:name=".GoogleRegistActivity" />
 
@@ -107,7 +105,6 @@
             </intent-filter>
         </service>
         <!-- [END firebase_iid_service] -->
-
 
         <activity android:name=".NavigationDrawerFragment" />
         <activity android:name=".RTCFaceActivity" />
@@ -128,7 +125,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".ConnectOtherActivity"></activity>
     </application>
 
 </manifest>

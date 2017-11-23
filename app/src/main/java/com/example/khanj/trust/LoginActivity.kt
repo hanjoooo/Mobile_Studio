@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.Toast
+import com.example.khanj.trust.Data.User
 import com.example.khanj.trust.handler.BackPressCloseHandler
 import com.google.android.gms.auth.api.Auth
 
@@ -58,16 +59,22 @@ class LoginActivity : BaseActivity(), GoogleApiClient.OnConnectionFailedListener
             if (user != null) {
                 // User is signed in
                 mchildRef = mConditionRef.child(user.uid)
-                mchild2Ref = mchildRef!!.child("nickname")
-                mchild2Ref!!.addValueEventListener(object : ValueEventListener {
+                mchildRef!!.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val txt = dataSnapshot.getValue<String>(String::class.java)
-                        if (txt == null) {
+                        val users = dataSnapshot.getValue(User::class.java)
+                        if (users.getNickname() == " ") {
                             Toast.makeText(this@LoginActivity, "처음이시군요~~.", Toast.LENGTH_SHORT).show()
                             finish()
                             val intent = Intent(applicationContext, GoogleRegistActivity::class.java)
                             startActivity(intent)
-                        } else {
+                        }
+                        else if(users.getOtherUid() == " "){
+                            finish()
+                            Toast.makeText(this@LoginActivity, "상대방과 연결하세요~~", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(applicationContext,ConnectOtherActivity::class.java)
+                            startActivity(intent)
+                        }
+                        else {
                             finish()
                             val intent = Intent(applicationContext, MainActivity::class.java)
                             startActivity(intent)

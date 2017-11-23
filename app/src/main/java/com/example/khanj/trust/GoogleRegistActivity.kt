@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import com.example.khanj.trust.Data.GoogleUser
 import com.example.khanj.trust.Data.Messege
+import com.example.khanj.trust.Data.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -28,6 +29,7 @@ class GoogleRegistActivity : BaseActivity() {
     internal var mnotifiyChildRef:DatabaseReference?=null
     var Users: GoogleUser?=null
     private var userUid:String=" "
+    var UserInfo: User?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_google_regist)
@@ -81,7 +83,7 @@ class GoogleRegistActivity : BaseActivity() {
             mnotifiyChildRef=mnotifiyRef.child(nickname!!.text.toString())
             mnotifiyChildRef!!.setValue(messege)
             finish()
-            val intent = Intent(applicationContext, MainActivity::class.java)
+            val intent = Intent(applicationContext, ConnectOtherActivity::class.java)
             startActivity(intent)
         })
     }
@@ -89,16 +91,6 @@ class GoogleRegistActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
         mAuth.addAuthStateListener(mAuthListener!!)
-
-        mConditionRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-
-            }
-        })
     }
 
     override fun onStop() {

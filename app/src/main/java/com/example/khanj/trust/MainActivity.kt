@@ -219,7 +219,7 @@ class MainActivity : AppCompatActivity() {
         mAuth.addAuthStateListener(mAuthListener!!)
 
         Handler().postDelayed({
-            muserChildRef!!.addValueEventListener(object : ValueEventListener {
+            muserChildRef?.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     userInfo=dataSnapshot.getValue(User::class.java)
                     mnotifiyChildRef=mnotifiyRef.child(userInfo!!.getNickname())
@@ -257,7 +257,7 @@ class MainActivity : AppCompatActivity() {
                 })
 
                 if(userInfo?.getOtherUid()!= " ") {
-                    mState!!.addValueEventListener(object : ValueEventListener {
+                    mState?.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             val data = dataSnapshot.getValue().toString()
                             if (data == " ")
@@ -303,9 +303,9 @@ class MainActivity : AppCompatActivity() {
                         override fun onCancelled(databaseError: DatabaseError) {
                         }
                     })
-                }, 1000)
-            }, 1000)
-        }, 800)
+                }, 500)
+            }, 500)
+        }, 100)
 
     }
 
