@@ -2,12 +2,14 @@ package com.example.khanj.trust
 
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.EditText
+import android.widget.Toast
 import com.example.khanj.trust.Data.Messege
 import com.example.khanj.trust.Data.User
 import com.google.firebase.auth.FirebaseAuth
@@ -44,8 +46,10 @@ class ConnectOtherActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_connect_other)
+        /*
         val notificationManager=getSystemService(Context.NOTIFICATION_SERVICE)as NotificationManager
         notificationManager.cancel(787)
+        */
         btconnect.setOnClickListener{
             val now: Long = System.currentTimeMillis()
             val date: Date = Date(now)
@@ -53,8 +57,14 @@ class ConnectOtherActivity : AppCompatActivity() {
             val strNow: String = sdfNow.format(date)
             val messege = Messege(userInfo!!.getNickname(), userInfo!!.getName(), userInfo!!.getMyUid(), strNow, " ")
             ConnectUser = ednick.text.toString()
-            mnotifiyChildRef = mnotifiyRef.child(ConnectUser)
-            mnotifiyChildRef!!.setValue(messege)
+            if(ConnectUser.length!=0){
+                mnotifiyChildRef = mnotifiyRef.child(ConnectUser)
+                mnotifiyChildRef!!.setValue(messege)
+            }
+            else{
+                Toast.makeText(this,"닉네임을 입력하셔야합니다!!",Toast.LENGTH_SHORT).show()
+            }
+
         }
         mAuthListener = FirebaseAuth.AuthStateListener {
             firebaseAuth ->
@@ -142,10 +152,14 @@ class ConnectOtherActivity : AppCompatActivity() {
                                         muserRef.child(mesUid).child("otherUid").setValue(myUid)
                                         muserRef.child(mesUid).child("chatChannel").setValue(mesUid)
                                         dialogOn=false
+                                        finish()
+                                        val intent = Intent(applicationContext, MainActivity::class.java)
+                                        startActivity(intent)
                                     }
                                     aDialog.setNegativeButton("취소") { dialog, which ->
                                         mMesLastime!!.setValue(mesCurtime)
                                         dialogOn=false
+
                                     }
                                     val ad = aDialog.create()
                                     ad.show()
