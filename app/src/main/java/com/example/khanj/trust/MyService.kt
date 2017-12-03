@@ -136,14 +136,15 @@ class MyService : Service() {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
                             //  otherfacechatchannel=dataSnapshot.getValue().toString()
                         }
-
                         override fun onCancelled(p0: DatabaseError) {
                         }
                     })
                     muserlatRef?.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(p: DataSnapshot) {
-                            val v = p.getValue().toString().toDouble()
-                            nowLat = v
+                            if(p.exists()) {
+                                val v = p.getValue().toString().toDouble()
+                                nowLat = v
+                            }
                         }
 
                         override fun onCancelled(p: DatabaseError) {
@@ -151,8 +152,10 @@ class MyService : Service() {
                     })
                     muserlongRef?.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(p: DataSnapshot) {
-                            val v = p.getValue().toString().toDouble()
-                            nowLong = v
+                            if(p.exists()) {
+                                val v = p.getValue().toString().toDouble()
+                                nowLong = v
+                            }
                         }
 
                         override fun onCancelled(p: DatabaseError) {
@@ -160,7 +163,9 @@ class MyService : Service() {
                     })
                     motherNickRef?.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            connectnick=dataSnapshot.getValue().toString()
+                            if(dataSnapshot.exists()) {
+                                connectnick = dataSnapshot.getValue().toString()
+                            }
                         }
                         override fun onCancelled(databaseError: DatabaseError) {
                         }
@@ -169,21 +174,27 @@ class MyService : Service() {
                 }
                 mchildRef!!.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        usernick=dataSnapshot.getValue().toString()
+                        if(dataSnapshot.exists()) {
+                            usernick = dataSnapshot.getValue().toString()
+                        }
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
                 })
                 mchild1Ref!!.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        username=dataSnapshot.getValue().toString()
+                        if(dataSnapshot.exists()) {
+                            username = dataSnapshot.getValue().toString()
+                        }
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
                 })
                 mchild2Ref!!.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        lastime=dataSnapshot.getValue().toString()
+                        if(dataSnapshot.exists()) {
+                            lastime = dataSnapshot.getValue().toString()
+                        }
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
@@ -284,36 +295,38 @@ class MyService : Service() {
 
                     mchild3Ref?.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            curtime=dataSnapshot.getValue().toString()
-                            Handler().postDelayed({
-                                if(lastime==curtime || usernick ==" ")
-                                    ;
-                                else {
-                                    val intent = Intent(this@MyService, MainActivity::class.java)
-                                    val push=Intent()
-                                    val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                                    push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    push.setClass(applicationContext,MyService::class.java)
-                                    Notifi = Notification.Builder(applicationContext)
-                                            .setContentTitle(curtime)
-                                            .setContentText(usernick+"("+username+")님과의 연결 요청")
-                                            .setSmallIcon(R.drawable.alarm)
-                                            .setTicker("알림!!!")
-                                            .setContentIntent(pendingIntent)
-                                            .setPriority(Notification.PRIORITY_MAX)
-                                            .addAction(android.R.drawable.star_on,"확인하기",pendingIntent)
-                                            .setAutoCancel(true)
-                                            .setFullScreenIntent(pendingIntent,true)
-                                            .build()
-                                    //소리추가
-                                    Notifi!!.defaults = Notification.DEFAULT_SOUND
-                                    //알림 소리를 한번만 내도록
-                                    Notifi!!.flags = Notification.FLAG_ONLY_ALERT_ONCE
-                                    //확인하면 자동으로 알림이 제거 되도록
-                                    Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
-                                    Notifi_M!!.notify(787, Notifi)
-                                }
-                            }, 1000)
+                            if(dataSnapshot.exists()) {
+                                curtime = dataSnapshot.getValue().toString()
+                                Handler().postDelayed({
+                                    if (lastime == curtime || usernick == " ")
+                                        ;
+                                    else {
+                                        val intent = Intent(this@MyService, MainActivity::class.java)
+                                        val push = Intent()
+                                        val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                                        push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        push.setClass(applicationContext, MyService::class.java)
+                                        Notifi = Notification.Builder(applicationContext)
+                                                .setContentTitle(curtime)
+                                                .setContentText(usernick + "(" + username + ")님과의 연결 요청")
+                                                .setSmallIcon(R.drawable.alarm)
+                                                .setTicker("알림!!!")
+                                                .setContentIntent(pendingIntent)
+                                                .setPriority(Notification.PRIORITY_MAX)
+                                                .addAction(android.R.drawable.star_on, "확인하기", pendingIntent)
+                                                .setAutoCancel(true)
+                                                .setFullScreenIntent(pendingIntent, true)
+                                                .build()
+                                        //소리추가
+                                        Notifi!!.defaults = Notification.DEFAULT_SOUND
+                                        //알림 소리를 한번만 내도록
+                                        Notifi!!.flags = Notification.FLAG_ONLY_ALERT_ONCE
+                                        //확인하면 자동으로 알림이 제거 되도록
+                                        Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
+                                        Notifi_M!!.notify(787, Notifi)
+                                    }
+                                }, 1000)
+                            }
                         }
                         override fun onCancelled(databaseError: DatabaseError) {
                         }

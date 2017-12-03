@@ -147,6 +147,7 @@ class MainActivity : AppCompatActivity() {
                 p.show()
             }
         })
+
         val intent=Intent(this,MyService::class.java)
         startService(intent)
 
@@ -183,7 +184,7 @@ class MainActivity : AppCompatActivity() {
             ad.show()
         }
 
-
+/*
         bt_status.setOnClickListener {
             var alertDialogBuilder = AlertDialog.Builder(this)
             alertDialogBuilder.setMessage(State)
@@ -193,7 +194,7 @@ class MainActivity : AppCompatActivity() {
             alert.window.setBackgroundDrawable(ColorDrawable(R.color.pure))
             alert.show()
         }
-
+*/
         mAuthListener = FirebaseAuth.AuthStateListener {
             firebaseAuth ->
             val user = firebaseAuth.currentUser
@@ -236,21 +237,27 @@ class MainActivity : AppCompatActivity() {
             Handler().postDelayed({
                 mMesLastime?.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        mesLastime=dataSnapshot.getValue().toString()
+                        if(dataSnapshot.exists()){
+                            mesLastime = dataSnapshot.getValue().toString()
+                        }
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
                 })
                 mMesUid?.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        mesUid=dataSnapshot.getValue().toString()
+                        if(dataSnapshot.exists()){
+                            mesUid=dataSnapshot.getValue().toString()
+                        }
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
                 })
                 mMesNick?.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        mesNick=dataSnapshot.getValue().toString()
+                        if(dataSnapshot.exists()) {
+                            mesNick = dataSnapshot.getValue().toString()
+                        }
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
@@ -274,29 +281,31 @@ class MainActivity : AppCompatActivity() {
                 Handler().postDelayed({
                     mMesCurtime?.addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            mesCurtime=dataSnapshot.getValue().toString()
-                            if(mesCurtime==mesLastime || mesUid == " " ) ;
-                            else{
-                                if(dialogOn);
-                                else{
-                                    dialogOn=true
-                                    val aDialog:AlertDialog.Builder=AlertDialog.Builder(this@MainActivity)
-                                    aDialog.setTitle(mesNick+"님과 연결하시겠습니까?");
+                            if(dataSnapshot.exists()) {
+                                mesCurtime = dataSnapshot.getValue().toString()
+                                if (mesCurtime == mesLastime || mesUid == " ") ;
+                                else {
+                                    if (dialogOn) ;
+                                    else {
+                                        dialogOn = true
+                                        val aDialog: AlertDialog.Builder = AlertDialog.Builder(this@MainActivity)
+                                        aDialog.setTitle(mesNick + "님과 연결하시겠습니까?");
 
-                                    aDialog.setPositiveButton("연결") { dialog, which ->
-                                        mMesLastime!!.setValue(mesCurtime)
-                                        muserChildRef!!.child("otherUid").setValue(mesUid)
-                                        muserChildRef!!.child("chatChannel").setValue(mesUid)
-                                        muserRef.child(mesUid).child("otherUid").setValue(myUid)
-                                        muserRef.child(mesUid).child("chatChannel").setValue(mesUid)
-                                        dialogOn=false
+                                        aDialog.setPositiveButton("연결") { dialog, which ->
+                                            mMesLastime!!.setValue(mesCurtime)
+                                            muserChildRef!!.child("otherUid").setValue(mesUid)
+                                            muserChildRef!!.child("chatChannel").setValue(mesUid)
+                                            muserRef.child(mesUid).child("otherUid").setValue(myUid)
+                                            muserRef.child(mesUid).child("chatChannel").setValue(mesUid)
+                                            dialogOn = false
+                                        }
+                                        aDialog.setNegativeButton("취소") { dialog, which ->
+                                            mMesLastime!!.setValue(mesCurtime)
+                                            dialogOn = false
+                                        }
+                                        val ad = aDialog.create()
+                                        ad.show()
                                     }
-                                    aDialog.setNegativeButton("취소") { dialog, which ->
-                                        mMesLastime!!.setValue(mesCurtime)
-                                        dialogOn=false
-                                    }
-                                    val ad = aDialog.create()
-                                    ad.show()
                                 }
                             }
                         }

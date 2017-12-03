@@ -5,11 +5,8 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.util.Range
-import android.widget.Toast
 import com.example.khanj.trust.Data.User
 import com.example.khanj.trust.Data.location
-import com.google.android.gms.common.api.GoogleApiClient
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -22,7 +19,6 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -104,7 +100,7 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
                             val y =LatLng(latitude,longitude)
                             x.add(y)
                             dotime.add(loc!!.times)
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(y,17.toFloat()))
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(y,17.toFloat()))
                         }
                         Handler().postDelayed({
                             if (x.size<30 && x.size>0) {
@@ -113,8 +109,10 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
                                     mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.pins)))
                                 }
                                 mMap.addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]).icon(BitmapDescriptorFactory.fromResource(R.drawable.flag)))
-                                for (i in 0..x.size - 2)
-                                    mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(10.toFloat()).color(Color.MAGENTA))
+                                for (i in 0..x.size - 2) {
+                                    mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(5.toFloat()).color(Color.RED))
+                                }
+
                             }
                             else if(x.size>=30) {
                                 mMap.addMarker(MarkerOptions().position(x[x.size-30]).title(dotime[x.size-30]).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin)))
@@ -122,8 +120,9 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
                                     mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.pins)))
                                 }
                                 mMap.addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]).icon(BitmapDescriptorFactory.fromResource(R.drawable.flag)))
-                                for (i in x.size - 30..x.size - 2)
-                                    mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(10.toFloat()).color(Color.MAGENTA))
+                                for (i in x.size - 30..x.size - 2){
+                                    mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(5.toFloat()).color(Color.RED))
+                                }
                             }
                         }, 1500)
                     }
