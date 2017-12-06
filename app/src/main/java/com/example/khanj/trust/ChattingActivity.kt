@@ -88,16 +88,20 @@ class ChattingActivity :AppCompatActivity(){
         Handler().postDelayed({
             mchildRef?.child("chatChannel")!!.addListenerForSingleValueEvent(object :ValueEventListener{
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val data = dataSnapshot.getValue().toString()
-                    chatroom=data
+                    if(dataSnapshot.exists()) {
+                        val data = dataSnapshot.getValue().toString()
+                        chatroom = data
+                    }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
                 }
             })
             mchildRef?.child("name")!!.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val data = dataSnapshot.getValue().toString()
-                    mUsername=data
+                    if(dataSnapshot.exists()) {
+                        val data = dataSnapshot.getValue().toString()
+                        mUsername = data
+                    }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
                 }
@@ -106,11 +110,13 @@ class ChattingActivity :AppCompatActivity(){
                 mRootRef.child("chat").child(chatroom).addValueEventListener(object:ValueEventListener{
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         datas.clear()
-                        for(snapshot in dataSnapshot.children){
-                            datas.add(snapshot.getValue(Chat::class.java))
-                            Log.d("나야나야",snapshot.getValue(Chat::class.java).getTimes())
+                        if(dataSnapshot.exists()){
+                            for(snapshot in dataSnapshot.children){
+                                datas.add(snapshot.getValue(Chat::class.java))
+                                Log.d("나야나야",snapshot.getValue(Chat::class.java).getTimes())
+                            }
+                            adpater!!.notifyDataSetChanged()
                         }
-                        adpater!!.notifyDataSetChanged()
                     }
                     override fun onCancelled(p0: DatabaseError?) {
                     }

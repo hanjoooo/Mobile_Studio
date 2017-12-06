@@ -109,6 +109,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, LocationTrakingActivity::class.java)
             startActivity(intent)
         }
+
         bt_location.setOnClickListener {
             val intent = Intent(this, PresentLocation::class.java)
             startActivity(intent)
@@ -118,6 +119,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ChattingActivity::class.java)
             startActivity(intent)
         }
+
         bt_setting.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View) {
                 /*
@@ -148,6 +150,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+
         val intent=Intent(this,MyService::class.java)
         startService(intent)
 
@@ -155,6 +158,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, RTCFaceActivity::class.java)
             startActivity(intent)
         }
+
         bt_plus.setOnClickListener {
             val mContext = applicationContext
             val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -184,7 +188,8 @@ class MainActivity : AppCompatActivity() {
             ad.show()
         }
 
-/*
+
+        /*
         bt_status.setOnClickListener {
             var alertDialogBuilder = AlertDialog.Builder(this)
             alertDialogBuilder.setMessage(State)
@@ -194,7 +199,8 @@ class MainActivity : AppCompatActivity() {
             alert.window.setBackgroundDrawable(ColorDrawable(R.color.pure))
             alert.show()
         }
-*/
+        */
+
         mAuthListener = FirebaseAuth.AuthStateListener {
             firebaseAuth ->
             val user = firebaseAuth.currentUser
