@@ -11,7 +11,7 @@
     <color name="darkIvory">#FFFFC9</color>
     <color name="black">#123321</color>
     <color name="list_row_divider">#bbbbbb</color>
-
+    <color name="gold">#C9BF4A</color>
 
     <color name="app_background_color">@color/md_grey_900</color>
 

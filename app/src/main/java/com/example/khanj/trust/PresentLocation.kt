@@ -163,7 +163,7 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
         val lat=LatLng(37.6007195267265,126.86528900355972)
         val x = 37.6007195267265
         val y = 126.86528900355972
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lat,14.toFloat()))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lat,14.toFloat()))
         var nowAddress=""
 
         Handler().postDelayed({
@@ -183,7 +183,7 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
             }
             val sydney = LatLng(latitude, longitude)
             mMap.addMarker(MarkerOptions().position(sydney).title("현재 위치").icon(BitmapDescriptorFactory.fromResource(R.drawable.now)).snippet(nowAddress))
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,16F.toFloat()))
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney,16F.toFloat()))
         }, 2500)
         // Add a marker in Sydney and move the camera
 

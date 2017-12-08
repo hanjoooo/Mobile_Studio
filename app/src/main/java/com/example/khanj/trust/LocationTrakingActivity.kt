@@ -1,6 +1,8 @@
 package com.example.khanj.trust
 
 import android.graphics.Color
+import android.location.Address
+import android.location.Geocoder
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -19,7 +21,11 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_chatting.*
+import kotlinx.android.synthetic.main.activity_location_traking.*
+import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -37,8 +43,13 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     var longitude:Double = 0.0
     var latitude:Double = 0.0
+    var adpater:LocationTrakingAdapter?=null
 
     private var userinfo: User?=null
+    var loc_tra = ArrayList<String>()
+    var loc_time=ArrayList<String>()
+    var loc_Address=ArrayList<String>()
+    var loc_latlng=ArrayList<LatLng>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +58,6 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-
         mAuthListener = FirebaseAuth.AuthStateListener {
             firebaseAuth ->
             val user = firebaseAuth.currentUser
@@ -62,6 +72,13 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
             updateUI(user)
             // [END_EXCLUDE]
         }
+        Handler().postDelayed({
+            adpater = com.example.khanj.trust.LocationTrakingAdapter(loc_tra,loc_time,this@LocationTrakingActivity)
+            loclist.adapter=adpater
+            loclist.setOnItemClickListener{parent,view,position,id->
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc_latlng[position],17.toFloat()))
+            }
+        }, 1000)
     }
 
     /**
@@ -93,6 +110,7 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         var x = ArrayList<LatLng>()
                         var dotime=ArrayList<String>()
+                        loc_Address.clear()
                         for ( snapshot in dataSnapshot.getChildren()) {
                             val loc = snapshot.getValue(location::class.java)
                             val latitude = loc.latitude
@@ -101,29 +119,113 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
                             x.add(y)
                             dotime.add(loc!!.times)
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(y,14.toFloat()))
+
+                            val geocoder= Geocoder(this@LocationTrakingActivity, Locale.KOREA)
+                            var address:List<Address>
+                            try{
+                                if(geocoder!=null)
+                                {
+                                    address = geocoder.getFromLocation(latitude,longitude,1)
+                                    if(address !=null && address.size > 0){
+                                        val currentLocationAddress=address.get(0).getAddressLine(0).toString()
+                                        loc_Address.add(currentLocationAddress)
+                                    }
+                                }
+                            }catch (e: IOException){
+                                e.printStackTrace()
+                            }
                         }
                         Handler().postDelayed({
-                            if (x.size<30 && x.size>0) {
-                                mMap.addMarker(MarkerOptions().position(x[0]).title(dotime[0]).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin)))
-                                for(i in 1..x.size-2){
-                                    mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.pins)))
+                            if (x.size<11 && x.size>0) {
+                                loc_time.clear()
+                                loc_tra.clear()
+                                loc_latlng.clear()
+                                mMap.addMarker(MarkerOptions().position(x[0]).title(dotime[0]).icon(BitmapDescriptorFactory.fromResource(R.drawable.one)))
+                                loc_tra.add(loc_Address[0])
+                                loc_time.add(dotime[0])
+                                loc_latlng.add(x[0])
+                                for(i in 1..x.size-1){
+                                    if(i==1){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.two)))
+                                    }
+                                    else if(i==2){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.three)))
+                                    }
+                                    else if(i==3){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.four)))
+                                    }
+                                    else if(i==4){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.five)))
+                                    }
+                                    else if(i==5){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.six)))
+                                    }
+                                    else if(i==6){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.seven)))
+                                    }
+                                    else if(i==7){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.eight)))
+                                    }
+                                    else if(i==8){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.nine)))
+                                    }
+                                    else if(i==9){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.ten)))
+                                    }
+                                    loc_tra.add(loc_Address[i])
+                                    loc_time.add(dotime[i])
+                                    loc_latlng.add(x[i])
                                 }
-                                mMap.addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]).icon(BitmapDescriptorFactory.fromResource(R.drawable.flag)))
                                 for (i in 0..x.size - 2) {
-                                    mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(5.toFloat()).color(Color.RED))
+                                    mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(15.toFloat()).color(R.color.gold))
                                 }
 
                             }
-                            else if(x.size>=30) {
-                                mMap.addMarker(MarkerOptions().position(x[x.size-30]).title(dotime[x.size-30]).icon(BitmapDescriptorFactory.fromResource(R.drawable.pin)))
-                                for(i in x.size-29..x.size-2){
-                                    mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.pins)))
+                            else if(x.size>=11) {
+                                loc_time.clear()
+                                loc_tra.clear()
+                                loc_latlng.clear()
+                                mMap.addMarker(MarkerOptions().position(x[x.size-11]).title(dotime[x.size-11]).icon(BitmapDescriptorFactory.fromResource(R.drawable.one)))
+                                loc_tra.add(loc_Address[x.size-11])
+                                loc_time.add(dotime[x.size-11])
+                                loc_latlng.add(x[x.size-11])
+                                for(i in x.size-10..x.size-1){
+                                    if(i==1){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.two)))
+                                    }
+                                    else if(i==2){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.three)))
+                                    }
+                                    else if(i==3){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.four)))
+                                    }
+                                    else if(i==4){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.five)))
+                                    }
+                                    else if(i==5){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.six)))
+                                    }
+                                    else if(i==6){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.seven)))
+                                    }
+                                    else if(i==7){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.eight)))
+                                    }
+                                    else if(i==8){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.nine)))
+                                    }
+                                    else if(i==9){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.ten)))
+                                    }
+                                    loc_tra.add(loc_Address[i])
+                                    loc_time.add(dotime[i])
+                                    loc_latlng.add(x[i])
                                 }
-                                mMap.addMarker (MarkerOptions().position(x[x.size - 1]).title(dotime[x.size - 1]).icon(BitmapDescriptorFactory.fromResource(R.drawable.flag)))
-                                for (i in x.size - 30..x.size - 2){
-                                    mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(5.toFloat()).color(Color.RED))
+                                for (i in x.size - 11..x.size - 2){
+                                    mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(8.toFloat()).color(R.color.gold))
                                 }
                             }
+                            adpater!!.notifyDataSetChanged()
                         }, 1500)
                     }
                     override fun onCancelled(databaseError: DatabaseError) {

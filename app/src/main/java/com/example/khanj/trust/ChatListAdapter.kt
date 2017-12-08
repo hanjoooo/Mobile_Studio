@@ -61,21 +61,4 @@ package com.example.khanj.trust
                 return convert
             }
         }
-
-
-/*
-    override fun populateView(v: View, model: Chat) {
-        val author:String=model.getAuthor()
-        val authorText:TextView= v.findViewById(R.id.author)
-        authorText.setText(author+": ")
-
-        if(author != null && author.equals(mUsername))
-            authorText.setTextColor(Color.RED)
-        else
-            authorText.setTextColor(Color.BLUE)
-
-        v.findViewById<TextView>(R.id.message).setText(model.getMessage())
-
-    }
-    */
 }

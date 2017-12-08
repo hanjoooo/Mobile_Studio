@@ -160,7 +160,7 @@ xmlns:tools="http://schemas.android.com/tools"
 
                 <ImageView
                     android:id="@+id/bt_location"
-                    android:background="@drawable/bt_selected3"
+                    android:background="@drawable/bt_selected1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -173,7 +173,7 @@ xmlns:tools="http://schemas.android.com/tools"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/bt_selected1"
+                    android:background="@drawable/bt_selected3"
                     app:srcCompat="@drawable/route" />
             </TableRow>
 

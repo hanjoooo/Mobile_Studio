@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_pink_50">
+    android:background="@color/white">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -15,11 +15,14 @@
         android:layout_weight="0.8"
         tools:context="com.example.khanj.trust.LocationTrakingActivity"/>
     <ListView
+        android:id="@+id/loclist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:transcriptMode="alwaysScroll"
-        android:scrollbarThumbVertical="@color/md_pink_200">
+        android:scrollbarThumbVertical="@color/md_yellow_700"
+        android:scrollbarSize="5dp"
+        android:divider="@color/md_grey_500">
 
     </ListView>
 </LinearLayout>
