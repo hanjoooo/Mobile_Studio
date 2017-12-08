@@ -205,53 +205,56 @@ class MyService : Service() {
                     if(users.getOtherUid()!=" ") {
                         mlimitlocRef?.addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(p: DataSnapshot) {
-                                val data = p.getValue().toString()
-                                if(data == " "){
+                                if(p.exists())
+                                {
+                                    val data = p.getValue().toString()
+                                    if(data == " "){
 
-                                }
-                                else{
-                                    limitrange = p.getValue(LimitRange::class.java)
-                                    if (limitrange != null) {
-                                        val laa = Location("a")
-                                        laa.setLatitude(limitrange!!.latitude)
-                                        laa.setLongitude(limitrange!!.longitude)
-                                        val lab = Location("b")
-                                        lab.setLatitude(nowLat)
-                                        lab.setLongitude(nowLong)
-                                        val dist = laa.distanceTo(lab)
-                                        if (Math.pow(dist.toDouble() / 1000.0, 2.0) < limitrange!!.radius) {
-                                        } else {
-                                            val now: Long = System.currentTimeMillis()
-                                            val date: Date = Date(now)
-                                            val sdfNow: SimpleDateFormat = SimpleDateFormat("dd일HH시mm분", Locale.KOREA)
-                                            val strNow: String = sdfNow.format(date)
-                                            val intent = Intent(this@MyService, PresentLocation::class.java)
-                                            val push = Intent()
-                                            val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-                                            push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                            push.setClass(applicationContext, MyService::class.java)
-                                            Notifi = Notification.Builder(applicationContext)
-                                                    .setContentTitle("제한범위이탈 " + strNow)
-                                                    .setContentText(connectnick + "님이 제한범위를 벗어났습니다.")
-                                                    .setSmallIcon(R.drawable.location)
-                                                    .setTicker("범위벗어남!!")
-                                                    .setContentIntent(pendingIntent)
-                                                    .setPriority(Notification.PRIORITY_MAX)
-                                                    .addAction(android.R.drawable.star_on, "확인하기", pendingIntent)
-                                                    .setAutoCancel(true)
-                                                    .setFullScreenIntent(pendingIntent, true)
-                                                    .build()
+                                    }
+                                    else{
+                                        limitrange = p.getValue(LimitRange::class.java)
+                                        if (limitrange != null) {
+                                            val laa = Location("a")
+                                            laa.setLatitude(limitrange!!.latitude)
+                                            laa.setLongitude(limitrange!!.longitude)
+                                            val lab = Location("b")
+                                            lab.setLatitude(nowLat)
+                                            lab.setLongitude(nowLong)
+                                            val dist = laa.distanceTo(lab)
+                                            if (Math.pow(dist.toDouble() / 1000.0, 2.0) < limitrange!!.radius) {
+                                            } else {
+                                                val now: Long = System.currentTimeMillis()
+                                                val date: Date = Date(now)
+                                                val sdfNow: SimpleDateFormat = SimpleDateFormat("dd일HH시mm분", Locale.KOREA)
+                                                val strNow: String = sdfNow.format(date)
+                                                val intent = Intent(this@MyService, PresentLocation::class.java)
+                                                val push = Intent()
+                                                val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+                                                push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                                push.setClass(applicationContext, MyService::class.java)
+                                                Notifi = Notification.Builder(applicationContext)
+                                                        .setContentTitle("제한범위이탈 " + strNow)
+                                                        .setContentText(connectnick + "님이 제한범위를 벗어났습니다.")
+                                                        .setSmallIcon(R.drawable.location)
+                                                        .setTicker("범위벗어남!!")
+                                                        .setContentIntent(pendingIntent)
+                                                        .setPriority(Notification.PRIORITY_MAX)
+                                                        .addAction(android.R.drawable.star_on, "확인하기", pendingIntent)
+                                                        .setAutoCancel(true)
+                                                        .setFullScreenIntent(pendingIntent, true)
+                                                        .build()
 
-                                            //소리추가
-                                            Notifi!!.defaults = Notification.DEFAULT_SOUND
-                                            //확인하면 자동으로 알림이 제거 되도록
-                                            Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
-                                            Notifi_M!!.notify(778, Notifi)
+                                                //소리추가
+                                                Notifi!!.defaults = Notification.DEFAULT_SOUND
+                                                //확인하면 자동으로 알림이 제거 되도록
+                                                Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
+
+                                                Notifi_M!!.notify(778, Notifi)
+                                            }
                                         }
                                     }
                                 }
                             }
-
                             override fun onCancelled(p: DatabaseError) {
 
                             }
@@ -298,7 +301,7 @@ class MyService : Service() {
                             if(dataSnapshot.exists()) {
                                 curtime = dataSnapshot.getValue().toString()
                                 Handler().postDelayed({
-                                    if (lastime == curtime || usernick == " ")
+                                    if (lastime.equals(curtime)|| usernick == " ")
                                         ;
                                     else {
                                         val intent = Intent(this@MyService, MainActivity::class.java)

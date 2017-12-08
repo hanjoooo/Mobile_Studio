@@ -163,7 +163,7 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
         val lat=LatLng(37.6007195267265,126.86528900355972)
         val x = 37.6007195267265
         val y = 126.86528900355972
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lat,14.toFloat()))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lat,14.toFloat()))
         var nowAddress=""
 
         Handler().postDelayed({

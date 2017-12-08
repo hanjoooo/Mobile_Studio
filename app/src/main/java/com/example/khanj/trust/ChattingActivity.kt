@@ -48,16 +48,20 @@ class ChattingActivity :AppCompatActivity(){
         setContentView(R.layout.activity_chatting)
 
         sendButton.setOnClickListener(){
-            val now:Long = System.currentTimeMillis()
-            val date:Date=Date(now)
-            val sdfNow2: SimpleDateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.KOREA)
-            val sdfNow:SimpleDateFormat= SimpleDateFormat("yy.MM.dd HH:mm", Locale.KOREA)
-            val strNow:String = sdfNow.format(date)
-            val strNow2:String=sdfNow2.format(date)
-            val mChatRef=mConditionRef.child(chatroom).child(strNow2)
-            val message = messageInput.getText().toString()
-            val chatMessage= Chat(message,mUsername,strNow,mUserUid)
-            mChatRef.setValue(chatMessage)
+            if(messageInput.getText().toString().replace(" ","").equals("")){
+            }
+            else{
+                val now:Long = System.currentTimeMillis()
+                val date:Date=Date(now)
+                val sdfNow2: SimpleDateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.KOREA)
+                val sdfNow:SimpleDateFormat= SimpleDateFormat("yy.MM.dd HH:mm", Locale.KOREA)
+                val strNow:String = sdfNow.format(date)
+                val strNow2:String=sdfNow2.format(date)
+                val mChatRef=mConditionRef.child(chatroom).child(strNow2)
+                val message = messageInput.getText().toString()
+                val chatMessage= Chat(message,mUsername,strNow,mUserUid)
+                mChatRef.setValue(chatMessage)
+            }
             messageInput.setText("")
         }
 

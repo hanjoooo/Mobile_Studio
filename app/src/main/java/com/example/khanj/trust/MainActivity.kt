@@ -84,10 +84,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+/*
         val notificationManager=getSystemService(Context.NOTIFICATION_SERVICE)as NotificationManager
         notificationManager.cancel(787)
-
+*/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
             val channelId = getString(R.string.default_notification_channel_id)

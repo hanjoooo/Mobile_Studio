@@ -100,7 +100,7 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
                             val y =LatLng(latitude,longitude)
                             x.add(y)
                             dotime.add(loc!!.times)
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(y,17.toFloat()))
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(y,14.toFloat()))
                         }
                         Handler().postDelayed({
                             if (x.size<30 && x.size>0) {

@@ -3,14 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/ivory">
+    android:background="@color/md_green_50">
     <ListView
         android:id="@+id/chatlist"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/listFooter"
         android:layout_alignParentTop="true"
-        android:transcriptMode="alwaysScroll" />
+        android:transcriptMode="alwaysScroll"
+        android:scrollbarThumbVertical="@color/md_green_200"
+        android:scrollbarSize="5dp"/>
     <LinearLayout
         android:id="@+id/listFooter"
         android:layout_width="fill_parent"
@@ -21,19 +23,20 @@
         <EditText
             android:id="@+id/messageInput"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:inputType="textShortMessage"
             android:lines="1"
             android:singleLine="true"
-            android:textColor="@color/primary"
+            android:textColor="@color/black"
+            android:background="@color/md_green_100"
             />
 
         <ImageButton
-                 android:id="@+id/sendButton"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:src="@android:drawable/ic_menu_send"
-                 android:background="@color/skyblue"/>
+            android:id="@+id/sendButton"
+            android:layout_width="60dp"
+            android:layout_height="45dp"
+            android:src="@android:drawable/ic_menu_send"
+            android:background="@drawable/selected_send"/>
     </LinearLayout>
 </RelativeLayout>
