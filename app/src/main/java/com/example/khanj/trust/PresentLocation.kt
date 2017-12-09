@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.EditText
 import com.example.khanj.trust.Data.LimitRange
 import com.example.khanj.trust.Data.User
@@ -23,6 +25,7 @@ import com.google.android.gms.maps.model.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import kotlinx.android.synthetic.main.activity_present_location.*
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,12 +46,19 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
     internal var mchild1Ref: DatabaseReference?=null
     internal var mchild2Ref: DatabaseReference?=null
 
+    internal var mState:DatabaseReference?=null
+    internal var mBattery:DatabaseReference?=null
+    internal var mNetwork:DatabaseReference?=null
+    internal var mGps:DatabaseReference?=null
 
     var longitude:Double = 0.0
     var latitude:Double = 0.0
     var mapCircle: Circle?=null
-
+    var Battery="100"
+    var Network=" "
+    var Gps=" "
     private var userInfo: User?=null
+    private var State=" "
 
     var point=LatLng(37.6007195267265,126.86528900355972)
 
@@ -100,11 +110,64 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
                     mchildRef=mConditionRef.child(userInfo!!.getOtherUid())
                     mchild1Ref=mchildRef!!.child("현재위치").child("위도")
                     mchild2Ref=mchildRef!!.child("현재위치").child("경도")
+                    mState=muserRef.child(userInfo!!.getOtherUid()).child("state")
+                    mBattery = mchildRef!!.child("현재위치").child("베터리상태")
+                    mNetwork = mchildRef!!.child("현재위치").child("네트워크")
+                    mGps = mchildRef!!.child("현재위치").child("GPS")
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
                 }
             })
             Handler().postDelayed({
+                if(userInfo?.getOtherUid()!= " ") {
+                    mState?.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            if(dataSnapshot.exists()){
+                                val data = dataSnapshot.getValue().toString()
+                                if (data == " ")
+                                    State = "현재 여유로운 상태입니다"
+                                else
+                                    State = data
+                            }
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                        }
+
+                    })
+                    mBattery?.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            if(dataSnapshot.exists()){
+                                val data = dataSnapshot.getValue().toString()
+                                Battery=data
+                            }
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                        }
+
+                    })
+                    mNetwork?.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            if(dataSnapshot.exists()){
+                                val data = dataSnapshot.getValue().toString()
+                                Network=data
+                            }
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                        }
+
+                    })
+                    mGps?.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            if(dataSnapshot.exists()){
+                                val data = dataSnapshot.getValue().toString()
+                                Gps=data
+                            }
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                        }
+
+                    })
+                }
                 mchildRef!!.child("LimitRange").addListenerForSingleValueEvent(object:ValueEventListener{
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val data = dataSnapshot.getValue().toString()
@@ -125,7 +188,7 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
                                         .center(LatLng(limitrange!!.latitude,limitrange!!.longitude))
                                         .radius(Range*1000.0)
                                         .strokeColor(Color.GREEN)
-                                        .fillColor(Color.argb(128, 0, 255, 0))
+                                        .fillColor(Color.argb(78, 0, 255, 0))
                                 mapCircle= mMap!!.addCircle(circleOptions)
                                 if(Math.pow(dist.toDouble()/1000.0,2.0)<limitrange!!.radius){
                                 }
@@ -181,6 +244,13 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
             }catch (e: IOException){
                 e.printStackTrace()
             }
+
+
+            textLocation.setText(nowAddress)
+            textState.setText(State)
+            textBattery.setText(Battery+"%")
+            textNetwork.setText(Network)
+            textGps.setText(Gps)
             val sydney = LatLng(latitude, longitude)
             mMap.addMarker(MarkerOptions().position(sydney).title("현재 위치").icon(BitmapDescriptorFactory.fromResource(R.drawable.now)).snippet(nowAddress))
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney,16F.toFloat()))

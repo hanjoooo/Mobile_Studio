@@ -34,6 +34,11 @@ import com.playrtc.simplechat.TestRtc
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.timerTask
+import android.content.BroadcastReceiver
+import android.os.BatteryManager
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 
 
 class MyService : Service() {
@@ -66,6 +71,9 @@ class MyService : Service() {
     internal var nowLatRef:DatabaseReference?=null
     internal var nowLongRef:DatabaseReference?=null
     internal var nowLatLang:DatabaseReference?=null
+    internal var nowBattery:DatabaseReference?=null
+    internal var nowNetwork:DatabaseReference?=null
+    internal var nowGps:DatabaseReference?=null
     internal var mtimeRef: DatabaseReference?=null
 
 
@@ -87,12 +95,20 @@ class MyService : Service() {
     var longitude:Double = 0.0
     var latitude:Double = 0.0
     private var limitrange:LimitRange?=null
-
+    var percent=0
     var isLogin = false
+    var isOnline:Boolean = false
+    var gpsEnable=false
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
-
+    val mBatteryRecv = object : BroadcastReceiver() {
+        // 이벤트를 수신하는 이벤트 함수
+        override fun onReceive(context: Context, intent: Intent) {
+            // 배터리 잔량을 화면에 표시
+            showLevel(intent)
+        }
+    }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Notifi_M = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -105,22 +121,55 @@ class MyService : Service() {
         val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         try {
             // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 300000, 1.toFloat(), mLocationListener)
-            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 300000, 1.toFloat(), mLocationListener)
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600000, 1.toFloat(), mLocationListener)
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 600000, 1.toFloat(), mLocationListener)
         } catch (ex: SecurityException) {
             ;
         }
+        val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        filter.addAction(Intent.ACTION_BATTERY_LOW)  // 배터리양 낮음
+        filter.addAction(Intent.ACTION_BATTERY_OKAY)  // 배터리양 정상
+        filter.addAction(Intent.ACTION_POWER_CONNECTED)  // 전원케이블 연결
+        filter.addAction(Intent.ACTION_POWER_DISCONNECTED)  // 전원케이블 분리
+        registerReceiver(mBatteryRecv, filter)
+
+
+        try {
+            val conMan = this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val wifi = conMan.getNetworkInfo(1).getState()
+            if (wifi === NetworkInfo.State.CONNECTED) {
+                isOnline = true
+            }
+            val mobile = conMan.getNetworkInfo(0).getState()
+            if (mobile === NetworkInfo.State.CONNECTED) {
+                isOnline = true
+            }
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        val manager=this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        if(manager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            gpsEnable=true
+        }
+
+
+
+
+
         Handler().postDelayed({
             mchildUserRef!!.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    users=dataSnapshot.getValue(User::class.java)
-                    mchildRef=mConditionRef.child(users.getNickname()).child("nickname")
-                    mchild1Ref=mConditionRef.child(users.getNickname()).child("name")
-                    mchild2Ref=mConditionRef.child(users.getNickname()).child("lastime")
-                    mchild3Ref=mConditionRef.child(users.getNickname()).child("times")
-                    mchildUserFaceChatRef=mchildUserRef!!.child("faceChatChannel")
-                    motherNickRef=muserRef.child(users.getOtherUid()).child("nickname")
+                    if(dataSnapshot.exists()){
+                        users=dataSnapshot.getValue(User::class.java)
+                        mchildRef=mConditionRef.child(users.getNickname()).child("nickname")
+                        mchild1Ref=mConditionRef.child(users.getNickname()).child("name")
+                        mchild2Ref=mConditionRef.child(users.getNickname()).child("lastime")
+                        mchild3Ref=mConditionRef.child(users.getNickname()).child("times")
+                        mchildUserFaceChatRef=mchildUserRef!!.child("faceChatChannel")
+                        motherNickRef=muserRef.child(users.getOtherUid()).child("nickname")
 
+
+                    }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
                 }
@@ -262,33 +311,35 @@ class MyService : Service() {
                     }
                     mchildUserFaceChatRef?.addValueEventListener(object :ValueEventListener{
                         override fun onDataChange(p0: DataSnapshot?) {
-                            facechatchannel=p0!!.getValue().toString()
-                            if(facechatchannel == " "  ){
-                            }
-                            else if(otherfacechatchannel != " " && facechatchannel!=" " );
-                            else{
-                                val intent = Intent(this@MyService, RTCFaceActivity::class.java)
-                                val push=Intent()
-                                val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-                                push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                push.setClass(applicationContext,MyService::class.java)
-                                Notifi = Notification.Builder(applicationContext)
-                                        .setContentTitle("화상통화")
-                                        .setContentText(usernick+"님과의 연결 요청")
-                                        .setSmallIcon(R.drawable.facetalk)
-                                        .setTicker("전화요청!!")
-                                        .setContentIntent(pendingIntent)
-                                        .setPriority(Notification.PRIORITY_MAX)
-                                        .addAction(android.R.drawable.star_on,"확인하기",pendingIntent)
-                                        .setAutoCancel(true)
-                                        .setFullScreenIntent(pendingIntent,true)
-                                        .build()
+                            if(p0!!.exists()){
+                                facechatchannel=p0!!.getValue().toString()
+                                if(facechatchannel == " "  ){
+                                }
+                                else if(otherfacechatchannel != " " && facechatchannel!=" " );
+                                else{
+                                    val intent = Intent(this@MyService, RTCFaceActivity::class.java)
+                                    val push=Intent()
+                                    val pendingIntent = PendingIntent.getActivity(this@MyService, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+                                    push.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    push.setClass(applicationContext,MyService::class.java)
+                                    Notifi = Notification.Builder(applicationContext)
+                                            .setContentTitle("화상통화")
+                                            .setContentText(usernick+"님과의 연결 요청")
+                                            .setSmallIcon(R.drawable.facetalk)
+                                            .setTicker("전화요청!!")
+                                            .setContentIntent(pendingIntent)
+                                            .setPriority(Notification.PRIORITY_MAX)
+                                            .addAction(android.R.drawable.star_on,"확인하기",pendingIntent)
+                                            .setAutoCancel(true)
+                                            .setFullScreenIntent(pendingIntent,true)
+                                            .build()
 
-                                //소리추가
-                                Notifi!!.defaults = Notification.DEFAULT_SOUND
-                                //확인하면 자동으로 알림이 제거 되도록
-                                Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
-                                Notifi_M!!.notify(777, Notifi)
+                                    //소리추가
+                                    Notifi!!.defaults = Notification.DEFAULT_SOUND
+                                    //확인하면 자동으로 알림이 제거 되도록
+                                    Notifi!!.flags = Notification.FLAG_AUTO_CANCEL
+                                    Notifi_M!!.notify(777, Notifi)
+                                }
                             }
                         }
                         override fun onCancelled(p0: DatabaseError?) {
@@ -348,6 +399,13 @@ class MyService : Service() {
         thread = null//쓰레기 값을 만들어서 빠르게 회수하라고 null을 넣어줌.
 
     }
+
+    fun showLevel(intent: Intent) {
+        val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)
+        val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
+        percent = (level.toFloat() / scale.toFloat() * 100.0).toInt()
+
+    }
     private val mLocationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
             //여기서 위치값이 갱신되면 이벤트가 발생한다.
@@ -357,8 +415,22 @@ class MyService : Service() {
             latitude = location.getLatitude()   //위도
             nowLatRef = mchildlocRef!!.child("현재위치").child("위도")
             nowLongRef = mchildlocRef!!.child("현재위치").child("경도")
+            nowBattery = mchildlocRef!!.child("현재위치").child("베터리상태")
+            nowNetwork = mchildlocRef!!.child("현재위치").child("네트워크")
+            nowGps = mchildlocRef!!.child("현재위치").child("GPS")
             nowLatRef?.setValue(latitude)
             nowLongRef?.setValue(longitude)
+            nowBattery?.setValue(percent)
+            if(isOnline)
+                nowNetwork?.setValue("네트워크가 연결되어 있습니다")
+            else
+                nowNetwork?.setValue("네트워크가 연결되어 있지 않습니다")
+            if(gpsEnable){
+                nowGps?.setValue("GPS가 연결되어 있습니다")
+            }
+            else{
+                nowGps?.setValue("GPS가 연결되어 있지 않습니다")
+            }
             val now:Long = System.currentTimeMillis()
             val date:Date=Date(now)
             val sdfNow:SimpleDateFormat= SimpleDateFormat("dd일HH시mm분", Locale.KOREA)

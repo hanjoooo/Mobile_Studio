@@ -76,7 +76,7 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
             adpater = com.example.khanj.trust.LocationTrakingAdapter(loc_tra,loc_time,this@LocationTrakingActivity)
             loclist.adapter=adpater
             loclist.setOnItemClickListener{parent,view,position,id->
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc_latlng[position],17.toFloat()))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(loc_latlng[position],16.toFloat()))
             }
         }, 1000)
     }
@@ -189,40 +189,40 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
                                 loc_tra.add(loc_Address[x.size-11])
                                 loc_time.add(dotime[x.size-11])
                                 loc_latlng.add(x[x.size-11])
-                                for(i in x.size-10..x.size-1){
-                                    if(i==1){
+                                for(i in x.size-10..x.size-2){
+                                    if(i==x.size-10){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.two)))
                                     }
-                                    else if(i==2){
+                                    else if(i==x.size-9){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.three)))
                                     }
-                                    else if(i==3){
+                                    else if(i==x.size-8){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.four)))
                                     }
-                                    else if(i==4){
+                                    else if(i==x.size-7){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.five)))
                                     }
-                                    else if(i==5){
+                                    else if(i==x.size-6){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.six)))
                                     }
-                                    else if(i==6){
+                                    else if(i==x.size-5){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.seven)))
                                     }
-                                    else if(i==7){
+                                    else if(i==x.size-4){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.eight)))
                                     }
-                                    else if(i==8){
+                                    else if(i==x.size-3){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.nine)))
                                     }
-                                    else if(i==9){
+                                    else if(i==x.size-2){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.ten)))
                                     }
                                     loc_tra.add(loc_Address[i])
                                     loc_time.add(dotime[i])
                                     loc_latlng.add(x[i])
                                 }
-                                for (i in x.size - 11..x.size - 2){
-                                    mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(8.toFloat()).color(R.color.gold))
+                                for (i in x.size - 11..x.size - 3){
+                                    mMap.addPolyline(PolylineOptions().add(x[i], x[i + 1]).width(15.toFloat()).color(R.color.gold))
                                 }
                             }
                             adpater!!.notifyDataSetChanged()

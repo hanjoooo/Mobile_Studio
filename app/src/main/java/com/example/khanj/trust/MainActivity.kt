@@ -122,11 +122,6 @@ class MainActivity : AppCompatActivity() {
 
         bt_setting.setOnClickListener(object : View.OnClickListener{
             override fun onClick(v: View) {
-                /*
-            signOut()
-            finish()
-            val intent = Intent(this,LoginActivity::class.java)
-            startActivity(intent)*/
                 val p = PopupMenu(
                         applicationContext, v)
                 menuInflater.inflate(R.menu.menu2_main, p.menu)
@@ -189,17 +184,6 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        /*
-        bt_status.setOnClickListener {
-            var alertDialogBuilder = AlertDialog.Builder(this)
-            alertDialogBuilder.setMessage(State)
-            alertDialogBuilder.setPositiveButton("확인", null)
-            var alert: AlertDialog = alertDialogBuilder.create()
-            alert.setTitle("상태")
-            alert.window.setBackgroundDrawable(ColorDrawable(R.color.pure))
-            alert.show()
-        }
-        */
 
         mAuthListener = FirebaseAuth.AuthStateListener {
             firebaseAuth ->

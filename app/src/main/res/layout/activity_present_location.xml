@@ -1,8 +1,135 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
-    android:layout_width="match_parent"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.khanj.trust.PresentLocation" />
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.7"
+        tools:context="com.example.khanj.trust.PresentLocation" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp">
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:textColor="@color/md_pink_300"
+                android:text="현재 위치"
+                android:textSize="18dp"
+                android:textAlignment="textEnd"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textLocation"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center"
+                android:textColor="@color/md_grey_600"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="7dp">
+            <TextView
+                android:id="@+id/text3"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:textColor="@color/md_pink_300"
+                android:text="상대방 상태"
+                android:textSize="18dp"
+                android:textAlignment="textEnd"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textState"
+                android:textColor="@color/md_grey_600"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="7dp">
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:text="배터리 상태"
+                android:textSize="18dp"
+                android:textColor="@color/md_pink_300"
+                android:textAlignment="textEnd"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textBattery"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center"
+                android:textColor="@color/md_grey_600"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="7dp">
+            <TextView
+                android:id="@+id/text4"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:text="네트워크 상태"
+                android:textColor="@color/md_pink_300"
+                android:textAlignment="textEnd"
+                android:textSize="18dp"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textNetwork"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center"
+                android:textColor="@color/md_grey_600"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="7dp">
+            <TextView
+                android:id="@+id/text5"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:text="GPS 상태"
+                android:textSize="18dp"
+                android:textColor="@color/md_pink_300"
+                android:textAlignment="textEnd"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textGps"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center"
+                android:textColor="@color/md_grey_600"/>
+        </LinearLayout>
+
+
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>
