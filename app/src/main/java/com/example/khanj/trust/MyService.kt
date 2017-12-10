@@ -74,6 +74,7 @@ class MyService : Service() {
     internal var nowBattery:DatabaseReference?=null
     internal var nowNetwork:DatabaseReference?=null
     internal var nowGps:DatabaseReference?=null
+    internal var nowtime:DatabaseReference?=null
     internal var mtimeRef: DatabaseReference?=null
 
 
@@ -123,6 +124,7 @@ class MyService : Service() {
             // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600000, 1.toFloat(), mLocationListener)
             lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 600000, 1.toFloat(), mLocationListener)
+
         } catch (ex: SecurityException) {
             ;
         }
@@ -417,6 +419,7 @@ class MyService : Service() {
             nowLongRef = mchildlocRef!!.child("현재위치").child("경도")
             nowBattery = mchildlocRef!!.child("현재위치").child("베터리상태")
             nowNetwork = mchildlocRef!!.child("현재위치").child("네트워크")
+            nowtime = mchildlocRef!!.child("현재위치").child("수신시각")
             nowGps = mchildlocRef!!.child("현재위치").child("GPS")
             nowLatRef?.setValue(latitude)
             nowLongRef?.setValue(longitude)
@@ -433,11 +436,12 @@ class MyService : Service() {
             }
             val now:Long = System.currentTimeMillis()
             val date:Date=Date(now)
-            val sdfNow:SimpleDateFormat= SimpleDateFormat("dd일HH시mm분", Locale.KOREA)
+            val sdfNow:SimpleDateFormat= SimpleDateFormat("dd일 HH시mm분", Locale.KOREA)
             val sdfNow2:SimpleDateFormat= SimpleDateFormat("MMddHHmm", Locale.KOREA)
             val strNow:String = sdfNow.format(date)
             val strNow2:String=sdfNow2.format(date)
             val loc: location = location(strNow,latitude,longitude)
+            nowtime?.setValue(strNow)
             mtimeRef=nowLatLang!!.child(strNow2)
             mtimeRef?.setValue(loc)
         }

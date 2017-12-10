@@ -84,10 +84,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-/*
+
         val notificationManager=getSystemService(Context.NOTIFICATION_SERVICE)as NotificationManager
         notificationManager.cancel(787)
-*/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
             val channelId = getString(R.string.default_notification_channel_id)
@@ -212,13 +211,15 @@ class MainActivity : AppCompatActivity() {
         Handler().postDelayed({
             muserChildRef?.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    userInfo=dataSnapshot.getValue(User::class.java)
-                    mnotifiyChildRef=mnotifiyRef.child(userInfo!!.getNickname())
-                    mMesLastime=mnotifiyChildRef!!.child("lastime")
-                    mMesCurtime=mnotifiyChildRef!!.child("times")
-                    mMesUid=mnotifiyChildRef!!.child("uid")
-                    mMesNick=mnotifiyChildRef!!.child("nickname")
-                    mState=muserRef.child(userInfo!!.getOtherUid()).child("state")
+                    if(dataSnapshot.exists()){
+                        userInfo=dataSnapshot.getValue(User::class.java)
+                        mnotifiyChildRef=mnotifiyRef.child(userInfo!!.getNickname())
+                        mMesLastime=mnotifiyChildRef!!.child("lastime")
+                        mMesCurtime=mnotifiyChildRef!!.child("times")
+                        mMesUid=mnotifiyChildRef!!.child("uid")
+                        mMesNick=mnotifiyChildRef!!.child("nickname")
+                        mState=muserRef.child(userInfo!!.getOtherUid()).child("state")
+                    }
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
 

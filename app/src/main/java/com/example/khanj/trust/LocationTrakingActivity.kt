@@ -136,7 +136,7 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
                             }
                         }
                         Handler().postDelayed({
-                            if (x.size<11 && x.size>0) {
+                            if (x.size<20 && x.size>0) {
                                 loc_time.clear()
                                 loc_tra.clear()
                                 loc_latlng.clear()
@@ -172,6 +172,36 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
                                     else if(i==9){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.ten)))
                                     }
+                                    else if(i==10){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.eleven)))
+                                    }
+                                    else if(i==11){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.twelve)))
+                                    }
+                                    else if(i==12){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.thirteen)))
+                                    }
+                                    else if(i==13){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.fourteen)))
+                                    }
+                                    else if(i==14){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.fifthteen)))
+                                    }
+                                    else if(i==15){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.sixteen)))
+                                    }
+                                    else if(i==16){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.seventeen)))
+                                    }
+                                    else if(i==17){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.eighteen)))
+                                    }
+                                    else if(i==18){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.nineteen)))
+                                    }
+                                    else if(i==19){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.twenty)))
+                                    }
                                     loc_tra.add(loc_Address[i])
                                     loc_time.add(dotime[i])
                                     loc_latlng.add(x[i])
@@ -181,41 +211,71 @@ class LocationTrakingActivity : AppCompatActivity(), OnMapReadyCallback {
                                 }
 
                             }
-                            else if(x.size>=11) {
+                            else if(x.size>=21) {
                                 loc_time.clear()
                                 loc_tra.clear()
                                 loc_latlng.clear()
-                                mMap.addMarker(MarkerOptions().position(x[x.size-11]).title(dotime[x.size-11]).icon(BitmapDescriptorFactory.fromResource(R.drawable.one)))
-                                loc_tra.add(loc_Address[x.size-11])
-                                loc_time.add(dotime[x.size-11])
-                                loc_latlng.add(x[x.size-11])
-                                for(i in x.size-10..x.size-2){
-                                    if(i==x.size-10){
+                                mMap.addMarker(MarkerOptions().position(x[x.size-20]).title(dotime[x.size-20]).icon(BitmapDescriptorFactory.fromResource(R.drawable.one)))
+                                loc_tra.add(loc_Address[x.size-20])
+                                loc_time.add(dotime[x.size-20])
+                                loc_latlng.add(x[x.size-20])
+                                for(i in x.size-19..x.size-1){
+                                    if(i==x.size-19){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.two)))
                                     }
-                                    else if(i==x.size-9){
+                                    else if(i==x.size-18){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.three)))
                                     }
-                                    else if(i==x.size-8){
+                                    else if(i==x.size-17){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.four)))
                                     }
-                                    else if(i==x.size-7){
+                                    else if(i==x.size-16){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.five)))
                                     }
-                                    else if(i==x.size-6){
+                                    else if(i==x.size-15){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.six)))
                                     }
-                                    else if(i==x.size-5){
+                                    else if(i==x.size-14){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.seven)))
                                     }
-                                    else if(i==x.size-4){
+                                    else if(i==x.size-13){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.eight)))
                                     }
-                                    else if(i==x.size-3){
+                                    else if(i==x.size-12){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.nine)))
                                     }
-                                    else if(i==x.size-2){
+                                    else if(i==x.size-11){
                                         mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.ten)))
+                                    }
+                                    else if(i==x.size-10){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.eleven)))
+                                    }
+                                    else if(i==x.size-9){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.twelve)))
+                                    }
+                                    else if(i==x.size-8){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.thirteen)))
+                                    }
+                                    else if(i==x.size-7){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.fourteen)))
+                                    }
+                                    else if(i==x.size-6){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.fifthteen)))
+                                    }
+                                    else if(i==x.size-5){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.sixteen)))
+                                    }
+                                    else if(i==x.size-4){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.seventeen)))
+                                    }
+                                    else if(i==x.size-3){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.eighteen)))
+                                    }
+                                    else if(i==x.size-2){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.nineteen)))
+                                    }
+                                    else if(i==x.size-1){
+                                        mMap.addMarker(MarkerOptions().position(x[i]).title(dotime[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.twenty)))
                                     }
                                     loc_tra.add(loc_Address[i])
                                     loc_time.add(dotime[i])

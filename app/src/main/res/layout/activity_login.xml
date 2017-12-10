@@ -5,8 +5,97 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.khanj.trust.LoginActivity"
-    android:background="@color/white">
+    android:background="@color/md_brown_50">
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="fill_parent"
+        android:layout_height="61dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/md_grey_700">
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/trust"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="fill_parent"
+        android:layout_height="320dp"
+        android:layout_marginTop="61dp"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp"
+        android:background="@color/md_brown_50">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="142dp"
+            android:layout_height="137dp"
+            app:srcCompat="@drawable/care"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trust"
+            android:textColor="@color/md_blue_grey_600"
+            android:textSize="22dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintVertical_bias="0.32999998"
+            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            android:layout_marginStart="16dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="위치확인 서비스 / 이동경로 서비스"
+            android:textColor="@color/md_blue_grey_600"
+            android:textSize="12dp"
+            android:id="@+id/textView4"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            android:layout_marginStart="16dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="안전지대 설정 서비스 / 상대방 상태 알림 서비스"
+            android:textColor="@color/md_blue_grey_600"
+            android:textSize="12dp"
+            android:layout_marginTop="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView4"
+            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            android:layout_marginStart="16dp"
+            android:id="@+id/textView7" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="채팅 서비스 / 화상채팅 서비스"
+            android:textColor="@color/md_blue_grey_600"
+            android:textSize="12dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView7"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toEndOf="@+id/imageView2" />
+    </android.support.constraint.ConstraintLayout>
     <TextView
         android:layout_width="350dp"
         android:layout_height="200dp"
@@ -19,7 +108,7 @@
         android:layout_width="fill_parent"
         android:layout_height="62dp"
         android:layout_marginTop="0dp"
-        android:background="@color/skyblue"
+        android:background="#00ff0000"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -30,8 +119,6 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="TRUST"
-            android:textColor="@color/white"
             android:textSize="28dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -41,27 +128,27 @@
     </android.support.constraint.ConstraintLayout>
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:hint="Email"
         android:textColor="@color/black"
-        android:textColorHint="@color/black"
+        android:textColorHint="@color/md_grey_500"
         android:ems="10"
         android:id="@+id/ID"
         android:textSize="25sp"
         android:layout_below="@+id/Title"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="58dp" />
+        android:layout_marginTop="100dp" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/Password"
         android:hint="Password"
-        android:textColorHint="@color/black"
+        android:textColorHint="@color/md_grey_500"
         android:textColor="@color/black"
         android:textSize="25sp"
         android:layout_marginTop="56dp"
@@ -71,39 +158,41 @@
 
     <Button
         android:text="회원가입"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="50dp"
         android:textSize="20sp"
         android:id="@+id/Regist"
         android:textStyle="bold|italic"
         android:textColor="@color/colorAccent"
-        android:background="@color/white"
-        android:layout_marginStart="9dp"
+        android:background="@color/md_brown_50"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
         android:layout_below="@+id/Password"
-        android:layout_toEndOf="@+id/Login"
-        android:layout_marginTop="42dp" />
+        android:layout_alignEnd="@+id/sign_in_button" />
 
     <Button
-        android:text=" L o g i n "
-        android:layout_width="200dp"
+        android:text="로그인"
+        android:layout_width="120dp"
         android:layout_height="50dp"
         android:id="@+id/Login"
-        android:textSize="26sp"
+        android:textSize="20sp"
         android:textStyle="bold|italic"
         android:textColor="#0288D1"
-        android:background="@color/white"
+        android:background="@color/md_brown_50"
+        android:gravity="center"
         android:layout_alignBaseline="@+id/Regist"
         android:layout_alignBottom="@+id/Regist"
         android:layout_alignStart="@+id/Password" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
-        android:layout_width="300dp"
+        android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="15dp"
+        android:background="#00ff0000"
         android:layout_below="@+id/Regist"
-        android:background="@color/white"
-        android:layout_alignStart="@+id/Login" />
+        android:layout_alignStart="@+id/Login"
+        android:foregroundGravity="center"/>
 
 </RelativeLayout>

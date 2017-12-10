@@ -17,11 +17,30 @@
         android:layout_height="match_parent"
         android:layout_weight="0.7"
         tools:context="com.example.khanj.trust.PresentLocation" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginTop="10dp">
+            <TextView
+                android:id="@+id/text7"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:textColor="@color/md_pink_300"
+                android:text="수신 시각"
+                android:textSize="18dp"
+                android:textAlignment="textEnd"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textTime"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/md_grey_600"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="7dp">
             <TextView
                 android:id="@+id/text2"
                 android:layout_width="110dp"

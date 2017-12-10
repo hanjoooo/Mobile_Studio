@@ -4,15 +4,15 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/background"
     tools:context="com.example.khanj.trust.MainActivity">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="fill_parent"
-        android:layout_height="62dp"
+        android:layout_height="61dp"
         android:layout_marginTop="0dp"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/skyblue"
+        android:background="@color/md_grey_700"
         android:id="@+id/constraintLayout3">
 
         <ImageButton
@@ -21,7 +21,7 @@ xmlns:tools="http://schemas.android.com/tools"
             android:layout_height="50dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
             android:background="@drawable/selector_bt"
             android:scaleType="centerInside"
             app:layout_constraintEnd_toEndOf="parent"
@@ -40,24 +40,20 @@ xmlns:tools="http://schemas.android.com/tools"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="5dp" />
 
-        <TextView
-            android:id="@+id/textView5"
+        <ImageView
+            android:id="@+id/imageView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TRUST"
-            android:textColor="@color/white"
-            android:textSize="28dp"
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/trust"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp"
-            app:layout_constraintVertical_bias="0.5"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="8dp" />
+
     </android.support.constraint.ConstraintLayout>
 
     <LinearLayout
@@ -65,14 +61,14 @@ xmlns:tools="http://schemas.android.com/tools"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginTop="62dp">
+        android:layout_marginTop="61dp">
         <android.support.constraint.ConstraintLayout
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="8dp"
-            android:background="@color/md_grey_100">
+            android:background="@color/md_brown_50">
 
             <ImageView
                 android:id="@+id/imageView2"

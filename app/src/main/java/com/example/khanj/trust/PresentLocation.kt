@@ -50,6 +50,8 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
     internal var mBattery:DatabaseReference?=null
     internal var mNetwork:DatabaseReference?=null
     internal var mGps:DatabaseReference?=null
+    internal var mTime:DatabaseReference?=null
+
 
     var longitude:Double = 0.0
     var latitude:Double = 0.0
@@ -57,6 +59,7 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
     var Battery="100"
     var Network=" "
     var Gps=" "
+    var lasttime=" "
     private var userInfo: User?=null
     private var State=" "
 
@@ -113,6 +116,7 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
                     mState=muserRef.child(userInfo!!.getOtherUid()).child("state")
                     mBattery = mchildRef!!.child("현재위치").child("베터리상태")
                     mNetwork = mchildRef!!.child("현재위치").child("네트워크")
+                    mTime = mchildRef!!.child("현재위치").child("수신시각")
                     mGps = mchildRef!!.child("현재위치").child("GPS")
                 }
                 override fun onCancelled(databaseError: DatabaseError) {
@@ -167,32 +171,45 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
                         }
 
                     })
+                    mTime?.addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            if(dataSnapshot.exists()){
+                                val data = dataSnapshot.getValue().toString()
+                                lasttime=data
+                            }
+                        }
+                        override fun onCancelled(databaseError: DatabaseError) {
+                        }
+
+                    })
                 }
-                mchildRef!!.child("LimitRange").addListenerForSingleValueEvent(object:ValueEventListener{
+                mchildRef?.child("LimitRange")?.addListenerForSingleValueEvent(object:ValueEventListener{
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val data = dataSnapshot.getValue().toString()
-                        if(data== " ") ;
-                        else{
-                            val limitrange=dataSnapshot.getValue(LimitRange::class.java)
-                            if(limitrange!=null){
-                                var laa= Location("a")
-                                laa.setLatitude(limitrange!!.latitude)
-                                laa.setLongitude(limitrange!!.longitude)
-                                var lab = Location("b")
-                                var dist = laa.distanceTo(lab)
-                                var Range=limitrange.radius
-                                if(mapCircle!=null){
-                                    mapCircle!!.remove()
-                                }
-                                val circleOptions= CircleOptions()
-                                        .center(LatLng(limitrange!!.latitude,limitrange!!.longitude))
-                                        .radius(Range*1000.0)
-                                        .strokeColor(Color.GREEN)
-                                        .fillColor(Color.argb(78, 0, 255, 0))
-                                mapCircle= mMap!!.addCircle(circleOptions)
-                                if(Math.pow(dist.toDouble()/1000.0,2.0)<limitrange!!.radius){
-                                }
-                                else {
+                        if(dataSnapshot.exists()){
+                            val data = dataSnapshot.getValue().toString()
+                            if(data== " ") ;
+                            else{
+                                val limitrange=dataSnapshot.getValue(LimitRange::class.java)
+                                if(limitrange!=null){
+                                    var laa= Location("a")
+                                    laa.setLatitude(limitrange!!.latitude)
+                                    laa.setLongitude(limitrange!!.longitude)
+                                    var lab = Location("b")
+                                    var dist = laa.distanceTo(lab)
+                                    var Range=limitrange.radius
+                                    if(mapCircle!=null){
+                                        mapCircle!!.remove()
+                                    }
+                                    val circleOptions= CircleOptions()
+                                            .center(LatLng(limitrange!!.latitude,limitrange!!.longitude))
+                                            .radius(Range*1000.0)
+                                            .strokeColor(Color.GREEN)
+                                            .fillColor(Color.argb(78, 0, 255, 0))
+                                    mapCircle= mMap!!.addCircle(circleOptions)
+                                    if(Math.pow(dist.toDouble()/1000.0,2.0)<limitrange!!.radius){
+                                    }
+                                    else {
+                                    }
                                 }
                             }
                         }
@@ -200,18 +217,22 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
                 })
-                mchild1Ref!!.addValueEventListener(object : ValueEventListener {
+                mchild1Ref?.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val datas = dataSnapshot.getValue().toString()
-                        latitude= datas.toDouble()
+                        if(dataSnapshot.exists()){
+                            val datas = dataSnapshot.getValue().toString()
+                            latitude= datas.toDouble()
+                        }
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
                 })
-                mchild2Ref!!.addValueEventListener(object : ValueEventListener {
+                mchild2Ref?.addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val datas = dataSnapshot.getValue().toString()
-                        longitude= datas.toDouble()
+                        if(dataSnapshot.exists()){
+                            val datas = dataSnapshot.getValue().toString()
+                            longitude= datas.toDouble()
+                        }
                     }
                     override fun onCancelled(databaseError: DatabaseError) {
                     }
@@ -251,6 +272,7 @@ class PresentLocation : AppCompatActivity(), OnMapReadyCallback {
             textBattery.setText(Battery+"%")
             textNetwork.setText(Network)
             textGps.setText(Gps)
+            textTime.setText(lasttime)
             val sydney = LatLng(latitude, longitude)
             mMap.addMarker(MarkerOptions().position(sydney).title("현재 위치").icon(BitmapDescriptorFactory.fromResource(R.drawable.now)).snippet(nowAddress))
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney,16F.toFloat()))
